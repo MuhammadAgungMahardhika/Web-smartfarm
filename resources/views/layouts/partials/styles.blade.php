@@ -5,12 +5,14 @@
 <link rel="stylesheet" href="{{ asset('/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
 <link rel="stylesheet" href="{{ asset('/vendors/bootstrap-icons/bootstrap-icons.css') }}">
 
+{{-- Datatable CSS --}}
+<link rel="stylesheet" href="{{ asset('/js/extensions/datatables.net-bs5/css/dataTables.bootstrap5.css') }}">
 
 <!-- Styles -->
 {{-- <link rel="stylesheet" href="{{ mix('css/bootstrap.css') }}">
 <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}"> --}}
-@vite(["resources/sass/bootstrap.scss", "resources/sass/themes/dark/app-dark.scss", "resources/sass/pages/auth.scss", "resources/sass/app.scss"])
+@vite(['resources/sass/bootstrap.scss', 'resources/sass/themes/dark/app-dark.scss', 'resources/sass/pages/auth.scss', 'resources/sass/app.scss'])
 
 @livewireStyles
 

@@ -97,7 +97,7 @@
                                         <div class="card bg-light">
                                             <div class="card-body ">
                                                 {{-- chart --}}
-                                                @include('chart.barchart')
+                                                @include('chart.donutchart')
                                             </div>
                                         </div>
                                     </div>

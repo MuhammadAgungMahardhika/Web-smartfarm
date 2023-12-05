@@ -121,12 +121,65 @@
         }, 1000);
         // #2 update the value in card 
         function updateCardData(a, b, c) {
+            let suhuStatusCheck = checkSuhuStatus(a)
             let suhuData = document.getElementById('suhuData')
+            let suhuStatus = document.getElementById('suhuStatus')
             suhuData.textContent = a
+            suhuStatus.textContent = suhuStatusCheck
+
+            let kelembapanStatusCheck = checkKelembapanStatus(b)
             let kelembapanData = document.getElementById('kelembapanData')
+            let kelembapanStatus = document.getElementById('kelembapanStatus')
             kelembapanData.textContent = b
+            kelembapanStatus.textContent = kelembapanStatusCheck
+
+            let amoniaStatusCheck = checkAmoniaStatus(c)
             let amoniaData = document.getElementById('amoniaData')
+            let amoniaStatus = document.getElementById('amoniaStatus')
             amoniaData.textContent = c
+            amoniaStatus.textContent = amoniaStatusCheck
+        }
+
+        function checkSuhuStatus(input) {
+            let status = ['Tidak aman', 'Normal', 'Baik']
+            let result = ''
+            // check a
+            if (input >= 80) {
+                result = status[1]
+            } else if (input >= 50) {
+                result = status[0]
+            } else if (input < 50) {
+                result = status[2]
+            }
+            return result
+        }
+
+        function checkKelembapanStatus(input) {
+            let status = ['Tidak aman', 'Normal', 'Baik']
+            let result = ''
+            // check a
+            if (input >= 80) {
+                result = status[1]
+            } else if (input >= 50) {
+                result = status[0]
+            } else if (input < 50) {
+                result = status[2]
+            }
+            return result
+        }
+
+        function checkAmoniaStatus(input) {
+            let status = ['Tidak aman', 'Normal', 'Baik']
+            let result = ''
+            // check a
+            if (input >= 80) {
+                result = status[1]
+            } else if (input >= 50) {
+                result = status[0]
+            } else if (input < 50) {
+                result = status[2]
+            }
+            return result
         }
 
     })

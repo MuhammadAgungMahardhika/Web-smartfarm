@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Klasifikasi Monitoring</h3>
-                <p class="text-subtitle text-muted">Halaman Klasifikasi Monitoring</p>
+                <h3 style="color: #cb8e8e">Data Kandang</h3>
+                <p class="text-subtitle text-muted">Halaman Data Kandang</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Klasifikasi Monitoring</li>
+                        <li class="breadcrumb-item active" aria-current="page">Data Kandang</li>
                     </ol>
                 </nav>
             </div>
@@ -222,63 +222,87 @@
     }
 
     function showTableData(kandangId) {
-        let klasifikasiData = ''
+        let detailKandang = ''
         if (kandangId == '1') {
-            klasifikasiData = [{
+            detailKandang = [{
                 id_kandang: 1,
+                date_time: "2023-12-11",
                 nama_kandang: "Kandang 1",
                 alamat_kandang: "Jln Kandang 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 20,
-                minum: 20,
+                suhu: 28,
+                kelembapan: 20,
+                amonia: 90,
+                pakan: 20,
+                minum: 15,
+                bobot: 15,
+                populasi: 10,
+                luas: 155,
                 klasifikasi: "aman"
             }, {
                 id_kandang: 1,
+                date_time: "2023-12-11",
                 nama_kandang: "Kandang 1",
                 alamat_kandang: "Jln Kandang 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 22,
-                minum: 22,
+                suhu: 28,
+                kelembapan: 20,
+                amonia: 90,
+                pakan: 20,
+                minum: 15,
+                bobot: 15,
+                populasi: 10,
+                luas: 155,
                 klasifikasi: "aman"
             }]
         } else if (kandangId == '2') {
-            klasifikasiData = [{
+            detailKandang = [{
                 id_kandang: 2,
+                date_time: "2023-12-11",
                 nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 18,
+                alamat_kandang: "Jln Kandang 2",
+                suhu: 28,
+                kelembapan: 20,
+                amonia: 90,
+                pakan: 20,
+                minum: 15,
+                bobot: 15,
+                populasi: 10,
+                luas: 155,
                 klasifikasi: "aman"
             }, {
                 id_kandang: 2,
+                date_time: "2023-12-11",
                 nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 17,
+                alamat_kandang: "Jln Kandang 2",
+                suhu: 28,
+                kelembapan: 20,
+                amonia: 90,
+                pakan: 20,
+                minum: 15,
+                bobot: 15,
+                populasi: 10,
+                luas: 155,
                 klasifikasi: "aman"
             }]
         }
 
         let data = ''
 
-        for (let i = 0; i < klasifikasiData.length; i++) {
+        for (let i = 0; i < detailKandang.length; i++) {
             data += `
             <tr>
             <td>${i+1}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].alamat_kandang}</td>
-            <td>${klasifikasiData[i].hari}</td>
-            <td>${klasifikasiData[i].pakan}</td>
-            <td>${klasifikasiData[i].bobot}</td>
-            <td>${klasifikasiData[i].minum}</td>
-            <td>${klasifikasiData[i].klasifikasi}</td>
+            <td>${detailKandang[i].date_time}</td>
+            <td>${detailKandang[i].nama_kandang}</td>
+            <td>${detailKandang[i].alamat_kandang}</td>
+            <td>${detailKandang[i].suhu}</td>
+            <td>${detailKandang[i].kelembapan}</td>
+            <td>${detailKandang[i].amonia}</td>
+            <td>${detailKandang[i].pakan}</td>
+            <td>${detailKandang[i].minum}</td>
+            <td>${detailKandang[i].bobot}</td>
+            <td>${detailKandang[i].populasi}</td>
+            <td>${detailKandang[i].luas}</td>
+            <td>${detailKandang[i].klasifikasi}</td>
             </tr>
             `
         }
@@ -302,25 +326,40 @@
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                         aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Hari-ke
+                                        Suhu
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                         aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Pakan
+                                        Kelembapan
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                         aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Bobot
+                                        Amonia
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                         aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Minum
+                                        Pakan
                     </th>
                     <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                         aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Klasifikasi
+                                        Minum
                     </th>
-                  
+                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                        Bobot
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                        Populasi 
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                        Luas
+                    </th>
+                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                        Klasifikasi
+                    </th>              
                 </tr>
              </thead>
             <tbody>

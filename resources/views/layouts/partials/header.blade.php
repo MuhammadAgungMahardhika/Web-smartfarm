@@ -23,12 +23,18 @@
                             <li><a class="dropdown-item" href="#">No new mail</a></li>
                         </ul>
                     </li> --}}
+                    <li class="nav-item dropdown mx-3 mb-0  pt-4">
+                        <span id="dateTime">
+
+                        </span>
+                    </li>
                     <li class="nav-item dropdown me-3">
                         <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <i class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+
                             <li>
                                 <h6 class="dropdown-header">Notifications</h6>
                             </li>
@@ -84,3 +90,75 @@
         </div>
     </nav>
 </header>
+<script>
+    new DateAndTime();
+    setInterval("DateAndTime()", 1000);
+
+    function DateAndTime() {
+        var dt = new Date();
+
+        var Hours = dt.getHours();
+        var Min = dt.getMinutes();
+        var Sec = dt.getSeconds();
+        // var MilliSec = dt.getMilliseconds();  + MilliSec + "MilliSec " (for milliseconds).
+
+        //strings
+        var days = [
+            "Minggu",
+            "Senin",
+            "Selasa",
+            "Rabu",
+            "Kamis",
+            "Jumat",
+            "Sabtu"
+        ];
+
+        //strings
+        var months = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember"
+        ];
+
+        // var localTime = dt.getLocaleTimeString();
+        // var localDate = dt.getLocaleDateString();
+
+        if (Min < 10) {
+            Min === "0" + Min;
+        } //displays two digits even Min less than 10
+
+        if (Sec < 10) {
+            Sec === "0" + Sec;
+        } //displays two digits even Sec less than 10
+
+        var suffix = " AM"; //cunverting 24Hours to 12Hours with AM & PM suffix
+        if (Hours >= 12) {
+            suffix = " PM";
+            Hours = Hours - 12;
+        }
+        if (Hours === 0) {
+            Hours = 12;
+        }
+
+        // document.getElementById("time").innerHTML = localTime;
+
+        document.getElementById("dateTime").innerHTML =
+            days[dt.getDay()] +
+            ", " +
+            dt.getDate() +
+            " " +
+            months[dt.getMonth()] +
+            " " +
+            dt.getFullYear() + "," + Hours + ":" + Min + ":" + Sec + ":" + suffix;
+
+    }
+</script>

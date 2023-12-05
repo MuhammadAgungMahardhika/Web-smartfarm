@@ -21,10 +21,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         return view('pages/dashboard');
     })->name('dashboard');
 
-    Route::get('/laporan', function () {
-        return view('pages/laporan');
-    })->name('laporan');
-
     Route::get('/forecast', function () {
         return view('pages/forecast');
     })->name('forecast');
@@ -37,9 +33,9 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         return view('pages/klasifikasi');
     })->name('klasifikasiMonitoring');
 
-    Route::get('/monitoringKandang', function () {
-        return view('pages/monitoringKandang');
-    })->name('monitoringKandang');
+    Route::get('/dataKandang', function () {
+        return view('pages/dataKandang');
+    })->name('dataKandang');
 
     Route::get('/notifikasi', function () {
         return view('pages/notifikasi');

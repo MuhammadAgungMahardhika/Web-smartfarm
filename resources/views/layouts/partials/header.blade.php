@@ -23,6 +23,7 @@
                             <li><a class="dropdown-item" href="#">No new mail</a></li>
                         </ul>
                     </li> --}}
+
                     <li class="nav-item dropdown mx-3 mb-0  pt-4">
                         <span id="dateTime">
 
@@ -103,30 +104,11 @@
         // var MilliSec = dt.getMilliseconds();  + MilliSec + "MilliSec " (for milliseconds).
 
         //strings
-        var days = [
-            "Minggu",
-            "Senin",
-            "Selasa",
-            "Rabu",
-            "Kamis",
-            "Jumat",
-            "Sabtu"
-        ];
+        var days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
         //strings
-        var months = [
-            "Januari",
-            "Februari",
-            "Maret",
-            "April",
-            "Mei",
-            "Juni",
-            "Juli",
-            "Agustus",
-            "September",
-            "Oktober",
-            "November",
-            "Desember"
+        var months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
+            "November", "Desember"
         ];
 
         // var localTime = dt.getLocaleTimeString();

@@ -22,12 +22,6 @@
                     <div class="col-12 col-md-4 col-lg-4">
                         <table class="table table-borderless text-start">
                             <thead>
-                                {{-- <tr>
-                                    <th>DateTime</th>
-                                    <td id="dateTime">
-
-                                    </td>
-                                </tr> --}}
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
@@ -61,129 +55,144 @@
     </section>
 </x-app-layout>
 <script>
-    // new DateAndTime();
-    // setInterval("DateAndTime()", 1000);
-
-    fetchKandang(userId = 1)
+    fetchKandang(<?= auth()->user()->id ?>)
 
     function fetchKandang(userId) {
-        let dataKandang = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 1"
-
-            },
-            {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 2"
-
-            }
-        ]
+        let dataKandang
         let optionButton = ""
 
-        for (let i = 0; i < dataKandang.length; i++) {
-            optionButton +=
-                `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id_kandang}">${dataKandang[i].nama_kandang}</option>`
-        }
+        $.ajax({
+            type: "GET",
+            url: `/kandang/user/${userId}`,
+            success: function(response) {
+                dataKandang = response.data
 
-        $('#namaKandang').html(`
-        <fieldset class="form-group">
-            <select class="form-select" id="selectKandang" onchange="changeKandang()">
-                ${optionButton}
-            </select>
-         </fieldset>
-        `)
-        changeKandang()
+                // looping all kandang option
+                for (let i = 0; i < dataKandang.length; i++) {
+                    optionButton +=
+                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
+                }
+
+                $('#namaKandang').html(`
+                <fieldset class="form-group">
+                    <select class="form-select" id="selectKandang" onchange="initKandang()">
+                        ${optionButton}
+                    </select>
+                </fieldset>
+                `)
+
+                // init kandang data
+                initKandang()
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
     }
 
-    function changeKandang() {
-        let optionValue = $("#selectKandang").val()
-        let kandang = ''
-        if (optionValue == 1) {
-            kandang = {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 1"
-            }
-        } else if (optionValue == 2) {
-            kandang = {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 2"
-            }
-        }
+    function initKandang() {
+        let id = $("#selectKandang").val()
+        let kandang = getKandang(id)
 
         $('#alamatKandang').html(kandang.alamat_kandang)
         $('#addButton').html(
-            ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${kandang.id_kandang}','${kandang.nama_kandang}')"><i class="fa fa-plus"></i> </a>`
+            ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
         )
-        showTableData(kandang.id_kandang)
+        showTableData(id)
     }
 
     function showTableData(kandangId) {
-        let data = `
-        <tr>
-          <td class="">1</td>
-          <td class="sorting_1">2022-11-12</td>
-          <td>1</td>
-          <td>Cacing</td>
-          <td>Sudah</td>
-          <td>2 kg</td>
-          <td>0</td>
-          <td style="min-width: 180px">
-            <a class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${1}')"><i class="fa fa-edit"> </i> </a>
-            <a class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${1}')"><i class="fa fa-trash"> </i></a>
-          </td>
-        </tr>
-        `
-        let table = `
-        <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
-            <thead>
-                <tr>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Name: activate to sort column ascending" style="width: 136.047px;">
-                                        Datetime
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
-                                        ke-
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="City: activate to sort column ascending" style="width: 239.078px;">Pakan
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Minum
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Bobot
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Kematian
-                    </th>
-                    <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                        colspan="1" aria-label="Status: activate to sort column ascending"
-                                        style="width: 117.891px;">Action
-                    </th>
-                </tr>
-             </thead>
-            <tbody>
-                ${data}
-            </tbody>
-         </table>
-        `
-        $('#tableData').html(table)
-        initDataTable('table')
+        let itemData = ''
+
+        $.ajax({
+            type: "GET",
+            url: `/rekap-data/kandang/${kandangId}`,
+            contentType: "application/json",
+            async: false,
+            success: function(response) {
+                // asign value
+                itemData = response.data
+                let data = ''
+
+                // adding input harian data
+                for (let i = 0; i < itemData.length; i++) {
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${itemData[i].hari}</td>
+                    <td>${itemData[i].rata_rata_suhu}</td>
+                    <td>${itemData[i].kelembapan}</td>
+                    <td>${itemData[i].rata_rata_amoniak}</td>
+                    <td>${itemData[i].pakan}</td>
+                    <td>${itemData[i].minum}</td>
+                    <td>${itemData[i].bobot}</td>
+                    <td>${itemData[i].jumlah_kematian_harian}</td>
+                    <td style="min-width: 180px">
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${itemData[i].id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${itemData[i].id}')"><i class="fa fa-trash"></i></a>
+                    </td>
+                    </tr>
+                    `
+                }
+                // construct table
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Rata Rata Suhu
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Rata Rata Kelembapan
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Rata Rata Amonia
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Pakan
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Minum
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Bobot
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Jumlah Kematian harian
+                            </th>
+                            <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                                colspan="1" aria-label="Status: activate to sort column ascending"
+                                                style="width: 117.891px;">Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                initDataTable('table')
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
+
     }
 
     function initDataTable(id) {
@@ -223,175 +232,235 @@
     }
 
     function addModal(idKandang) {
-        $('#modalTitle').html("Menambahkan Input Harian")
+        let item = getKandang(idKandang)
+        let namaKandang = item.nama_kandang
+        let populasiAwal = item.populasi_awal
 
+        let today = new Date()
+        let yyyy = today.getFullYear()
+        let mm = today.getMonth() + 1
+        let dd = today.getDate()
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+        let dateNow = yyyy + "-" + mm + "-" + dd
+
+        $('#modalTitle').html("Menambahkan Input Harian")
         $('#modalBody').html(`
-        <form class="form form-horizontal">
-                <div class="form-body">
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namakandang">Nama Kandang</label>
+                <form class="form form-horizontal">
+                        <div class="form-body">
+                            <div class="row">
+                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
+                                <div class="col-md-4">
+                                    <label for="namakandang">Nama Kandang</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="text" value="${namaKandang}" id="namakandang" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="populasiAwal">Populasi awal</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${populasiAwal}" id="populasiAwal" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="hariKe">Hari ke-</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="date" value="${dateNow}" id="hariKe" class="form-control">
+                                </div>
+                              
+                                <div class="col-md-4">
+                                    <label for="rataRataSuhu">Rata Rata Suhu</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="rataRataSuhu" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="rataRataKelembapan">Rata Rata Kelembapan</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="rataRataKelembapan" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="rataRataAmonia">Rata Rata Amonia</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="rataRataAmonia" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="pakan">Pakan</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="pakan" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="minum">Minum</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="minum" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="bobot">Bobot</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="bobot" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="jumlahKematianHarian">Jumlah Kematian Hari Ini</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="jumlahKematianHarian" class="form-control">
+                                </div>
+                                
+                            </div>
                         </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" value="namaKandangTes " id="namakandang" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="hariKe">Hari ke-</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="hariKe" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahAwalAyam">Jumlah Awal Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahAwalAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahAyam">Jumlah Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="pakan">Pakan</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="pakan" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="minum">Minum</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="minum" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahKematian">Jumlah Kematian</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="jumlahKematian" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataSuhu">Rata Rata Suhu</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataSuhu" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataKelembapan">Rata Rata Kelembapan</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataKelembapan" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataAmoniak">Rata Rata Amoniak</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataAmoniak" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        `)
+                    </form>
+                `)
 
         $('#modalFooter').html(`
-        <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+                <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
+                <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
     }
 
     function editModal(id) {
-        $('#modalTitle').html("Mengubah Input Harian")
+        let item = getRekapData(id)
+        let idKandang = item.id_kandang
+        let namaKandang = getKandang(idKandang).nama_kandang
+        let hari = item.hari
+        let rataRataSuhu = item.rata_rata_suhu
+        let rataRataKelembapan = item.kelembapan
+        let rataRataAmoniak = item.rata_rata_amoniak
+        let pakan = item.pakan
+        let minum = item.minum
+        let bobot = item.bobot
+        let jumlahKematianHarian = item.jumlah_kematian_harian
+
+        $('#modalTitle').html("Mengubah Hasil Panen")
         $('#modalBody').html(`
-        <form class="form form-horizontal">
-            <div class="form-body">
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${id}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namaKandang">Nama kandang</label>
+                <form class="form form-horizontal">
+                        <div class="form-body">
+                            <div class="row">
+                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
+                                <div class="col-md-4">
+                                    <label for="namaKandang">Nama kandang</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="text" id="namaKandang" value="${namaKandang}" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="hariKe">Hari ke-</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="date" value="${hari}" id="hariKe" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="rataRataSuhu">Rata Rata Suhu</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${rataRataSuhu}" id="rataRataSuhu" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="rataRataKelembapan">Rata Rata Kelembapan</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${rataRataKelembapan}" id="rataRataKelembapan" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="rataRataAmonia">Rata Rata Amonia</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${rataRataAmoniak}" id="rataRataAmonia" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="pakan">Pakan</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${pakan}" id="pakan" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="minum">Minum</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${minum}" id="minum" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="bobot">Bobot</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${bobot}" id="bobot" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="jumlahKematianHarian">Jumlah Kematian Hari Ini</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" value="${jumlahKematianHarian}" id="jumlahKematianHarian" class="form-control">
+                                </div>
+
+                            </div>
                         </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="namaKandang" value="Kandang 1" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="hariKe">Hari ke-</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" value="${id}" id="hariKe" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahAwalAyam">Jumlah Awal Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahAwalAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahAyam">Jumlah Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="pakan">Pakan</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="pakan" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="minum">Minum</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="minum" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahKematian">Jumlah Kematian</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="jumlahKematian" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataSuhu">Rata Rata Suhu</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataSuhu" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataKelembapan">Rata Rata Kelembapan</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataKelembapan" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="rataAmoniak">Rata Rata Amoniak</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="rataAmoniak" class="form-control">
-                        </div>
-                    </div>
-                </div>
-            </form>
-        `)
+                    </form>
+                `)
         $('#modalFooter').html(
-            `<a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="update('${id}')">Laporkan</a>`)
+            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+
     }
 
+
+
+
     function deleteModal(id) {
-        $('#modalTitle').html("Hapus Hasil Panen")
-        $('#modalBody').html(`Apakah anda yakin ingin menghapus hasil panen ini?`)
-        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="delete('${id}'')">Hapus</a>`)
+        let item = getRekapData(id)
+        let namaKandang = getKandang(item.id_kandang).nama_kandang
+        let hari = item.hari
+        let rataRataSuhu = item.rata_rata_suhu
+        let rataRataKelembapan = item.kelembapan
+        let rataRataAmoniak = item.rata_rata_amoniak
+        let pakan = item.pakan
+        let minum = item.minum
+        let bobot = item.bobot
+        let jumlahKematianHarian = item.jumlah_kematian_harian
+
+        $('#modalTitle').html("Hapus Data Harian")
+        $('#modalBody').html(`
+                    <div>
+                        <table class="table table-borderless">  
+                            <tbody>
+                                <tr>
+                                    <th class="text-center" colspan="2">Data Harian</th>
+                                </tr>
+                                <tr>
+                                    <td>Nama Kandang</td> <td>${namaKandang}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Hari ke</td> <td>${hari}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Rata rata suhu</td><td>${rataRataSuhu}</td>
+                                </tr>
+                                <tr>
+                                    <td>Rata rata suhu</td><td>${rataRataKelembapan}</td>
+                                </tr>  
+                                <tr>
+                                    <td>Rata rata amonia</td><td>${rataRataAmoniak}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Pakan</td><td>${pakan}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Minum</td><td>${minum}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Bobot</td><td>${bobot}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Jumlah kematian harian</td><td>${jumlahKematianHarian}</td>
+                                </tr> 
+                            </tbody>
+                        </table>
+                    </div>
+                    `)
+        $('#modalFooter').html(
+            `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
     }
 
     function reset() {
@@ -407,100 +476,174 @@
         $('#rataAmoniak').val("")
     }
 
+
+
+    function getRekapData(id) {
+        let item
+        $.ajax({
+            type: "GET",
+            url: `/rekap-data/${id}`,
+            async: false,
+            success: function(response) {
+                item = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return item
+    }
+
+    function getKandang(id) {
+        let item
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            async: false,
+            success: function(response) {
+                item = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return item
+    }
+
+    // -------------------------------API---------------------------------------------------------------------
+
     function save() {
+        let idKandang = $('#idKandang').val()
         let hariKe = $('#hariKe').val()
-        let jumlahAwalAyam = $('#jumlahAwalAyam').val()
-        let jumlahAyam = $('#jumlahAyam').val()
-        let bobotAyam = $('#bobotAyam').val()
+        let rataRataSuhu = $('#rataRataSuhu').val()
+        let rataRataKelembapan = $('#rataRataKelembapan').val()
+        let rataRataAmonia = $('#rataRataAmonia').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
-        let jumlahKematian = $('#jumlahKematian').val()
-        let rataSuhu = $('#rataSuhu').val()
-        let rataKelembapan = $('#rataKelembapan').val()
-        let rataAmoniak = $('#rataAmoniak').val()
+        let bobot = $('#bobot').val()
+        let jumlahKematianharian = $("#jumlahKematianHarian").val()
 
+        // validasi
         if (hariKe <= 0) {
             return Swal.fire("SweetAlert2 is working!");
         }
-        console.log(hariKe)
-        console.log(jumlahAwalAyam)
-        console.log(jumlahAyam)
-        console.log(bobotAyam)
-        console.log(pakan)
-        console.log(minum)
-        console.log(jumlahKematian)
-        console.log(rataSuhu)
-        console.log(rataKelembapan)
-        console.log(rataAmoniak)
 
+
+        // asign value if validated
+        let data = {
+            id_kandang: idKandang,
+            hari: hariKe,
+            rata_rata_suhu: rataRataSuhu,
+            kelembapan: rataRataKelembapan,
+            rata_rata_amoniak: rataRataAmonia,
+            pakan: pakan,
+            minum: minum,
+            bobot: bobot,
+            jumlah_kematian_harian: jumlahKematianharian,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: `/rekap-data`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log(response)
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil menambahkan data",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    showTableData(response.kandang.id_kandang)
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+
+        })
     }
 
+    function deleteItem(id) {
+        $.ajax({
+            type: "DELETE",
+            url: `/rekap-data/${id}`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil menghapus data",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    showTableData(response.kandang.id_kandang)
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
 
-    function DateAndTime() {
-        var dt = new Date();
+        })
+    }
 
-        var Hours = dt.getHours();
-        var Min = dt.getMinutes();
-        var Sec = dt.getSeconds();
-        // var MilliSec = dt.getMilliseconds();  + MilliSec + "MilliSec " (for milliseconds).
+    function update(id) {
+        let idKandang = $('#idKandang').val()
+        let hariKe = $('#hariKe').val()
+        let rataRataSuhu = $('#rataRataSuhu').val()
+        let rataRataKelembapan = $('#rataRataKelembapan').val()
+        let rataRataAmonia = $('#rataRataAmonia').val()
+        let pakan = $('#pakan').val()
+        let minum = $('#minum').val()
+        let bobot = $('#bobot').val()
+        let jumlahKematianharian = $("#jumlahKematianHarian").val()
 
-        //strings
-        var days = [
-            "Minggu",
-            "Senin",
-            "Selasa",
-            "Rabu",
-            "Kamis",
-            "Jumat",
-            "Sabtu"
-        ];
-
-        //strings
-        var months = [
-            "Januari",
-            "Februari",
-            "Maret",
-            "April",
-            "Mei",
-            "Juni",
-            "Juli",
-            "Agustus",
-            "September",
-            "Oktober",
-            "November",
-            "Desember"
-        ];
-
-        // var localTime = dt.getLocaleTimeString();
-        // var localDate = dt.getLocaleDateString();
-
-        if (Min < 10) {
-            Min === "0" + Min;
-        } //displays two digits even Min less than 10
-
-        if (Sec < 10) {
-            Sec === "0" + Sec;
-        } //displays two digits even Sec less than 10
-
-        var suffix = " AM"; //cunverting 24Hours to 12Hours with AM & PM suffix
-        if (Hours >= 12) {
-            suffix = " PM";
-            Hours = Hours - 12;
-        }
-        if (Hours === 0) {
-            Hours = 12;
+        // validasi
+        // asign value if validated
+        let data = {
+            id_kandang: idKandang,
+            hari: hariKe,
+            rata_rata_suhu: rataRataSuhu,
+            kelembapan: rataRataKelembapan,
+            rata_rata_amoniak: rataRataAmonia,
+            pakan: pakan,
+            minum: minum,
+            bobot: bobot,
+            jumlah_kematian_harian: jumlahKematianharian,
         }
 
-        // document.getElementById("time").innerHTML = localTime;
 
-        document.getElementById("dateTime").innerHTML =
-            days[dt.getDay()] +
-            ", " +
-            dt.getDate() +
-            " " +
-            months[dt.getMonth()] +
-            " " +
-            dt.getFullYear() + "," + Hours + ":" + Min + ":" + Sec + ":" + suffix;
+        $.ajax({
+            type: "PUT",
+            url: `/rekap-data/${id}`,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil mengubah data",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    showTableData(idKandang)
+                })
 
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 </script>

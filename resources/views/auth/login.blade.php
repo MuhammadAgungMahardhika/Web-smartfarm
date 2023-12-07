@@ -1,21 +1,18 @@
 <x-guest-layout>
-
     <div id="auth-left">
-        <div class="auth-logo">
-            <a href="index.html"><img src="{{ asset('/images/logo/logo.png') }}" alt="Logo"></a>
-        </div>
+        <a href="index.html"><img src="{{ asset('/images/logo/smartfarm.png') }}" alt="Logo"></a>
         <h1 class="auth-title">Log in.</h1>
         <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
 
         @if (session('status'))
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ session('status') }}
-        </div>
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
         @endif
         @if ($errors->any())
-        <div class="alert alert-danger">
-            {{ $errors->first() }}
-        </div>
+            <div class="alert alert-danger">
+                {{ $errors->first() }}
+            </div>
         @endif
         <form action="{{ route('login') }}" method="POST">
             @csrf
@@ -43,13 +40,13 @@
         </form>
         <div class="text-center mt-5 text-lg fs-4">
             @if (Route::has('register'))
-            <p class="text-gray-600">Don't have an account? <a href="{{route('register')}}" class="font-bold">Sign
-                    up</a>.</p>
+                <p class="text-gray-600">Don't have an account? <a href="{{ route('register') }}" class="font-bold">Sign
+                        up</a>.</p>
             @endif
 
 
             @if (Route::has('password.request'))
-            <p><a class="font-bold" href="{{route('password.request')}}">Forgot password?</a>.</p>
+                <p><a class="font-bold" href="{{ route('password.request') }}">Forgot password?</a>.</p>
             @endif
         </div>
     </div>

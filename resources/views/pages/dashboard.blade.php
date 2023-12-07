@@ -38,7 +38,7 @@
                                             <div class="card-body bg-light">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
-                                                        <strong id="suhuData" class="h2"> 100</strong>
+                                                        <strong id="suhuData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
                                                         <a class="btn btn-danger" id="suhuStatus">Aman</a>
@@ -60,7 +60,7 @@
                                             <div class="card-body bg-light">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
-                                                        <strong id="kelembapanData" class="h2">100</strong>
+                                                        <strong id="kelembapanData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
                                                         <a class="btn btn-danger" id="kelembapanStatus">Aman</a>
@@ -82,7 +82,7 @@
                                             <div class="card-body bg-light">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
-                                                        <strong id="amoniaData" class="h2">100</strong>
+                                                        <strong id="amoniaData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
                                                         <a class="btn btn-danger" id="amoniaStatus">Aman</a>
@@ -97,7 +97,7 @@
                                         <div class="card bg-light">
                                             <div class="card-body ">
                                                 {{-- chart --}}
-                                                @include('chart.donutchart')
+                                                @include('chart.radialbarchart')
                                             </div>
                                         </div>
                                     </div>

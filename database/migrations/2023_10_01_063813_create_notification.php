@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('populations', function (Blueprint $table) {
-            $table->foreign(['id_kandang'], 'fK_populations_kandang')->references(['id'])->on('kandang')->onUpdate('CASCADE')->onDelete('CASCADE');
+        Schema::create('notification', function (Blueprint $table) {
+            $table->integer('id', true);
+            $table->integer('id_kandang')->index('fk_notification_kandang');
+            $table->string('pesan');
+            $table->boolean('status');
+            $table->timestamp('waktu')->useCurrent();
         });
     }
 
@@ -25,8 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('populations', function (Blueprint $table) {
-            $table->dropForeign('fK_populations_kandang');
-        });
+        Schema::dropIfExists('notification');
     }
 };

@@ -68,6 +68,15 @@ class Kandang extends Model
 	{
 		return $this->hasMany(DataKandang::class, 'id_kandang');
 	}
+	public function populations()
+	{
+		return $this->hasMany(Populations::class, 'id_kandang');
+	}
+
+	public function notification()
+	{
+		return $this->hasMany(Notification::class, 'id_kandang');
+	}
 
 	public function panens()
 	{

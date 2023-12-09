@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('kandang', function (Blueprint $table) {
             $table->foreign(['id_user'], 'id_user')->references(['id'])->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign(['id_peternak'], 'id_peternak')->references(['id'])->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -27,6 +28,7 @@ return new class extends Migration
     {
         Schema::table('kandang', function (Blueprint $table) {
             $table->dropForeign('id_user');
+            $table->dropForeign('id_peternak');
         });
     }
 };

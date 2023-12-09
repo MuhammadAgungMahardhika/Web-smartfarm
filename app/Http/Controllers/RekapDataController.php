@@ -49,7 +49,8 @@ class RekapDataController extends Controller
 		try {
 			$request->validate([
 				'id_kandang' => 'required',
-				'hari' => 'required',
+				'hari_ke' => 'required',
+				'date' => 'required',
 				'rata_rata_amoniak' => 'required',
 				'rata_rata_suhu' => 'required',
 				'kelembapan' => 'required',
@@ -62,7 +63,8 @@ class RekapDataController extends Controller
 			$rekapData = $this->rekapDataRepository->createRekapData(
 				(object) [
 					"id_kandang" => $request->id_kandang,
-					"hari" => $request->hari,
+					"hari_ke" => $request->hari_ke,
+					"date" => $request->date,
 					"rata_rata_amoniak" => $request->rata_rata_amoniak,
 					"rata_rata_suhu" => $request->rata_rata_suhu,
 					"kelembapan" => $request->kelembapan,
@@ -93,7 +95,8 @@ class RekapDataController extends Controller
 		try {
 			$request->validate([
 				'id_kandang' => 'required',
-				'hari' => 'required',
+				'hari_ke' => 'required',
+				'date' => 'required',
 				'rata_rata_amoniak' => 'required',
 				'rata_rata_suhu' => 'required',
 				'kelembapan' => 'required',
@@ -105,7 +108,8 @@ class RekapDataController extends Controller
 
 			$rekapData = $this->rekapDataRepository->editDataKandang($id, (object) [
 				"id_kandang" => $request->id_kandang,
-				"hari" => $request->hari,
+				"hari_ke" => $request->hari_ke,
+				"date" => $request->date,
 				"rata_rata_amoniak" => $request->rata_rata_amoniak,
 				"rata_rata_suhu" => $request->rata_rata_suhu,
 				"kelembapan" => $request->kelembapan,

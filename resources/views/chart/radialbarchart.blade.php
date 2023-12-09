@@ -35,7 +35,8 @@
 </div>
 
 
-{{-- Script Kelembapan dan Suhu --}}
+{{-- Script Kelembapan dan Suhu dan Amonia --}}
+<script></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         // suhu
@@ -79,7 +80,7 @@
             labels: ['Suhu']
         }
 
-        var suhuChart = new ApexCharts(document.querySelector("#suhuChart"), optionSuhuChart);
+        let suhuChart = new ApexCharts(document.querySelector("#suhuChart"), optionSuhuChart);
         suhuChart.render();
         // kelembapan
         let optionKelembapanChart = {
@@ -122,55 +123,10 @@
             labels: ['Kelembapan']
         }
 
-        var kelembapanChart = new ApexCharts(document.querySelector("#kelembapanChart"), optionKelembapanChart);
+        let kelembapanChart = new ApexCharts(document.querySelector("#kelembapanChart"), optionKelembapanChart);
         kelembapanChart.render();
 
-        // Function to update chart data in real-time
-        function updateData() {
-            // Simulate new temperature data (replace with your actual data)
-            let kelembapanData = Math.floor(Math.random() * 100);
-            let suhuData = Math.floor(Math.random() * 100);
-            let data = {
-                id_kandang: 1,
-                suhu: suhuData,
-                kelembapan: kelembapanData
-            }
-
-            $.ajax({
-                type: "POST",
-                url: `/sensor-suhu`,
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log(response)
-
-                    kelembapanChart.updateSeries([kelembapanData]);
-                    $('#kelembapanData').html(kelembapanData)
-
-                    suhuChart.updateSeries([suhuData]);
-                    $('#suhuData').html(suhuData)
-                },
-                error: function(err) {
-                    console.log(err.responseText)
-                }
-            })
-
-        }
-
-        // Update data every 3 seconds (3000 milliseconds)
-        setInterval(updateData, 1000);
-
-
-    })
-</script>
-
-{{-- Script Amonia --}}
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let options = {
+        let optionsAmonia = {
             colors: ['#77d975'],
             chart: {
                 type: 'radialBar'
@@ -210,43 +166,79 @@
             labels: ['Amonia']
         }
 
-        var chart = new ApexCharts(document.querySelector("#amoniaChart"), options);
-        chart.render();
+        let amoniaChart = new ApexCharts(document.querySelector("#amoniaChart"), optionsAmonia);
+        amoniaChart.render();
 
         // Function to update chart data in real-time
         function updateData() {
-            // Simulate new temperature data (replace with your actual data)
-            amoniaData = Math.floor(Math.random() * 100);
-            // Update the chart series with the new data
-            chart.updateSeries([amoniaData]);
-            $('#amoniaData').html(amoniaData)
-            let data = {
-                id_kandang: 1,
-                amoniak: amoniaData
+
+            // Suhu , kelembapan dan Amonia Data
+            let idKandang = $('#selectKandang').val()
+
+            let kelembapanData = Math.floor(Math.random() * 100)
+            let suhuData = Math.floor(Math.random() * 100)
+            let amoniaData = Math.floor(Math.random() * 100)
+
+
+            let dataSuhuKelembapan = {
+                id_kandang: idKandang,
+                suhu: suhuData,
+                kelembapan: kelembapanData
             }
-            updateSensorData(data)
-        }
 
-        // Update data every 3 seconds (3000 milliseconds)
-        setInterval(updateData, 1000);
-
-        // update sensor data
-        function updateSensorData(data) {
+            // save data to database suhu kelembapan
             $.ajax({
                 type: "POST",
-                url: `/sensor-amoniak`,
-                data: JSON.stringify(data),
+                url: `/sensor-suhu`,
+                data: JSON.stringify(dataSuhuKelembapan),
                 contentType: "application/json",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
                     console.log(response)
+
+                    kelembapanChart.updateSeries([kelembapanData]);
+                    $('#kelembapanData').html(kelembapanData)
+
+                    suhuChart.updateSeries([suhuData]);
+                    $('#suhuData').html(suhuData)
+                },
+                error: function(err) {
+                    console.log(err.responseText)
+                }
+            })
+
+            // Amonia
+
+
+            let dataAmonia = {
+                id_kandang: idKandang,
+                amoniak: amoniaData
+            }
+            // save to database amonia
+            $.ajax({
+                type: "POST",
+                url: `/sensor-amoniak`,
+                data: JSON.stringify(dataAmonia),
+                contentType: "application/json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    amoniaChart.updateSeries([amoniaData])
+                    $('#amoniaData').html(amoniaData)
+
                 },
                 error: function(err) {
                     console.log(err.responseText)
                 }
             })
         }
+
+        // Update data every 3 seconds (3000 milliseconds)
+        setInterval(updateData, 1000);
+
+
     })
 </script>

@@ -12,10 +12,10 @@ class DataKandangRepository
 
   public function __construct()
   {
-
   }
 
-  public function createDataKandang(object $data): DataKandang{
+  public function createDataKandang(object $data): DataKandang
+  {
     try {
       $dataKandang = new DataKandang();
       $dataKandang->id_kandang = $data->id_kandang;
@@ -24,7 +24,6 @@ class DataKandangRepository
       $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->date = $data->date;
-      $dataKandang->classification = $data->classification;
       $dataKandang->created_by = $data->created_by;
       $dataKandang->save();
 
@@ -36,7 +35,8 @@ class DataKandangRepository
     }
   }
 
-  public function editDataKandang($id,object $data): DataKandang{
+  public function editDataKandang($id, object $data): DataKandang
+  {
     try {
       $dataKandang = DataKandang::findOrFail($id);
       $dataKandang->id_kandang = $data->id_kandang;
@@ -45,7 +45,6 @@ class DataKandangRepository
       $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->date = $data->date;
-      $dataKandang->classification = $data->classification;
       $dataKandang->updated_by = $data->updated_by;
       $dataKandang->save();
 
@@ -57,7 +56,8 @@ class DataKandangRepository
     }
   }
 
-  public function deleteDataKandang($id): DataKandang{
+  public function deleteDataKandang($id): DataKandang
+  {
     try {
       $dataKandang = DataKandang::findOrFail($id);
       $dataKandang->delete();

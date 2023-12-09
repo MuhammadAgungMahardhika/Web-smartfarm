@@ -57,16 +57,17 @@
 <script>
     fetchKandang(<?= auth()->user()->id ?>)
 
-    function fetchKandang(userId) {
+    function fetchKandang(peternakId) {
+
         let dataKandang
         let optionButton = ""
 
         $.ajax({
             type: "GET",
-            url: `/kandang/user/${userId}`,
+            url: `/kandang/peternak/${peternakId}`,
             success: function(response) {
                 dataKandang = response.data
-
+                console.log(dataKandang)
                 // looping all kandang option
                 for (let i = 0; i < dataKandang.length; i++) {
                     optionButton +=
@@ -103,16 +104,14 @@
     }
 
     function showTableData(kandangId) {
-        let itemData = ''
-
         $.ajax({
             type: "GET",
-            url: `/rekap-data/kandang/${kandangId}`,
+            url: `/data-kandang/kandang/${kandangId}`,
             contentType: "application/json",
             async: false,
             success: function(response) {
                 // asign value
-                itemData = response.data
+                let itemData = response.data
                 let data = ''
 
                 // adding input harian data
@@ -120,14 +119,11 @@
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${itemData[i].hari}</td>
-                    <td>${itemData[i].rata_rata_suhu}</td>
-                    <td>${itemData[i].kelembapan}</td>
-                    <td>${itemData[i].rata_rata_amoniak}</td>
+                    <td>${itemData[i].hari_ke}</td>
+                    <td>${itemData[i].date}</td>
                     <td>${itemData[i].pakan}</td>
                     <td>${itemData[i].minum}</td>
                     <td>${itemData[i].bobot}</td>
-                    <td>${itemData[i].jumlah_kematian_harian}</td>
                     <td style="min-width: 180px">
                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${itemData[i].id}')"><i class="fa fa-edit"></i> </a>
                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${itemData[i].id}')"><i class="fa fa-trash"></i></a>
@@ -147,15 +143,7 @@
                                                 aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Rata Rata Suhu
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Rata Rata Kelembapan
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Rata Rata Amonia
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Tanggal
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
@@ -169,10 +157,7 @@
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
                                                 Bobot
                             </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Jumlah Kematian harian
-                            </th>
+                        
                             <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                                 colspan="1" aria-label="Status: activate to sort column ascending"
                                                 style="width: 117.891px;">Action
@@ -251,41 +236,28 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namakandang">Nama Kandang</label>
+                                    <i>Nama Kandang</i>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" value="${namaKandang}" id="namakandang" class="form-control" readonly>
+                                    <i>${namaKandang}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="populasiAwal">Populasi awal</label>
+                                    <i>Populasi awal</i>
                                 </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${populasiAwal}" id="populasiAwal" class="form-control" readonly>
+                                <div class="col-md-8 form-group mb-4">
+                                    <i>${populasiAwal}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="hariKe">Hari ke-</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" value="${dateNow}" id="hariKe" class="form-control">
-                                </div>
-                              
-                                <div class="col-md-4">
-                                    <label for="rataRataSuhu">Rata Rata Suhu</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="rataRataSuhu" class="form-control">
+                                    <input type="number" value="" id="hariKe" class="form-control" placeholder="" autofocus>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="rataRataKelembapan">Rata Rata Kelembapan</label>
+                                    <label for="date">Tanggal</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="rataRataKelembapan" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="rataRataAmonia">Rata Rata Amonia</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="rataRataAmonia" class="form-control">
+                                    <input type="date" value="${dateNow}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="pakan">Pakan</label>
@@ -305,37 +277,75 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobot" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="jumlahKematianHarian">Jumlah Kematian Hari Ini</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahKematianHarian" class="form-control">
-                                </div>
-                                
+                                <div>
+                                    <div class="table-responsive bg-light border border-secondary p-2">
+                                        <p class="text-center">Data Kematian  </p>
+                                        <a title="tambahkan data kematian" class="btn btn-success btn-sm" onclick="addRowKematian()"><i class="fa fa-plus"></i></a>
+                                        <table class="table table-borderless my-2">
+                                            <tbody id="tableKematian">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>    
                             </div>
                         </div>
                     </form>
                 `)
 
         $('#modalFooter').html(`
-                <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
                 <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
     }
 
+    function addRowKematian() {
+        // set row id 
+        let id = Math.floor(Math.random() * 1000000000);
+        $('#tableKematian').append(`
+        <tr id="${id}">
+            <td>
+                <div class="form-group">
+                   <label for="jumlahKematian">Jumlah</label>
+                </div>
+            </td> 
+            <td>
+                <div class="form-group">
+                   <input type="number" id="jumlahKematian" class="form-control">
+                </div>
+            </td> 
+            <td>
+                <div class="form-group">
+                   <label for="jamKematian">Jam</label>
+                </div>
+            </td>
+            <td colspan="2"> 
+                <div class="form-group">
+                   <input type="time" id="jamKematian" class="form-control">
+                </div>    
+            </td> 
+            <td>
+                <div class="form-group">
+                    <a title="hapus data kematian ini" class="btn btn-outline-danger btn-sm" onclick="deleteRowKematian(${id})"><i class="fa fa-x"> </i></a>
+                </div>
+            </td>
+        </tr>`)
+    }
+
+    function deleteRowKematian(id) {
+        $(`#${id}`).remove()
+    }
+
     function editModal(id) {
-        let item = getRekapData(id)
+        let item = getDataKandang(id)
         let idKandang = item.id_kandang
         let namaKandang = getKandang(idKandang).nama_kandang
-        let hari = item.hari
-        let rataRataSuhu = item.rata_rata_suhu
-        let rataRataKelembapan = item.kelembapan
-        let rataRataAmoniak = item.rata_rata_amoniak
+        let hariKe = item.hari_ke
+        let date = item.date
         let pakan = item.pakan
         let minum = item.minum
         let bobot = item.bobot
-        let jumlahKematianHarian = item.jumlah_kematian_harian
 
-        $('#modalTitle').html("Mengubah Hasil Panen")
+
+        $('#modalTitle').html("Mengubah Input Harian")
         $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
@@ -351,25 +361,13 @@
                                     <label for="hariKe">Hari ke-</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" value="${hari}" id="hariKe" class="form-control">
+                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="rataRataSuhu">Rata Rata Suhu</label>
+                                    <label for="date">Tanggal</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" value="${rataRataSuhu}" id="rataRataSuhu" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="rataRataKelembapan">Rata Rata Kelembapan</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${rataRataKelembapan}" id="rataRataKelembapan" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="rataRataAmonia">Rata Rata Amonia</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${rataRataAmoniak}" id="rataRataAmonia" class="form-control">
+                                    <input type="date" value="${date}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="pakan">Pakan</label>
@@ -389,13 +387,6 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${bobot}" id="bobot" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="jumlahKematianHarian">Jumlah Kematian Hari Ini</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${jumlahKematianHarian}" id="jumlahKematianHarian" class="form-control">
-                                </div>
-
                             </div>
                         </div>
                     </form>
@@ -405,16 +396,11 @@
 
     }
 
-
-
-
     function deleteModal(id) {
-        let item = getRekapData(id)
+        let item = getDataKandang(id)
         let namaKandang = getKandang(item.id_kandang).nama_kandang
-        let hari = item.hari
-        let rataRataSuhu = item.rata_rata_suhu
-        let rataRataKelembapan = item.kelembapan
-        let rataRataAmoniak = item.rata_rata_amoniak
+        let hariKe = item.hari_ke
+        let date = item.date
         let pakan = item.pakan
         let minum = item.minum
         let bobot = item.bobot
@@ -432,16 +418,10 @@
                                     <td>Nama Kandang</td> <td>${namaKandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Hari ke</td> <td>${hari}</td>
+                                    <td>Hari ke</td> <td>${hariKe}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Rata rata suhu</td><td>${rataRataSuhu}</td>
-                                </tr>
-                                <tr>
-                                    <td>Rata rata suhu</td><td>${rataRataKelembapan}</td>
-                                </tr>  
-                                <tr>
-                                    <td>Rata rata amonia</td><td>${rataRataAmoniak}</td>
+                                    <td>Hari ke</td> <td>${date}</td>
                                 </tr> 
                                 <tr>
                                     <td>Pakan</td><td>${pakan}</td>
@@ -452,9 +432,6 @@
                                 <tr>
                                     <td>Bobot</td><td>${bobot}</td>
                                 </tr> 
-                                <tr>
-                                    <td>Jumlah kematian harian</td><td>${jumlahKematianHarian}</td>
-                                </tr> 
                             </tbody>
                         </table>
                     </div>
@@ -463,26 +440,11 @@
             `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
     }
 
-    function reset() {
-        $('#hariKe').val("")
-        $('#jumlahAwalAyam').val("")
-        $('#jumlahAyam').val("")
-        $('#bobotAyam').val("")
-        $('#pakan').val("")
-        $('#minum').val("")
-        $('#jumlahKematian').val("")
-        $('#rataSuhu').val("")
-        $('#rataKelembapan').val("")
-        $('#rataAmoniak').val("")
-    }
-
-
-
-    function getRekapData(id) {
+    function getDataKandang(id) {
         let item
         $.ajax({
             type: "GET",
-            url: `/rekap-data/${id}`,
+            url: `/data-kandang/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -515,36 +477,30 @@
     function save() {
         let idKandang = $('#idKandang').val()
         let hariKe = $('#hariKe').val()
-        let rataRataSuhu = $('#rataRataSuhu').val()
-        let rataRataKelembapan = $('#rataRataKelembapan').val()
-        let rataRataAmonia = $('#rataRataAmonia').val()
+        let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
-        let jumlahKematianharian = $("#jumlahKematianHarian").val()
 
         // validasi
         if (hariKe <= 0) {
             return Swal.fire("SweetAlert2 is working!");
         }
-
+        console.log(date)
 
         // asign value if validated
         let data = {
             id_kandang: idKandang,
-            hari: hariKe,
-            rata_rata_suhu: rataRataSuhu,
-            kelembapan: rataRataKelembapan,
-            rata_rata_amoniak: rataRataAmonia,
+            hari_ke: hariKe,
+            date: date,
             pakan: pakan,
             minum: minum,
             bobot: bobot,
-            jumlah_kematian_harian: jumlahKematianharian,
         }
 
         $.ajax({
             type: "POST",
-            url: `/rekap-data`,
+            url: `/data-kandang`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -559,7 +515,8 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    showTableData(response.kandang.id_kandang)
+                    $('#default').modal('hide')
+                    showTableData(idKandang)
                 })
             },
             error: function(err) {
@@ -572,12 +529,13 @@
     function deleteItem(id) {
         $.ajax({
             type: "DELETE",
-            url: `/rekap-data/${id}`,
+            url: `/data-kandang/${id}`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
+                console.log(response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -585,7 +543,8 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    showTableData(response.kandang.id_kandang)
+                    $('#default').modal('hide')
+                    showTableData(response.dataKandang.id_kandang)
                 })
             },
             error: function(err) {
@@ -598,32 +557,26 @@
     function update(id) {
         let idKandang = $('#idKandang').val()
         let hariKe = $('#hariKe').val()
-        let rataRataSuhu = $('#rataRataSuhu').val()
-        let rataRataKelembapan = $('#rataRataKelembapan').val()
-        let rataRataAmonia = $('#rataRataAmonia').val()
+        let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
-        let jumlahKematianharian = $("#jumlahKematianHarian").val()
 
         // validasi
         // asign value if validated
         let data = {
             id_kandang: idKandang,
-            hari: hariKe,
-            rata_rata_suhu: rataRataSuhu,
-            kelembapan: rataRataKelembapan,
-            rata_rata_amoniak: rataRataAmonia,
+            hari_ke: hariKe,
+            date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot,
-            jumlah_kematian_harian: jumlahKematianharian,
+            bobot: bobot
         }
 
 
         $.ajax({
             type: "PUT",
-            url: `/rekap-data/${id}`,
+            url: `/data-kandang/${id}`,
             data: JSON.stringify(data),
             contentType: "application/json",
             headers: {
@@ -637,6 +590,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
+                    $('#default').modal('hide')
                     showTableData(idKandang)
                 })
 

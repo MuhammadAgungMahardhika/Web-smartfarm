@@ -24,6 +24,8 @@
 
             <div class="card-body table-responsive bg-light p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
+                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                        data-bs-target="#default" onclick="addModal()"><i class="fa fa-plus"></i> </a>
                 </div>
                 <div id="tableData">
 
@@ -34,282 +36,69 @@
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(userId = 1)
+    fetchUsers()
 
-    function fetchKandang(userId) {
-        let dataKandang = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 1"
+    function fetchUsers() {
+        $.ajax({
+            type: "GET",
+            url: `/users`,
+            async: false,
+            success: function(response) {
+                let userData = response.data
 
+                let data = ''
+                for (let i = 0; i < userData.length; i++) {
+                    let userRole = userData[i].roles
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${userRole.nama_role}</td>
+                    <td>${userData[i].name}</td>
+                    <td>${userData[i].email}</td>
+                    <td style="min-width: 180px">
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${userData[i].id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${userData[i].id}')"><i class="fa fa-trash"></i></a>
+                    </td>
+                    </tr>
+                    `
+                }
+
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Role
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama 
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Email
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Action
+                            </th>
+                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                initDataTable('table')
             },
-            {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 2"
-
+            error: function(err) {
+                console.log(err.responseText)
             }
-        ]
-        let optionButton = ""
-
-        for (let i = 0; i < dataKandang.length; i++) {
-            optionButton +=
-                `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id_kandang}">${dataKandang[i].nama_kandang}</option>`
-        }
-
-        $('#namaKandang').html(`
-        <fieldset class="form-group">
-            <select class="form-select" id="selectKandang" onchange="changeKandang()">
-                ${optionButton}
-            </select>
-         </fieldset>
-        `)
-        changeKandang()
-    }
-
-    function changeKandang() {
-        let optionValue = $("#selectKandang").val()
-        let kandang = ''
-        if (optionValue == 1) {
-            kandang = {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 1"
-            }
-        } else if (optionValue == 2) {
-            kandang = {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 2"
-            }
-        }
-
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        // $('#addButton').html(
-        //     ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${kandang.id_kandang}')"><i class="fa fa-plus"></i> </a>`
-        // )
-        showTableData(kandang.id_kandang)
-    }
-
-    function reset() {
-
-    }
-
-    function addModal(idKandang) {
-        $('#modalTitle').html("Menambahkan Hasil Panen")
-
-        $('#modalBody').html(`
-        <form class="form form-horizontal">
-                <div class="form-body"> 
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namaKandang">Nama kandang</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="namaKandang" value="namaKandangTes" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalMulai">Tanggal mulai</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalMulai" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalPanen">Tanggal panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalPanen" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahPanen">Jumlah panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahPanen" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" class="form-control">
-                        </div>
-                        
-                    </div>
-                </div>
-            </form>
-        `)
-
-        $('#modalFooter').html(`
-        <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
-    }
-
-    function editModal(id) {
-        $('#modalTitle').html("Mengubah Hasil Panen")
-        $('#modalBody').html(`
-        <form class="form form-horizontal">
-                <div class="form-body">
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${id}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namaKandang">Nama kandang</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="namaKandang" value="Kandang 1" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalMulai">Tanggal mulai</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalMulai" value="2023-12-11" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggaPanen">Tanggal panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggaPanen" value="2023-12-11" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahPanen">Jumlah panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahPanen" value="20" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" value="20" class="form-control">
-                        </div>
-                        
-                    </div>
-                </div>
-            </form>
-        `)
-        $('#modalFooter').html(
-            `<a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="update('${id}')">Laporkan</a>`)
-    }
-
-    function deleteModal(id) {
-        $('#modalTitle').html("Hapus Hasil Panen")
-        $('#modalBody').html(`Apakah anda yakin ingin menghapus hasil panen ini?`)
-        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="delete('${id}'')">Hapus</a>`)
-    }
-
-    function showTableData(kandangId) {
-        let klasifikasiData = ''
-        if (kandangId == '1') {
-            klasifikasiData = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 20,
-                minum: 20,
-                klasifikasi: "aman"
-            }, {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 22,
-                minum: 22,
-                klasifikasi: "aman"
-            }]
-        } else if (kandangId == '2') {
-            klasifikasiData = [{
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 18,
-                klasifikasi: "aman"
-            }, {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 17,
-                klasifikasi: "aman"
-            }]
-        }
-
-        let data = ''
-
-        for (let i = 0; i < klasifikasiData.length; i++) {
-            data += `
-            <tr>
-            <td>${i+1}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].alamat_kandang}</td>
-            <td>${klasifikasiData[i].hari}</td>
-            <td>${klasifikasiData[i].pakan}</td>
-            <td>${klasifikasiData[i].bobot}</td>
-            <td>${klasifikasiData[i].minum}</td>
-            <td>${klasifikasiData[i].klasifikasi}</td>
-            </tr>
-            `
-        }
-
-        let table = `
-        <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
-            <thead>
-                <tr>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">DateTime
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama Kandang
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Alamat Kandang
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Hari-ke
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Pakan
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Bobot
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Minum
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Klasifikasi
-                    </th>
-                  
-                </tr>
-             </thead>
-            <tbody>
-                ${data}
-            </tbody>
-         </table>
-        `
-        $('#tableData').html(table)
-        initDataTable('table')
+        })
     }
 
     function initDataTable(id) {
@@ -348,31 +137,405 @@
         jquery_datatable.on("draw", setTableColor);
     }
 
+    function reset() {
+
+    }
+
+    function addModal() {
+        let roles = getRoles()
+        let roleData = ''
+        roles.forEach(role => {
+            roleData +=
+                `<option value="${role.id_role}">${role.nama_role}</option>`
+        });
+
+        $('#modalTitle').html("Menambahkan User ")
+        $('#modalBody').html(`
+        <form class="form form-horizontal">
+                <div class="form-body"> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="role">Role</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <select class="form-select" id="role">
+                            ${roleData}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="name">Nama Pengguna</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="name" class="form-control" placeholder="nama pengguna" autocomplete="off">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="email" class="form-control" placeholder="email">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="phoneNumber">Phone Number</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="number" id="phoneNumber" class="form-control" placeholder="Phone number">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="password">Password</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="password" id="password" class="form-control" placeholder="password" autocomplete="off">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="konfirmasiPassword">Konfirmasi password</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="password" id="konfirmasiPassword" class="form-control" placeholder="Konfirmasi password" autocomplete="off">
+                        </div>
+                        @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                        <div class="mt-4">
+                            <x-jet-label for="terms">
+                                <div class="flex items-center">
+                                    <x-jet-checkbox name="terms" id="terms" />
+
+                                    <div class="ml-2">
+                                        {!! __('I agree to the :terms_of_service and :privacy_policy', [
+                                            'terms_of_service' =>
+                                                '<a target="_blank" href="' .
+                                                route('terms.show') .
+                                                '" class="underline text-sm text-gray-600 hover:text-gray-900">' .
+                                                __('Terms of Service') .
+                                                '</a>',
+                                            'privacy_policy' =>
+                                                '<a target="_blank" href="' .
+                                                route('policy.show') .
+                                                '" class="underline text-sm text-gray-600 hover:text-gray-900">' .
+                                                __('Privacy Policy') .
+                                                '</a>',
+                                        ]) !!}
+                                    </div>
+                                </div>
+                            </x-jet-label>
+                        </div>
+                    @endif
+                    </div>
+                </div>
+            </form>
+        `)
+
+        $('#modalFooter').html(`
+        <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
+        <a class="btn btn-success btn-sm" onclick="save()">Tambah</a>`)
+    }
+
+    function editModal(id) {
+        let item = getUser(id)
+        let idRole = item.id_role
+        let roles = getRoles()
+        let name = item.name
+        let email = item.email
+        let phoneNumber = item.phone_number
+        let roleData = ''
+        // Roles data
+        roles.forEach(role => {
+            roleData +=
+                `<option ${idRole == role.id_role ? 'selected' : ''} value="${role.id_role}">${role.nama_role}</option>`
+        });
+
+        $('#modalTitle').html("Mengubah User")
+        $('#modalBody').html(`
+        <form class="form form-horizontal">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="role">Role</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <select class="form-select" id="role">
+                            ${roleData}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="name">Nama Pengguna</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="name" value="${name}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="email" value="${email}" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="phoneNumber">Phone Number</label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="number" id="phoneNumber" value="${phoneNumber}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        `)
+        $('#modalFooter').html(
+            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+    }
+
+    function deleteModal(id) {
+        $('#modalTitle').html("Hapus User")
+        $('#modalBody').html(`Apakah anda yakin ingin menghapus user ini?`)
+        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
+    }
+
+    function getRoles() {
+        let item
+        $.ajax({
+            type: "GET",
+            url: `/roles`,
+            async: false,
+            success: function(response) {
+                item = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return item
+    }
+
+    function getUser(id) {
+        let item
+        $.ajax({
+            type: "GET",
+            url: `/user/${id}`,
+            async: false,
+            success: function(response) {
+                item = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return item
+    }
+
+    // API
     function save() {
-        let hariKe = $('#hariKe').val()
-        let jumlahAwalAyam = $('#jumlahAwalAyam').val()
-        let jumlahAyam = $('#jumlahAyam').val()
-        let bobotAyam = $('#bobotAyam').val()
-        let pakan = $('#pakan').val()
-        let minum = $('#minum').val()
-        let jumlahKematian = $('#jumlahKematian').val()
-        let rataSuhu = $('#rataSuhu').val()
-        let rataKelembapan = $('#rataKelembapan').val()
-        let rataAmoniak = $('#rataAmoniak').val()
+        let idRole = $('#role').val()
+        let name = $('#name').val()
+        let email = $('#email').val()
+        let phoneNumber = $('#phoneNumber').val()
+        let password = $('#password').val()
+        let konfirmasiPassword = $('#konfirmasiPassword').val()
 
-        if (hariKe <= 0) {
-            return Swal.fire("SweetAlert2 is working!");
+        // validasi nama
+        if (!name) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nama tidak boleh kosong",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
-        console.log(hariKe)
-        console.log(jumlahAwalAyam)
-        console.log(jumlahAyam)
-        console.log(bobotAyam)
-        console.log(pakan)
-        console.log(minum)
-        console.log(jumlahKematian)
-        console.log(rataSuhu)
-        console.log(rataKelembapan)
-        console.log(rataAmoniak)
+        // validasi email
+        if (!email.match(
+                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Alamat Email tidak valid",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
 
+        // validasi nomor telfon
+        if (!phoneNumber) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nomor telfon tidak boleh kosong",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+        // validasi nomor telfon kurang dari 10 digit
+        if (phoneNumber.length < 11) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nomor telfon kurang dari 10 digit",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
+        // validasi password tidak boleh kosong
+        if (!password || !konfirmasiPassword) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Passwod atau konfirmasi password tidak boleh kosong",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+        // validasi
+        if (konfirmasiPassword != password) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Konfirmasi password tidak sama dengan password, mohon check kembali",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
+        let data = {
+            id_role: idRole,
+            name: name,
+            email: email,
+            phone_number: phoneNumber,
+            password: password,
+        }
+
+        $.ajax({
+            type: "POST",
+            url: `/user`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil menambahkan user baru",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#default').modal('hide')
+                    fetchUsers()
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+
+        })
+
+    }
+
+    function update(id) {
+        let idRole = $('#role').val()
+        let name = $('#name').val()
+        let email = $('#email').val()
+        let phoneNumber = $('#phoneNumber').val()
+        // validasi nama
+        if (!name) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nama tidak boleh kosong",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+        // validasi email
+        if (!email.match(
+                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Alamat Email tidak valid",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
+        // validasi nomor telfon
+        if (!phoneNumber) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nomor telfon tidak boleh kosong",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+        // validasi nomor telfon kurang dari 10 digit
+        if (phoneNumber.length < 11) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Nomor telfon kurang dari 10 digit",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
+        let data = {
+            id_role: idRole,
+            name: name,
+            email: email,
+            phone_number: phoneNumber
+        }
+
+        $.ajax({
+            type: "PUT",
+            url: `/user/${id}`,
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil mengubah data",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#default').modal('hide')
+                    fetchUsers()
+                })
+
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+    }
+
+    function deleteItem(id) {
+        $.ajax({
+            type: "DELETE",
+            url: `/user/${id}`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Berhasil menghapus data",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#default').modal('hide')
+                    fetchUsers()
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+
+        })
     }
 </script>

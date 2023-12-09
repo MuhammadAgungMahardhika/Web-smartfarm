@@ -38,7 +38,8 @@ class RekapDatum extends Model
 
 	protected $casts = [
 		'id_kandang' => 'int',
-		'hari' => 'datetime:Y-m-d',
+		'hari_ke' => 'int',
+		'date' => 'datetime:Y-m-d',
 		'rata_rata_amoniak' => 'int',
 		'rata_rata_suhu' => 'int',
 		'kelembapan' => 'int',
@@ -53,7 +54,8 @@ class RekapDatum extends Model
 
 	protected $fillable = [
 		'id_kandang',
-		'hari',
+		'hari_ke',
+		'date',
 		'rata_rata_amoniak',
 		'rata_rata_suhu',
 		'kelembapan',

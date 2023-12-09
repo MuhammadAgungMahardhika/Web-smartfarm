@@ -422,6 +422,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
+                    $('#default').modal('hide')
                     showTableData(response.panen.id_kandang)
                 })
             },
@@ -449,6 +450,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
+                    $('#default').modal('hide')
                     showTableData(response.panen.id_kandang)
                 })
             },
@@ -489,6 +491,7 @@
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
+                    $('#default').modal('hide')
                     showTableData(idKandang)
                 })
 

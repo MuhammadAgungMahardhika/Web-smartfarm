@@ -16,14 +16,15 @@ return new class extends Migration
         Schema::create('rekap_data', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_kandang')->index('fk_rekap_data_kandang');
-            $table->date('hari');
+            $table->integer('hari_ke');
+            $table->date('date');
             $table->integer('rata_rata_amoniak');
             $table->integer('rata_rata_suhu');
             $table->integer('kelembapan');
             $table->integer('pakan');
             $table->integer('minum');
             $table->integer('bobot');
-            $table->integer('jumlah_kematian');
+            $table->integer('jumlah_kematian')->nullable();
             $table->integer('jumlah_kematian_harian');
             $table->timestamp('created_at')->useCurrentOnUpdate()->useCurrent();
             $table->integer('created_by')->nullable();

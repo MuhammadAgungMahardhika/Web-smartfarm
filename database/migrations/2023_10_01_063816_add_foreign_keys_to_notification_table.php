@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('populations', function (Blueprint $table) {
-            $table->foreign(['id_kandang'], 'fK_populations_kandang')->references(['id'])->on('kandang')->onUpdate('CASCADE')->onDelete('CASCADE');
+        Schema::table('notification', function (Blueprint $table) {
+            $table->foreign(['id_kandang'], 'fk_notification_kandang')->references(['id'])->on('kandang');
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('populations', function (Blueprint $table) {
-            $table->dropForeign('fK_populations_kandang');
+        Schema::table('notification', function (Blueprint $table) {
+            $table->dropForeign('fk_notification_kandang');
         });
     }
 };

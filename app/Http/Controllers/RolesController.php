@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Repositories\RoleRepository;
+use App\Repositories\RolesRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -10,20 +13,19 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Jetstream\Jetstream;
-use Illuminate\Support\Str;
 
-class UserController extends Controller
+class RolesController extends Controller
 {
 
     protected $model;
-    protected $userRepository;
+    protected $roleRepository;
     /**
      * Create a new controller instance.
      */
-    public function __construct(User $user, UserRepository $userRepository)
+    public function __construct(Role $role, RolesRepository $roleRepository)
     {
-        $this->model = $user;
-        $this->userRepository = $userRepository;
+        $this->model = $role;
+        $this->roleRepository = $roleRepository;
     }
 
     public function index($id = null)
@@ -31,7 +33,7 @@ class UserController extends Controller
         if ($id != null) {
             $items = $this->model::findOrFail($id);
         } else {
-            $items = $this->model::with('roles')->get();
+            $items = $this->model->get();
         }
         return response(['data' => $items, 'status' => 200]);
     }
@@ -42,28 +44,18 @@ class UserController extends Controller
             $request->validate([
                 'id_role' => 'required',
                 'name' => 'required',
-                'email' => 'required|string',
-                'phone_number' => 'required|string',
-                'password' => 'required|string',
-                'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
             ]);
 
-            $user = $this->userRepository->createAccount(
+            $role = $this->roleRepository->createRole(
                 (object) [
                     "id_role" => $request->id_role,
                     "name" => $request->name,
-                    "email" => $request->email,
-                    "phone_number" => $request->phone_number,
-                    "password" => $request->password,
-                    "email_verified_at" => now(),
-                    'remember_token' => Str::random(10),
-                    "created_by" => Auth::user()->id
                 ]
             );
             // event(new AddKandangEvent( $this->model->get() ));
             return response()->json([
                 'message' => 'success created account',
-                'user' => $user
+                'role' => $role
             ], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
             return response()->json([
@@ -81,21 +73,16 @@ class UserController extends Controller
             $request->validate([
                 'id_role' => 'required',
                 'name' => 'required',
-                'email' => 'required|string',
-                'phone_number' => 'required|string',
             ]);
 
-            $user = $this->userRepository->updateAccount($id, (object) [
+            $role = $this->roleRepository->updateRole($id, (object) [
                 "id_role" => $request->id_role,
                 "name" => $request->name,
-                "email" => $request->email,
-                "phone_number" => $request->phone_number,
-                "updated_by" => Auth::user()->id
             ]);
             // event(new AddKandangEvent( $this->model->get() ));
             return response()->json([
                 'message' => 'success update account',
-                'user' => $user
+                'role' => $role
             ], Response::HTTP_OK);
         } catch (ValidationException $e) {
             return response()->json([
@@ -110,10 +97,10 @@ class UserController extends Controller
     public function delete($id)
     {
         try {
-            $user = $this->userRepository->deleteAccount($id);
+            $role = $this->roleRepository->deleteRole($id);
             return response()->json([
                 'message' => 'success delete account',
-                'user' => $user
+                'role' => $role
             ], Response::HTTP_OK);
         } catch (QueryException $th) {
             return $th->getMessage();

@@ -19,7 +19,8 @@ class RekapDataRepository
     try {
       $rekapData = new RekapDatum();
       $rekapData->id_kandang = $data->id_kandang;
-      $rekapData->hari = $data->hari;
+      $rekapData->hari_ke = $data->hari_ke;
+      $rekapData->date = $data->date;
       $rekapData->rata_rata_amoniak = $data->rata_rata_amoniak;
       $rekapData->rata_rata_suhu = $data->rata_rata_suhu;
       $rekapData->kelembapan = $data->kelembapan;
@@ -44,7 +45,8 @@ class RekapDataRepository
     try {
       $rekapData = RekapDatum::findOrFail($id);
       $rekapData->id_kandang = $data->id_kandang;
-      $rekapData->hari = $data->hari;
+      $rekapData->hari_ke = $data->hari_ke;
+      $rekapData->date = $data->date;
       $rekapData->rata_rata_amoniak = $data->rata_rata_amoniak;
       $rekapData->rata_rata_suhu = $data->rata_rata_suhu;
       $rekapData->kelembapan = $data->kelembapan;

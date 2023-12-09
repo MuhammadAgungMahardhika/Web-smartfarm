@@ -22,7 +22,7 @@ class Role
             return $next($request);
         }
 
-        if ($role2 != null && Auth::user()->id_role == $role3) {
+        if ($role2 != null && Auth::user()->id_role == $role2) {
             return $next($request);
         }
 

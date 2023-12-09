@@ -35,6 +35,11 @@ class SensorController extends Controller
 		$this->suhuKelembapanRepository = $suhuKelembapanRepository;
 	}
 
+	public function sensorLuar($suhu, $kelembapan, $amonia)
+	{
+		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
+	}
+
 	public function indexAmonia()
 	{
 		$items = $this->modelAmoniak->get();

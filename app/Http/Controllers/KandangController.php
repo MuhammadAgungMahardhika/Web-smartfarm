@@ -42,6 +42,16 @@ class KandangController extends Controller
 		$items = DB::table('kandang')->where('id_user', '=', $id)->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
+	public function getKandangByPeternakId($id)
+	{
+		$items = DB::table('kandang')->where('id_peternak', '=', $id)->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+	public function getDetailKandangById($id)
+	{
+		$items = $this->model->where('id', '=', $id)->with(['data_kandangs', 'populations'])->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
 
 	public function store(Request $request)
 	{

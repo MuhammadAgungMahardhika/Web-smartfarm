@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('kandang', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->bigInteger('id_user', false, true)->index('id_user');
+            $table->bigInteger('id_user', false, true)->nullable()->index('id_user');
+            $table->bigInteger('id_peternak', false, true)->nullable()->index('id_peternak');
             $table->string('nama_kandang', 50)->unique('nama_kandang');
             $table->integer('populasi_awal');
             $table->string('alamat_kandang', 255);

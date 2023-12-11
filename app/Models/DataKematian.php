@@ -35,7 +35,6 @@ class DataKematian extends Model
 	protected $casts = [
 		'kematian_terbaru' => 'int',
 		'jumlah_kematian' => 'int',
-		'jam' => 'int',
 		'hari' => 'datetime',
 		'id_data_kandang' => 'int',
 		'created_by' => 'int',

@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('data_kematian', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('kematian_terbaru');
+            $table->integer('kematian_terbaru')->nullable();
             $table->integer('jumlah_kematian');
-            $table->integer('jam');
-            $table->date('hari');
+            $table->time('jam');
+            $table->date('hari')->nullable();
             $table->integer('id_data_kandang')->index('fk_data_kematian_data_kandang');
             $table->timestamp('created_at')->useCurrentOnUpdate()->useCurrent();
             $table->integer('created_by')->nullable();
-            $table->timestamp('updated_at')->useCurrentOnUpdate()->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();
             $table->integer('updated_by')->nullable();
         });
     }

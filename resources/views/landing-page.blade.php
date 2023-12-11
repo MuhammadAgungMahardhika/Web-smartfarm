@@ -306,10 +306,7 @@
                 document.querySelector('.hero p').style.opacity = 1;
                 document.querySelector('.hero p').style.transform = 'translateY(0)';
             }, 800);
-            setTimeout(function() {
-                document.querySelector('.hero .cta-button').style.opacity = 1;
-                document.querySelector('.hero .cta-button').style.transform = 'translateY(0)';
-            }, 1100);
+
         }
 
         function toggleMenu() {

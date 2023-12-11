@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('id_peternak', false, true)->nullable()->index('id_peternak');
             $table->string('nama_kandang', 50)->unique('nama_kandang');
             $table->integer('populasi_awal');
+            $table->integer('populasi_saat_ini');
             $table->string('alamat_kandang', 255);
             $table->timestamp('created_at')->useCurrent();
             $table->integer('created_by')->nullable();

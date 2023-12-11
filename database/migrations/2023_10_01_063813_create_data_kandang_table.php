@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('pakan');
             $table->integer('bobot');
             $table->integer('minum');
-            $table->timestamp('date')->useCurrent();
+            $table->integer('riwayat_populasi')->nullable();;
+            $table->date('date');
             $table->enum('classification', ['normal', 'abnormal'])->default('normal');
             $table->timestamp('created_at')->useCurrent();
             $table->integer('created_by')->nullable();

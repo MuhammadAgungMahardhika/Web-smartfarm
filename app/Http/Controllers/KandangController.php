@@ -49,7 +49,17 @@ class KandangController extends Controller
 	}
 	public function getDetailKandangById($id)
 	{
-		$items = $this->model->where('id', '=', $id)->with(['data_kandangs', 'populations'])->get();
+		$items =
+			DB::table('kandang')
+			->where('kandang.id', '=', $id)
+			->join('data_kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->join('populations', 'kandang.id', '=', 'populations.id_kandang')
+			->select('kandang.*', DB::raw('Sum(data_kandang.pakan) as total_pakan,Sum(data_kandang.minum) as total_minum,Sum(data_kandang.bobot) as total_bobot'), DB::raw('Min(populations.population) as sisa_population'))
+			->groupBy('kandang.id')
+			->get();
+
+
+		// $items = $this->model->where('id', '=', $id)->with(['data_kandangs', 'populations'])->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
 

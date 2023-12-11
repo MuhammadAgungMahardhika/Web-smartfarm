@@ -106,32 +106,29 @@
             success: function(response) {
                 // asign value
                 let kandangs = response.data
+                console.log(kandangs)
                 let data = ''
                 let iDataKandang = ''
                 let iDataPopulations = ''
 
                 // adding data kandang data
                 for (let i = 0; i < kandangs.length; i++) {
-
-                    let kandang = kandangs[i]
-                    if (kandang.data_kandangs.length != 0) {
-                        let dataKandang = kandang.data_kandangs[i]
-                        iDataKandang +=
-                    }
-
-                    if (kandang.populations.length != 0) {
-                        let dataPopulation = kandang.populations[i]
-                    }
+                    let namaKandang = kandangs[i].nama_kandang
+                    let alamatKandang = kandangs[i].alamat_kandang
+                    let totalPakan = kandangs[i].total_pakan
+                    let totalMinum = kandangs[i].total_minum
+                    let totalBobot = kandangs[i].total_bobot
+                    let populasiSaatIni = kandangs[i].populasi_saat_ini
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${kandang.nama_kandang}</td>
-                    <td>${kandang.alamat_kandang}</td>
-                    <td>${dataKandang.pakan}</td>
-                    <td>${dataKandang.minum}</td>
-                    <td>${dataKandang.bobot}</td>
-                    <td>${dataPopulation.population}</td>
+                    <td>${namaKandang}</td>
+                    <td>${alamatKandang}</td>
+                    <td>${totalPakan}</td>
+                    <td>${totalMinum}</td>
+                    <td>${totalBobot}</td>
+                    <td>${populasiSaatIni}</td>
                     </tr>
                     `
                 }
@@ -152,19 +149,19 @@
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Pakan
+                                                Total Pakan
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Minum
+                                                Total Minum
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Bobot
+                                                Total Bobot
                             </th>
                             <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                                 colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Population
+                                                style="width: 117.891px;">Populasi Saat Ini
                             </th>
                           
                         </tr>
@@ -178,8 +175,6 @@
                 initDataTable('table')
             }
         })
-
-
     }
 
     function initDataTable(id) {

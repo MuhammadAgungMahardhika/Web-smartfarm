@@ -124,6 +124,7 @@
                     <td>${itemData[i].pakan}</td>
                     <td>${itemData[i].minum}</td>
                     <td>${itemData[i].bobot}</td>
+                    <td>${itemData[i].total_kematian }</td>
                     <td style="min-width: 180px">
                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${itemData[i].id}')"><i class="fa fa-edit"></i> </a>
                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${itemData[i].id}')"><i class="fa fa-trash"></i></a>
@@ -156,6 +157,10 @@
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
                                                 Bobot
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Kematian harian
                             </th>
                         
                             <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
@@ -220,6 +225,7 @@
         let item = getKandang(idKandang)
         let namaKandang = item.nama_kandang
         let populasiAwal = item.populasi_awal
+        let populasiSaatIni = item.populasi_saat_ini
 
         let today = new Date()
         let yyyy = today.getFullYear()
@@ -244,8 +250,14 @@
                                 <div class="col-md-4">
                                     <i>Populasi awal</i>
                                 </div>
-                                <div class="col-md-8 form-group mb-4">
+                                <div class="col-md-8 form-group ">
                                     <i>${populasiAwal}</i>
+                                </div>
+                                <div class="col-md-4">
+                                    <i>Populasi Saat ini</i>
+                                </div>
+                                <div class="col-md-8 form-group mb-4">
+                                    <i>${populasiSaatIni}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="hariKe">Hari ke-</label>
@@ -304,22 +316,22 @@
         <tr id="${id}">
             <td>
                 <div class="form-group">
-                   <label for="jumlahKematian">Jumlah</label>
+                   <label for="jumlah">Jumlah</label>
                 </div>
             </td> 
             <td>
                 <div class="form-group">
-                   <input type="number" id="jumlahKematian" class="form-control">
+                   <input type="number" name="jumlah_kematian" class="form-control" required>
                 </div>
             </td> 
             <td>
                 <div class="form-group">
-                   <label for="jamKematian">Jam</label>
+                   <label for="jam">Jam</label>
                 </div>
             </td>
             <td colspan="2"> 
                 <div class="form-group">
-                   <input type="time" id="jamKematian" class="form-control">
+                   <input type="time" name="jam" class="form-control" required>
                 </div>    
             </td> 
             <td>
@@ -336,6 +348,7 @@
 
     function editModal(id) {
         let item = getDataKandang(id)
+        let dataKematian = item.data_kematians
         let idKandang = item.id_kandang
         let namaKandang = getKandang(idKandang).nama_kandang
         let hariKe = item.hari_ke
@@ -343,7 +356,44 @@
         let pakan = item.pakan
         let minum = item.minum
         let bobot = item.bobot
+        let riwayatPopulasi = item.riwayat_populasi
 
+        let rowKematian = ''
+        if (dataKematian.length > 0) {
+            for (let i = 0; i < dataKematian.length; i++) {
+                let id = Math.floor(Math.random() * 1000000000);
+                let jumlah = dataKematian[i].jumlah_kematian
+                let jam = dataKematian[i].jam
+                rowKematian +=
+                    `<tr id="${id}">
+                    <td>
+                        <div class="form-group">
+                        <label for="jumlah">Jumlah</label>
+                        </div>
+                    </td> 
+                    <td>
+                        <div class="form-group">
+                        <input type="number" value="${jumlah}" name="jumlah_kematian" class="form-control" required>
+                        </div>
+                    </td> 
+                    <td>
+                        <div class="form-group">
+                        <label for="jam">Jam</label>
+                        </div>
+                    </td>
+                    <td colspan="2"> 
+                        <div class="form-group">
+                        <input type="time" value="${jam}" name="jam" class="form-control" required>
+                        </div>    
+                    </td> 
+                    <td>
+                        <div class="form-group">
+                            <a title="hapus data kematian ini" class="btn btn-outline-danger btn-sm" onclick="deleteRowKematian(${id})"><i class="fa fa-x"> </i></a>
+                        </div>
+                    </td>
+                </tr>`
+            }
+        }
 
         $('#modalTitle').html("Mengubah Input Harian")
         $('#modalBody').html(`
@@ -387,6 +437,18 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${bobot}" id="bobot" class="form-control">
                                 </div>
+                                <input type="hidden" value="${riwayatPopulasi}" id="riwayatPopulasi">
+                                <div>
+                                    <div class="table-responsive bg-light border border-secondary p-2">
+                                        <p class="text-center">Data Kematian  </p>
+                                        <a title="tambahkan data kematian" class="btn btn-success btn-sm" onclick="addRowKematian()"><i class="fa fa-plus"></i></a>
+                                        <table class="table table-borderless my-2">
+                                            <tbody id="tableKematian">
+                                                ${rowKematian}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     </form>
@@ -398,13 +460,15 @@
 
     function deleteModal(id) {
         let item = getDataKandang(id)
-        let namaKandang = getKandang(item.id_kandang).nama_kandang
+        let kandang = getKandang(item.id_kandang)
+        let namaKandang = kandang.nama_kandang
+        let populasiSaatIni = kandang.populasi_saat_ini
         let hariKe = item.hari_ke
         let date = item.date
         let pakan = item.pakan
         let minum = item.minum
         let bobot = item.bobot
-        let jumlahKematianHarian = item.jumlah_kematian_harian
+        let riwayatPopulasi = item.riwayat_populasi
 
         $('#modalTitle').html("Hapus Data Harian")
         $('#modalBody').html(`
@@ -421,7 +485,7 @@
                                     <td>Hari ke</td> <td>${hariKe}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Hari ke</td> <td>${date}</td>
+                                    <td>Tanggal</td> <td>${date}</td>
                                 </tr> 
                                 <tr>
                                     <td>Pakan</td><td>${pakan}</td>
@@ -431,6 +495,9 @@
                                 </tr> 
                                 <tr>
                                     <td>Bobot</td><td>${bobot}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Riwayat Populasi</td><td>${riwayatPopulasi}</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -472,6 +539,22 @@
         return item
     }
 
+    function getDataKematianByDataKandangId(id) {
+        let item
+        $.ajax({
+            type: "GET",
+            url: `/jumlah-kematian/data-kandang/${id}`,
+            async: false,
+            success: function(response) {
+                item = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return item
+    }
+
     // -------------------------------API---------------------------------------------------------------------
 
     function save() {
@@ -481,12 +564,38 @@
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
+        let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
+
+
+        let dataKematian = []
+        let tableKematian = $('#tableKematian tr').each(function(tr) {
+            let allValues = {}
+            $(this).find('input').each(function(i) {
+                const inputName = $(this).attr("name")
+                allValues[inputName] = $(this).val()
+            })
+            dataKematian.push(allValues)
+        })
+
 
         // validasi
-        if (hariKe <= 0) {
-            return Swal.fire("SweetAlert2 is working!");
+        let totalKematian = 0
+        for (i = 0; i < dataKematian.length; i++) {
+            totalKematian += parseInt(dataKematian[i].jumlah_kematian)
         }
-        console.log(date)
+
+
+
+        let sisa_populasi = populasiSaatIni - totalKematian
+
+        if (sisa_populasi < 0) {
+            return Swal.fire("Kematian melebihi populasi saat ini!");
+        }
+
+        if (hariKe <= 0) {
+            return Swal.fire("Hari tidak boleh kurang dari 1!");
+        }
+
 
         // asign value if validated
         let data = {
@@ -496,6 +605,8 @@
             pakan: pakan,
             minum: minum,
             bobot: bobot,
+            riwayat_populasi: sisa_populasi,
+            data_kematian: dataKematian
         }
 
         $.ajax({
@@ -561,8 +672,35 @@
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
+        let riwayatPopulasi = $('#riwayatPopulasi').val()
+
+        let dataKematian = []
+        let tableKematian = $('#tableKematian tr').each(function(tr) {
+            let allValues = {}
+            $(this).find('input').each(function(i) {
+                const inputName = $(this).attr("name")
+                allValues[inputName] = parseInt($(this).val())
+            })
+            dataKematian.push(allValues)
+        })
+
+
+        let totalKematian = 0
+        for (i = 0; i < dataKematian.length; i++) {
+            totalKematian += dataKematian[i].jumlah_kematian
+        }
+
+
+        let kembalikanNilaiPopulasi = getDataKematianByDataKandangId(id).total_kematian
+        let populasiSaatIni = parseInt(getKandang(idKandang).populasi_saat_ini) + parseInt(kembalikanNilaiPopulasi)
+        console.log("populasi saat ini = " + populasiSaatIni)
+        let sisa_populasi = populasiSaatIni - totalKematian
+
 
         // validasi
+        if (sisa_populasi < 0) {
+            return Swal.fire("Kematian melebihi populasi saat ini!");
+        }
         // asign value if validated
         let data = {
             id_kandang: idKandang,
@@ -570,7 +708,9 @@
             date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot
+            bobot: bobot,
+            riwayat_populasi: sisa_populasi,
+            data_kematian: dataKematian
         }
 
 

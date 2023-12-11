@@ -6,23 +6,24 @@ use App\Models\DataKematian;
 use Illuminate\Support\Facades\Log;
 use stdClass;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class DataKematianRepository
 {
 
   public function __construct()
   {
-
   }
 
-  public function createDataKematian(object $data): DataKematian{
+  public function createDataKematian(object $data): DataKematian
+  {
     try {
       $dataKematian = new DataKematian();
       $dataKematian->id_data_kandang = $data->id_data_kandang;
-      $dataKematian->kematian_terbaru = $data->kematian_terbaru;
+      // $dataKematian->kematian_terbaru = $data->kematian_terbaru;
       $dataKematian->jumlah_kematian = $data->jumlah_kematian;
       $dataKematian->jam = $data->jam;
-      $dataKematian->hari = $data->hari;
+      // $dataKematian->hari = $data->hari;
       $dataKematian->created_by = $data->created_by;
       $dataKematian->save();
 
@@ -34,7 +35,8 @@ class DataKematianRepository
     }
   }
 
-  public function editDataKematian($id,object $data): DataKematian{
+  public function editDataKematian($id, object $data): DataKematian
+  {
     try {
       $dataKematian = DataKematian::findOrFail($id);
       $dataKematian->id_data_kandang = $data->id_data_kandang;
@@ -53,11 +55,23 @@ class DataKematianRepository
     }
   }
 
-  public function deleteDataKematian($id): DataKematian{
+  public function deleteDataKematian($id): DataKematian
+  {
     try {
       $dataKematian = DataKematian::findOrFail($id);
       $dataKematian->delete();
 
+      return $dataKematian;
+    } catch (Exception $th) {
+      Log::error('Error delete data kandang.');
+      Log::error($th->getMessage());
+      throw $th;
+    }
+  }
+  public function deleteDataKematianByDataKandangId($idDataKandang)
+  {
+    try {
+      $dataKematian = DB::table('data_kematian')->where('id_data_kandang', $idDataKandang)->delete();
       return $dataKematian;
     } catch (Exception $th) {
       Log::error('Error delete data kandang.');

@@ -67,7 +67,7 @@
             url: `/kandang/peternak/${peternakId}`,
             success: function(response) {
                 dataKandang = response.data
-                console.log(dataKandang)
+
                 // looping all kandang option
                 for (let i = 0; i < dataKandang.length; i++) {
                     optionButton +=
@@ -160,7 +160,7 @@
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Kematian harian
+                                                Jumlah Kematian harian
                             </th>
                         
                             <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
@@ -289,6 +289,17 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobot" class="form-control">
                                 </div>
+                                <div class="col-md-4">
+                                    <label for="klasifikasi">Klasifikasi</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <fieldset class="form-group">
+                                        <select class="form-select" id="klasifikasi">
+                                            <option value="normal">Normal</option>
+                                            <option value="abnormal">Abnormal</option>
+                                        </select>
+                                    </fieldset>
+                                </div>
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
                                         <p class="text-center">Data Kematian  </p>
@@ -331,7 +342,7 @@
             </td>
             <td colspan="2"> 
                 <div class="form-group">
-                   <input type="time" name="jam" class="form-control" required>
+                   <input type="time" name="jam" class="form-control" required step="1" >
                 </div>    
             </td> 
             <td>
@@ -356,8 +367,12 @@
         let pakan = item.pakan
         let minum = item.minum
         let bobot = item.bobot
-        let riwayatPopulasi = item.riwayat_populasi
+        let riwayatPopulasi = parseInt(item.riwayat_populasi)
+        let klasifikasi = item.classification
 
+        let optionButton = klasifikasi == "normal" ?
+            '<option selected value="normal">Normal</option><option value="abnormal">Abnormal</option>' :
+            '<option value="normal">Normal</option> <option selected value="abnormal">Abnormal</option>'
         let rowKematian = ''
         if (dataKematian.length > 0) {
             for (let i = 0; i < dataKematian.length; i++) {
@@ -383,8 +398,8 @@
                     </td>
                     <td colspan="2"> 
                         <div class="form-group">
-                        <input type="time" value="${jam}" name="jam" class="form-control" required>
-                        </div>    
+                            <input type="time" value="${jam}" name="jam" class="form-control" required step="1" >
+                        </div>      
                     </td> 
                     <td>
                         <div class="form-group">
@@ -437,10 +452,20 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${bobot}" id="bobot" class="form-control">
                                 </div>
+                                <div class="col-md-4">
+                                    <label for="klasifikasi">Klasifikasi</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <fieldset class="form-group">
+                                        <select class="form-select" id="klasifikasi">
+                                           ${optionButton}
+                                        </select>
+                                    </fieldset>
+                                </div>
                                 <input type="hidden" value="${riwayatPopulasi}" id="riwayatPopulasi">
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
-                                        <p class="text-center">Data Kematian  </p>
+                                        <p class="text-center">Data Kematian</p>
                                         <a title="tambahkan data kematian" class="btn btn-success btn-sm" onclick="addRowKematian()"><i class="fa fa-plus"></i></a>
                                         <table class="table table-borderless my-2">
                                             <tbody id="tableKematian">
@@ -469,6 +494,7 @@
         let minum = item.minum
         let bobot = item.bobot
         let riwayatPopulasi = item.riwayat_populasi
+        let klasifikasi = item.classification
 
         $('#modalTitle').html("Hapus Data Harian")
         $('#modalBody').html(`
@@ -498,6 +524,9 @@
                                 </tr> 
                                 <tr>
                                     <td>Riwayat Populasi</td><td>${riwayatPopulasi}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Klasifikasi</td><td>${klasifikasi}</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -565,6 +594,7 @@
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
+        let klasifikasi = $('#klasifikasi').val()
 
 
         let dataKematian = []
@@ -577,7 +607,7 @@
             dataKematian.push(allValues)
         })
 
-
+        console.log(dataKematian)
         // validasi
         let totalKematian = 0
         for (i = 0; i < dataKematian.length; i++) {
@@ -606,6 +636,7 @@
             minum: minum,
             bobot: bobot,
             riwayat_populasi: sisa_populasi,
+            classification: klasifikasi,
             data_kematian: dataKematian
         }
 
@@ -618,7 +649,7 @@
             },
             data: JSON.stringify(data),
             success: function(response) {
-                console.log(response)
+
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -646,7 +677,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                console.log(response)
+
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -672,14 +703,14 @@
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
         let bobot = $('#bobot').val()
-        let riwayatPopulasi = $('#riwayatPopulasi').val()
+        let klasifikasi = $('#klasifikasi').val()
 
         let dataKematian = []
         let tableKematian = $('#tableKematian tr').each(function(tr) {
             let allValues = {}
             $(this).find('input').each(function(i) {
                 const inputName = $(this).attr("name")
-                allValues[inputName] = parseInt($(this).val())
+                allValues[inputName] = $(this).val()
             })
             dataKematian.push(allValues)
         })
@@ -690,10 +721,8 @@
             totalKematian += dataKematian[i].jumlah_kematian
         }
 
-
-        let kembalikanNilaiPopulasi = getDataKematianByDataKandangId(id).total_kematian
+        let kembalikanNilaiPopulasi = parseInt(getDataKematianByDataKandangId(id).total_kematian)
         let populasiSaatIni = parseInt(getKandang(idKandang).populasi_saat_ini) + parseInt(kembalikanNilaiPopulasi)
-        console.log("populasi saat ini = " + populasiSaatIni)
         let sisa_populasi = populasiSaatIni - totalKematian
 
 
@@ -710,9 +739,9 @@
             minum: minum,
             bobot: bobot,
             riwayat_populasi: sisa_populasi,
+            classification: klasifikasi,
             data_kematian: dataKematian
         }
-
 
         $.ajax({
             type: "PUT",
@@ -723,6 +752,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
+
                 Swal.fire({
                     position: "top-end",
                     icon: "success",

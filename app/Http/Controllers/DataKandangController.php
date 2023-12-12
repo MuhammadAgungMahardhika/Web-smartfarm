@@ -51,8 +51,20 @@ class DataKandangController extends Controller
 	public function getDataKandangByIdKandang($id)
 	{
 		$items = DB::table('data_kandang')->where('id_kandang', '=', $id)
-			->join('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
-			->select('data_kandang.*', DB::raw('sum(data_kematian.jumlah_kematian) as total_kematian'))
+			->join('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id', 'left')
+			->select('data_kandang.*', DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kematian.id_data_kandang')
+			->orderBy('data_kandang.id', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+
+	public function getDetailKandangByIdKandang($id)
+	{
+		$items = DB::table('data_kandang')->where('id_kandang', '=', $id)
+			->join('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id', 'left')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->select('data_kandang.*', 'kandang.*', DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))
 			->groupBy('data_kandang.id', 'data_kematian.id_data_kandang')
 			->orderBy('data_kandang.id', 'ASC')
 			->get();
@@ -60,7 +72,7 @@ class DataKandangController extends Controller
 	}
 	public function getJumlahKematianByDataKandangId($id)
 	{
-		$items = DB::table('data_kematian')->where('data_kematian.id_data_kandang', '=', $id)->select(DB::raw('sum(data_kematian.jumlah_kematian) as total_kematian'))->first();
+		$items = DB::table('data_kematian')->where('data_kematian.id_data_kandang', '=', $id)->select(DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))->first();
 		return response(['data' => $items, 'status' => 200]);
 	}
 
@@ -73,6 +85,7 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
+			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -88,29 +101,31 @@ class DataKandangController extends Controller
 					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
+					"classification" => $request->classification,
 					"date" => $request->date,
 					"created_by" => Auth::user()->id,
 				]
 			);
 
 			$dataKematian = $request->data_kematian;
+			if (count($dataKematian) > 0) {
+				for ($i = 0; $i < count($dataKematian); $i++) {
+					$jamKematian = $dataKematian[$i]['jam'];
+					$jumlahKematian = $dataKematian[$i]['jumlah_kematian'];
 
-			for ($i = 0; $i < count($dataKematian); $i++) {
-				$jamKematian = $dataKematian[$i]['jam'];
-				$jumlahKematian = $dataKematian[$i]['jumlah_kematian'];
-
-				$this->dataKematianRepository->createDataKematian(
-					(object)[
-						"id_data_kandang" => $dataKandang->id,
-						"jumlah_kematian" => $jumlahKematian,
-						"jam" => $jamKematian,
-						"created_by" => Auth::user()->id
-					]
-				);
+					$this->dataKematianRepository->createDataKematian(
+						(object)[
+							"id_data_kandang" => $dataKandang->id,
+							"jumlah_kematian" => $jumlahKematian,
+							"jam" => $jamKematian,
+							"created_by" => Auth::user()->id
+						]
+					);
+				}
 			}
 
 			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
-				"populasi_saat_ini" =>  $riwayatPopulasi
+				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
 			DB::commit();
@@ -139,6 +154,7 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
+			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -155,25 +171,27 @@ class DataKandangController extends Controller
 					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
+					"classification" => $request->classification,
 					"date" => $request->date,
 					"updated_by" => Auth::user()->id,
 				]
 			);
 
-
 			// delete data kematian
 			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
 			$dataKematian = $request->data_kematian;
-			for ($i = 0; $i < count($dataKematian); $i++) {
-				$this->dataKematianRepository->createDataKematian(
-					(object)[
-						"id_data_kandang" => $dataKandang->id,
-						"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
-						"jam" => $dataKematian[$i]['jam'],
-						"created_by" => Auth::user()->id
-					]
-				);
+			if (count($dataKematian) > 0) {
+				for ($i = 0; $i < count($dataKematian); $i++) {
+					$this->dataKematianRepository->createDataKematian(
+						(object)[
+							"id_data_kandang" => $dataKandang->id,
+							"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
+							"jam" => $dataKematian[$i]['jam'],
+							"created_by" => Auth::user()->id
+						]
+					);
+				}
 			}
 
 			// Ubah nilai populasi saat ini

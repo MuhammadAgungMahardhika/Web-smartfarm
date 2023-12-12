@@ -18,18 +18,20 @@ class DataKandang extends Seeder
     {
         DB::table('data_kandang')->insert([
             'id_kandang' => "1",
-            'hari_ke' => "30",
+            'hari_ke' => "1",
             'pakan' => 50,
             'minum' => 30,
             'bobot' => 20,
+            'riwayat_populasi' => 20,
             'date' => Carbon::now()
         ]);
         DB::table('data_kandang')->insert([
             'id_kandang' => "2",
-            'hari_ke' => "30",
+            'hari_ke' => "1",
             'pakan' => 55,
             'minum' => 35,
             'bobot' => 25,
+            'riwayat_populasi' => 20,
             'date' => Carbon::now()
         ]);
     }

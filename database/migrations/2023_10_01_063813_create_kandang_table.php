@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('populasi_awal');
             $table->integer('populasi_saat_ini');
             $table->string('alamat_kandang', 255);
+            $table->float('luas_kandang')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->integer('created_by')->nullable();
             $table->timestamp('updated_at')->nullable();

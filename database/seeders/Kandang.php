@@ -23,6 +23,7 @@ class Kandang extends Seeder
             'populasi_awal' => 20,
             'populasi_saat_ini' => 20,
             'alamat_kandang' => "Jln Kandang 1",
+            'luas_kandang' => 255,
         ]);
         DB::table('kandang')->insert([
             'id_user' => 2,
@@ -31,6 +32,7 @@ class Kandang extends Seeder
             'populasi_awal' => 23,
             'populasi_saat_ini' => 23,
             'alamat_kandang' => "Jln Kandang 2",
+            'luas_kandang' => 155,
         ]);
     }
 }

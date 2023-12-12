@@ -24,6 +24,7 @@ class DataKandangRepository
       $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
+      $dataKandang->classification = $data->classification;
       $dataKandang->date = $data->date;
       $dataKandang->created_by = $data->created_by;
       $dataKandang->save();
@@ -46,6 +47,7 @@ class DataKandangRepository
       $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
+      $dataKandang->classification = $data->classification;
       $dataKandang->date = $data->date;
       $dataKandang->updated_by = $data->updated_by;
       $dataKandang->save();

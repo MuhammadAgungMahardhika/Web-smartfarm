@@ -222,114 +222,96 @@
     }
 
     function showTableData(kandangId) {
-        let klasifikasiData = ''
-        if (kandangId == '1') {
-            klasifikasiData = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 20,
-                minum: 20,
-                klasifikasi: "aman"
-            }, {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 22,
-                minum: 22,
-                klasifikasi: "aman"
-            }]
-        } else if (kandangId == '2') {
-            klasifikasiData = [{
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '1',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 18,
-                klasifikasi: "aman"
-            }, {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                hari: '2',
-                pakan: 'cacing',
-                bobot: 19,
-                minum: 17,
-                klasifikasi: "aman"
-            }]
-        }
+        $.ajax({
+            type: "GET",
+            url: `/data-kandang/detail/kandang/${kandangId}`,
+            async: false,
+            success: function(response) {
+                // asign value
+                let kandangs = response.data
+                console.log(kandangs)
+                let data = ''
+                let iDataKandang = ''
+                let iDataPopulations = ''
 
-        let data = ''
+                // adding data kandang data
+                for (let i = 0; i < kandangs.length; i++) {
+                    let date = kandangs[i].date
+                    let hari = kandangs[i].hari_ke
+                    let namaKandang = kandangs[i].nama_kandang
+                    let alamatKandang = kandangs[i].alamat_kandang
+                    let pakan = kandangs[i].pakan
+                    let minum = kandangs[i].minum
+                    let bobot = kandangs[i].bobot
+                    let populasiAwal = kandangs[i].populasi_awal
+                    let riwayatPopulasi = kandangs[i].riwayat_populasi
+                    let luasKandang = kandangs[i].luas_kandang
+                    let klasifikasi = kandangs[i].classification
 
-        for (let i = 0; i < klasifikasiData.length; i++) {
-            data += `
-            <tr>
-            <td>${i+1}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].alamat_kandang}</td>
-            <td>${klasifikasiData[i].hari}</td>
-            <td>${klasifikasiData[i].pakan}</td>
-            <td>${klasifikasiData[i].bobot}</td>
-            <td>${klasifikasiData[i].minum}</td>
-            <td>${klasifikasiData[i].klasifikasi}</td>
-            </tr>
-            `
-        }
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${date}</td>
+                    <td>${namaKandang}</td>             
+                    <td>${alamatKandang}</td>             
+                    <td>${hari}</td>             
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${klasifikasi}</td>
+                    </tr>
+                    `
+                }
 
-        let table = `
-        <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
-            <thead>
-                <tr>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">DateTime
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama Kandang
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Alamat Kandang
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                        Hari-ke
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Pakan
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Bobot
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Minum
-                    </th>
-                    <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                        aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                       Klasifikasi
-                    </th>
-                  
-                </tr>
-             </thead>
-            <tbody>
-                ${data}
-            </tbody>
-         </table>
-        `
-        $('#tableData').html(table)
-        initDataTable('table')
+                // construct table
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama Kandang
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Alamat Kandang
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                Hari-ke
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                            Pakan
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                            Minum
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                            Bobot
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                            Klasifikasi
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                initDataTable('table')
+            }
+        })
     }
 
     function initDataTable(id) {

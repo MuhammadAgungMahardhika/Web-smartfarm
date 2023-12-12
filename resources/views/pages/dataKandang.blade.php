@@ -34,6 +34,17 @@
 
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th>Ekspor Laporan</th>
+                                    <td>
+                                        <a class="btn btn-outline-danger btn-sm me-2" onclick="exportToPDF()"><i
+                                                class="fa fa-file-pdf-o"> </i> Pdf
+                                        </a>
+                                        <a class="btn btn-outline-success btn-sm" onclick="exportToExcel()"><i
+                                                class="fa fa-file-excel-o"> </i> Excel
+                                        </a>
+                                    </td>
+                                </tr>
                             </thead>
                         </table>
                     </div>
@@ -53,11 +64,56 @@
         </div>
     </section>
 </x-app-layout>
+{{-- Eksporter --}}
+<script>
+    function exportToPDF() {
+
+        const element = document.getElementById("table");
+
+        // Konfigurasi opsi
+        const option = {
+            margin: 1,
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2
+            },
+            pagebreak: {
+                mode: 'avoid-all'
+            },
+            jsPDF: {
+                width: 2,
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'l',
+            }
+
+        };
+
+        // Gunakan HTML2PDF untuk membuat dokumen PDF
+        // New Promise-based usage:
+        html2pdf().set(option).from(element).save();
+
+    }
+
+    function exportToExcel() {
+        const table = document.getElementById("table");
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Buat objek workbook dan tambahkan sheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        // Simpan ke file Excel
+        XLSX.writeFile(wb, "tabel.xlsx");
+    }
+</script>
 <script>
     fetchKandang(<?= auth()->user()->id ?>)
 
     function fetchKandang(userId) {
-
         let dataKandang
         let optionButton = ""
 
@@ -101,34 +157,41 @@
     function showTableData(kandangId) {
         $.ajax({
             type: "GET",
-            url: `/detailKandang/${kandangId}`,
+            url: `/data-kandang/detail/kandang/${kandangId}`,
             async: false,
             success: function(response) {
                 // asign value
                 let kandangs = response.data
-                console.log(kandangs)
                 let data = ''
                 let iDataKandang = ''
                 let iDataPopulations = ''
 
                 // adding data kandang data
                 for (let i = 0; i < kandangs.length; i++) {
+                    let date = kandangs[i].date
                     let namaKandang = kandangs[i].nama_kandang
                     let alamatKandang = kandangs[i].alamat_kandang
-                    let totalPakan = kandangs[i].total_pakan
-                    let totalMinum = kandangs[i].total_minum
-                    let totalBobot = kandangs[i].total_bobot
-                    let populasiSaatIni = kandangs[i].populasi_saat_ini
+                    let pakan = kandangs[i].pakan
+                    let minum = kandangs[i].minum
+                    let bobot = kandangs[i].bobot
+                    let populasiAwal = kandangs[i].populasi_awal
+                    let riwayatPopulasi = kandangs[i].riwayat_populasi
+                    let luasKandang = kandangs[i].luas_kandang
+                    let klasifikasi = kandangs[i].classification
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
+                    <td>${date}</td>
                     <td>${namaKandang}</td>
                     <td>${alamatKandang}</td>
-                    <td>${totalPakan}</td>
-                    <td>${totalMinum}</td>
-                    <td>${totalBobot}</td>
-                    <td>${populasiSaatIni}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${populasiAwal}</td>
+                    <td>${riwayatPopulasi}</td>
+                    <td>${luasKandang}</td>
+                    <td>${klasifikasi}</td>
                     </tr>
                     `
                 }
@@ -142,6 +205,9 @@
                                                 aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama Kandang
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
@@ -149,19 +215,31 @@
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Total Pakan
+                                                Pakan
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Total Minum
+                                                Minum
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Total Bobot
+                                                Bobot
                             </th>
-                            <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                                 colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Populasi Saat Ini
+                                                style="width: 117.891px;">Populasi Awal
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                                colspan="1" aria-label="Status: activate to sort column ascending"
+                                                style="width: 117.891px;">Riwayat Populasi
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                                colspan="1" aria-label="Status: activate to sort column ascending"
+                                                style="width: 117.891px;">Luas Kandang
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                                colspan="1" aria-label="Status: activate to sort column ascending"
+                                                style="width: 117.891px;">Klasifikasi
                             </th>
                           
                         </tr>

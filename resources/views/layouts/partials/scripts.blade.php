@@ -3,6 +3,7 @@
 <script src="{{ asset('/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 <script src="{{ asset('/vendors/tinymce/tinymce.min.js') }}"></script>
 
+
 <script src="{{ asset('/js/bootstrap.bundle.min.js') }}"></script>
 {{-- Jquery --}}
 <script src="{{ asset('/js/extensions/jquery/jquery.min.js') }}"></script>
@@ -18,6 +19,13 @@
 {{-- Apexcharts --}}
 <script src="{{ asset('/js/extensions/apexcharts/apexcharts.min.js') }}"></script>
 {{-- <script src="{{ asset('/js/pages/dashboard.js') }}"></script> --}}
+
+{{-- Pdf Exporter --}}
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+
+<!-- Excel Exporter -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 @livewireScripts
 <script src="{{ asset('/js/main.js') }}"></script>

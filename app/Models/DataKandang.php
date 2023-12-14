@@ -42,7 +42,6 @@ class DataKandang extends Model
 		'pakan' => 'int',
 		'bobot' => 'int',
 		'minum' => 'int',
-		'date' => 'datetime:Y-m-d',
 		'created_by' => 'int',
 		'updated_by' => 'int'
 	];

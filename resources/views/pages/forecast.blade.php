@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-                                        Kandang 1
+
                                     </td>
                                 </tr>
                             </thead>
@@ -41,55 +49,18 @@
 
             </div>
 
-            <div class="card-body table-responsive bg-light p-4 rounded">
-                {{-- <div class="text-start mb-4" id="addButton">
+            <div class="card-body table-responsive bg-light p-4 rounded text-center">
+                <h1>Upcoming!</h1>
+                {{-- <div id="tableData">
 
                 </div> --}}
-                <div id="tableData">
-
-                </div>
 
             </div>
         </div>
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(userId = 1)
-
-    function fetchKandang(userId) {
-        let dataKandang = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 1"
-
-            },
-            {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 2"
-
-            }
-        ]
-        let optionButton = ""
-
-        for (let i = 0; i < dataKandang.length; i++) {
-            optionButton +=
-                `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id_kandang}">${dataKandang[i].nama_kandang}</option>`
-        }
-
-        $('#namaKandang').html(`
-        <fieldset class="form-group">
-            <select class="form-select" id="selectKandang" onchange="changeKandang()">
-                ${optionButton}
-            </select>
-         </fieldset>
-        `)
-        changeKandang()
-    }
-
-    function changeKandang() {
+    function initKandang() {
         let optionValue = $("#selectKandang").val()
         let kandang = ''
         if (optionValue == 1) {
@@ -109,9 +80,6 @@
         }
 
         $('#alamatKandang').html(kandang.alamat_kandang)
-        // $('#addButton').html(
-        //     ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${kandang.id_kandang}')"><i class="fa fa-plus"></i> </a>`
-        // )
         showTableData(kandang.id_kandang)
     }
 
@@ -222,56 +190,22 @@
     }
 
     function showTableData(kandangId) {
-        let klasifikasiData = ''
-        if (kandangId == '1') {
-            klasifikasiData = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                populasi_awal: '20',
-                jumlah_kematian: '2',
-                prediksi_kematian: 20
-            }, {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                alamat_kandang: "Jln Kandang 1",
-                populasi_awal: '19',
-                jumlah_kematian: '1',
-                prediksi_kematian: 22
-            }]
-        } else if (kandangId == '2') {
-            klasifikasiData = [{
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                populasi_awal: '1',
-                jumlah_kematian: '3',
-                prediksi_kematian: 19
-            }, {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                alamat_kandang: "Jln Kandang2 1",
-                populasi_awal: '2',
-                jumlah_kematian: '4',
-                prediksi_kematian: 19
-            }]
-        }
 
         let data = ''
 
-        for (let i = 0; i < klasifikasiData.length; i++) {
-            data += `
+
+        data += `
             <tr>
-            <td>${i+1}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].nama_kandang}</td>
-            <td>${klasifikasiData[i].alamat_kandang}</td>
-            <td>${klasifikasiData[i].populasi_awal}</td>
-            <td>${klasifikasiData[i].jumlah_kematian}</td>
-            <td>${klasifikasiData[i].prediksi_kematian}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             </tr>
             `
-        }
+
 
         let table = `
         <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">

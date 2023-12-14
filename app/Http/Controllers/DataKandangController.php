@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\DataKandangRepository;
 use App\Repositories\DataKematianRepository;
 use App\Repositories\KandangRepository;
+use App\Repositories\NotificationRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -21,6 +22,7 @@ class DataKandangController extends Controller
 	protected $kandangRepository;
 	protected $dataKandangRepository;
 	protected $dataKematianRepository;
+	protected $notificationRepository;
 	protected $model;
 	/**
 	 * Create a new controller instance.
@@ -29,12 +31,14 @@ class DataKandangController extends Controller
 		DataKandang $dataKandang,
 		KandangRepository $kandangRepository,
 		DataKandangRepository $dataKandangRepository,
-		DataKematianRepository $dataKematianRepository
+		DataKematianRepository $dataKematianRepository,
+		NotificationRepository $notificationRepository
 	) {
 		$this->model = $dataKandang;
 		$this->kandangRepository = $kandangRepository;
 		$this->dataKandangRepository = $dataKandangRepository;
 		$this->dataKematianRepository = $dataKematianRepository;
+		$this->notificationRepository = $notificationRepository;
 	}
 
 	public function index($id = null)
@@ -51,9 +55,9 @@ class DataKandangController extends Controller
 	public function getDataKandangByIdKandang($id)
 	{
 		$items = DB::table('data_kandang')->where('id_kandang', '=', $id)
-			->join('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id', 'left')
+			->join('data_kematian', 'data_kandang.id', '=', 'data_kematian.id_data_kandang', 'left')
 			->select('data_kandang.*', DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))
-			->groupBy('data_kandang.id', 'data_kematian.id_data_kandang')
+			->groupBy('data_kandang.id')
 			->orderBy('data_kandang.id', 'ASC')
 			->get();
 		return response(['data' => $items, 'status' => 200]);
@@ -93,6 +97,7 @@ class DataKandangController extends Controller
 		try {
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
+			$klasifikasi = $request->classification;
 			$dataKandang = $this->dataKandangRepository->createDataKandang(
 				(object) [
 					"id_kandang" => $idKandang,
@@ -101,7 +106,7 @@ class DataKandangController extends Controller
 					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
-					"classification" => $request->classification,
+					"classification" => $klasifikasi,
 					"date" => $request->date,
 					"created_by" => Auth::user()->id,
 				]
@@ -127,6 +132,16 @@ class DataKandangController extends Controller
 			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
+
+			// give notification
+			if ($klasifikasi == "abnormal") {
+				$this->notificationRepository->createNotification((object)[
+					"id_kandang" => $idKandang,
+					"pesan" => "Ditemukan status tidak normal pada kandang",
+					"status" => 1,
+					"waktu" =>  Carbon::now()->timezone('Asia/Jakarta')
+				]);
+			}
 
 			DB::commit();
 			return response()->json([

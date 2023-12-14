@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-                                        Kandang 1
+                                        {{ $data[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                             </thead>
@@ -42,11 +50,61 @@
             </div>
 
             <div class="card-body table-responsive bg-light p-4 rounded">
-                {{-- <div class="text-start mb-4" id="addButton">
 
-                </div> --}}
                 <div id="tableData">
-
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    Pesan
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    Status
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Waktu
+                                </th>
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data[0]['notification'] as $notification)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $notification->pesan }}</td>
+                                    <td class="{{ $notification->status == 1 ? 'text-primary' : 'text-success' }}">
+                                        <i>{{ $notification->status == 1 ? 'belum dibaca' : 'sudah dibaca' }}</i>
+                                    </td>
+                                    <td>{{ $notification->waktu }}</td>
+                                    <td class="text-center">
+                                        @if ($notification->status == 1)
+                                            <a title="tandain telah dibaca" class="btn btn-outline-primary btn-sm me-1"
+                                                onclick="updateItem('{{ $notification->id }}','2','{{ $data[0]->id }}')">
+                                                <i class="fa fa-envelope"></i>
+                                            </a>
+                                        @else
+                                            <a title="tandain belum dibaca" class="btn btn-outline-primary btn-sm me-1"
+                                                onclick="updateItem('{{ $notification->id }}','1','{{ $data[0]->id }}')">
+                                                <i class="fa fa-envelope-open"></i>
+                                            </a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -54,47 +112,7 @@
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(<?= Auth::user()->id ?>)
-
-    function fetchKandang(userId) {
-        // check Role 
-        let checkRole = <?= Auth::user()->id_role ?>;
-        let optionButton = '';
-        let url = ''
-        if (checkRole == 2) {
-            url = 'user'
-        } else if (checkRole == 3) {
-            url = 'peternak'
-        }
-
-        $.ajax({
-            type: "GET",
-            url: `/kandang/${url}/${userId}`,
-            success: function(response) {
-                let dataKandang = response.data
-                // looping all kandang option
-                for (let i = 0; i < dataKandang.length; i++) {
-                    optionButton +=
-                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
-                }
-
-                $('#namaKandang').html(`
-                <fieldset class="form-group">
-                    <select class="form-select" id="selectKandang" onchange="initKandang()">
-                        ${optionButton}
-                    </select>
-                </fieldset>
-                `)
-
-                // init kandang data
-                initKandang()
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-
-    }
+    initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()
@@ -132,7 +150,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${itemData[i].pesan}</td>
-                    <td>${itemData[i].status == 1 ? "<i>belum dibaca</i>" : "<i>sudah dibaca</i>"}</td>
+                    <td class="${ itemData[i].status == 1? 'text-primary' : 'text-success'  }">${itemData[i].status == 1 ? "<i>belum dibaca</i>" : "<i>sudah dibaca</i>"}</td>
                     <td>${itemData[i].waktu}</td>
                     <td>
                        ${status}
@@ -244,7 +262,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                console.log(response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -258,7 +275,6 @@
 
             },
             error: function(err) {
-                console.log("sini?")
                 console.log(err.responseText)
             }
         })

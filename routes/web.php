@@ -94,8 +94,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::patch('/notification/{id}', [NotificationController::class, 'update']);
     Route::delete('/notification/{id}', [NotificationController::class, 'delete']);
 
-
-
     //----------------------All Role -----------------------------------//
     Route::get('/daftarMenu', function () {
         return view('pages/daftarMenu');
@@ -105,25 +103,31 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::get('/userList', [PageController::class, "user"])->name('userList');
     });
 
+    Route::middleware(['checkKandang'])->group(function () {
 
-    //----------------------Pemilik--------------------------------------//
-    Route::middleware(['role:2'])->group(function () {
-        Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
-        // data kandang
-        Route::get('/dataKandang', [PageController::class, "dataKandang"])->name('dataKandang');
-        // forecast
-        Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
-        // Hasil Panen
-        Route::get('/hasilPanen', [PageController::class, "hasilPanen"])->name('hasilPanen');
-        // Peternak
-        Route::get('/inputHarian', [PageController::class, "inputHarian"])->name('inputHarian');
+        //----------------------Pemilik--------------------------------------//
+        Route::middleware(['role:2'])->group(function () {
+            Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
+            // data kandang
+            Route::get('/dataKandang', [PageController::class, "dataKandang"])->name('dataKandang');
+            // forecast
+            Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
+            // Hasil Panen
+            Route::get('/hasilPanen', [PageController::class, "hasilPanen"])->name('hasilPanen');
+        });
+        //---------------------Peternak--------------------------------------//
+        Route::middleware(['role:3'])->group(function () {
+            Route::get('/inputHarian', [PageController::class, "inputHarian"])->name('inputHarian');
+        });
+
+
+        //-----------------------Pemilik & Peternak---------------------------//
+        Route::middleware(['role:2,3'])->group(function () {
+            Route::get('/notifikasi', [PageController::class, "notifikasi"])->name('notifikasi');
+            Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
+        });
     });
 
-    //-----------------------Pemilik & Peternak---------------------------//
-    Route::middleware(['role:2,3'])->group(function () {
-        Route::get('/notifikasi', [PageController::class, "notifikasi"])->name('notifikasi');
-        Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
-    });
 
 
     // error 

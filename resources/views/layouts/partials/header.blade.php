@@ -24,12 +24,12 @@
                         </ul>
                     </li> --}}
 
-                    <li class="nav-item dropdown mx-3 mb-0  pt-4">
+                    <li class="nav-item dropdown mx-3 mb-0  mt-4">
                         <span id="dateTime">
 
                         </span>
                     </li>
-                    <li class="nav-item dropdown me-3">
+                    {{-- <li class="nav-item dropdown me-3">
                         <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <i class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
@@ -41,7 +41,7 @@
                             </li>
                             <li><a class="dropdown-item">No notification available</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                 </ul>
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,7 +97,6 @@
 
     function DateAndTime() {
         var dt = new Date();
-
         var Hours = dt.getHours();
         var Min = dt.getMinutes();
         var Sec = dt.getSeconds();

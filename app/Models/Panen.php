@@ -34,8 +34,6 @@ class Panen extends Model
 
 	protected $casts = [
 		'id_kandang' => 'int',
-		'tanggal_mulai' => 'datetime:Y-m-d',
-		'tanggal_panen' => 'datetime:Y-m-d',
 		'jumlah_panen' => 'int',
 		'bobot_total' => 'int',
 		'created_by' => 'int',

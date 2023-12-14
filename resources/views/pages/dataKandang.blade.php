@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-
+                                        {{ $data[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -57,7 +65,75 @@
 
                 </div>
                 <div id="tableData">
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
+                                    Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Alamat Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Pakan
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Minum
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Bobot
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Populasi Awal
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Riwayat Populasi
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Luas Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Klasifikasi
+                                </th>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data[0]['data_kandangs'] as $dataKandang)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $dataKandang->date }}</td>
+                                    <td>{{ $data[0]->nama_kandang }}</td>
+                                    <td>{{ $data[0]->alamat_kandang }}</td>
+                                    <td>{{ $dataKandang->pakan }}</td>
+                                    <td>{{ $dataKandang->minum }}</td>
+                                    <td>{{ $dataKandang->bobot }}</td>
+                                    <td>{{ $data[0]->populasi_awal }}</td>
+                                    <td>{{ $dataKandang->riwayat_populasi }}</td>
+                                    <td>{{ $data[0]->luas_kandang }}</td>
+                                    <td>{{ $dataKandang->classification }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -99,6 +175,13 @@
     }
 
     function exportToExcel() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+
         const table = document.getElementById("table");
         const ws = XLSX.utils.table_to_sheet(table);
 
@@ -107,44 +190,11 @@
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
         // Simpan ke file Excel
-        XLSX.writeFile(wb, "tabel.xlsx");
+        XLSX.writeFile(wb, `laporan-kandang-${today}.xlsx`);
     }
 </script>
 <script>
-    fetchKandang(<?= auth()->user()->id ?>)
-
-    function fetchKandang(userId) {
-        let dataKandang
-        let optionButton = ""
-
-        $.ajax({
-            type: "GET",
-            url: `/kandang/user/${userId}`,
-            success: function(response) {
-                dataKandang = response.data
-
-                // looping all kandang option
-                for (let i = 0; i < dataKandang.length; i++) {
-                    optionButton +=
-                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
-                }
-
-                $('#namaKandang').html(`
-                <fieldset class="form-group">
-                    <select class="form-select" id="selectKandang" onchange="initKandang()">
-                        ${optionButton}
-                    </select>
-                </fieldset>
-                `)
-
-                // init kandang data
-                initKandang()
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-    }
+    initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()

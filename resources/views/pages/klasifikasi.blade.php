@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-                                        Kandang 1
+                                        {{ $data[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                             </thead>
@@ -42,11 +50,69 @@
             </div>
 
             <div class="card-body table-responsive bg-light p-4 rounded">
-                {{-- <div class="text-start mb-4" id="addButton">
-
-                </div> --}}
                 <div id="tableData">
-
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
+                                    Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Alamat
+                                    Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Tanggal
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Hari-ke
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Pakan
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Minum
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Bobot
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Klasifikasi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data[0]['data_kandangs'] as $dataKandang)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $data[0]->nama_kandang }}</td>
+                                    <td>{{ $data[0]->alamat_kandang }}</td>
+                                    <td>{{ $dataKandang->date }}</td>
+                                    <td>{{ $dataKandang->hari_ke }}</td>
+                                    <td>{{ $dataKandang->pakan }}</td>
+                                    <td>{{ $dataKandang->minum }}</td>
+                                    <td>{{ $dataKandang->bobot }}</td>
+                                    <td
+                                        class="{{ $dataKandang->classification == 'normal' ? 'text-success' : 'text-danger' }}">
+                                        {{ $dataKandang->classification }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -54,74 +120,17 @@
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(userId = 1)
+    initDataTable('table')
 
-    function fetchKandang(userId) {
-        let dataKandang = [{
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 1"
-
-            },
-            {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 2"
-
-            }
-        ]
-        let optionButton = ""
-
-        for (let i = 0; i < dataKandang.length; i++) {
-            optionButton +=
-                `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id_kandang}">${dataKandang[i].nama_kandang}</option>`
-        }
-
-        $('#namaKandang').html(`
-        <fieldset class="form-group">
-            <select class="form-select" id="selectKandang" onchange="changeKandang()">
-                ${optionButton}
-            </select>
-         </fieldset>
-        `)
-        changeKandang()
-    }
-
-    function changeKandang() {
-        let optionValue = $("#selectKandang").val()
-        let kandang = ''
-        if (optionValue == 1) {
-            kandang = {
-                id_kandang: 1,
-                nama_kandang: "Kandang 1",
-                populasi_awal: 12,
-                alamat_kandang: "Jln.Kandang 1"
-            }
-        } else if (optionValue == 2) {
-            kandang = {
-                id_kandang: 2,
-                nama_kandang: "Kandang 2",
-                populasi_awal: 14,
-                alamat_kandang: "Jln.Kandang 2"
-            }
-        }
-
+    function initKandang() {
+        let id = $("#selectKandang").val()
+        let kandang = getKandang(id)
         $('#alamatKandang').html(kandang.alamat_kandang)
-        // $('#addButton').html(
-        //     ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${kandang.id_kandang}')"><i class="fa fa-plus"></i> </a>`
-        // )
-        showTableData(kandang.id_kandang)
-    }
-
-    function reset() {
-
+        showTableData(id)
     }
 
     function addModal(idKandang) {
         $('#modalTitle').html("Menambahkan Hasil Panen")
-
         $('#modalBody').html(`
         <form class="form form-horizontal">
                 <div class="form-body"> 
@@ -162,10 +171,7 @@
                 </div>
             </form>
         `)
-
-        $('#modalFooter').html(`
-        <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+        $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
     }
 
     function editModal(id) {
@@ -210,9 +216,7 @@
                 </div>
             </form>
         `)
-        $('#modalFooter').html(
-            `<a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="update('${id}')">Laporkan</a>`)
+        $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="update('${id}')">Laporkan</a>`)
     }
 
     function deleteModal(id) {
@@ -350,31 +354,19 @@
         jquery_datatable.on("draw", setTableColor);
     }
 
-    function save() {
-        let hariKe = $('#hariKe').val()
-        let jumlahAwalAyam = $('#jumlahAwalAyam').val()
-        let jumlahAyam = $('#jumlahAyam').val()
-        let bobotAyam = $('#bobotAyam').val()
-        let pakan = $('#pakan').val()
-        let minum = $('#minum').val()
-        let jumlahKematian = $('#jumlahKematian').val()
-        let rataSuhu = $('#rataSuhu').val()
-        let rataKelembapan = $('#rataKelembapan').val()
-        let rataAmoniak = $('#rataAmoniak').val()
-
-        if (hariKe <= 0) {
-            return Swal.fire("SweetAlert2 is working!");
-        }
-        console.log(hariKe)
-        console.log(jumlahAwalAyam)
-        console.log(jumlahAyam)
-        console.log(bobotAyam)
-        console.log(pakan)
-        console.log(minum)
-        console.log(jumlahKematian)
-        console.log(rataSuhu)
-        console.log(rataKelembapan)
-        console.log(rataAmoniak)
-
+    function getKandang(id) {
+        let data
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            async: false,
+            success: function(response) {
+                data = response.data
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return data
     }
 </script>

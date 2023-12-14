@@ -1,4 +1,14 @@
 <x-app-layout>
+    <style>
+        .daftarMenu {
+            transition: transform 0.3s ease;
+        }
+
+        .daftarMenu:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+    </style>
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
@@ -16,110 +26,116 @@
     </x-slot>
 
     <section class="section">
-        <div class="card border border-ligth">
+        <div class="card bg-light">
             <div class="card-body">
-                <div class="row">
-
+                <div class="row justify-content-center text-center">
                     {{-- Daftar menu untuk admin --}}
-                    <?php if(Auth::user()->id_role == '1'): ?>
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/userList">
-                                <div class="card-body">
-                                    <p>List Users</p>
-                                </div>
-                            </a>
+                    @if (Auth::user()->id_role == '1')
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/userList">
+                                    <div class="card-body">
+                                        <img src="/images/menu/users.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">List Users</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <?php endif; ?>
+                    @endif
 
                     {{-- Daftar menu untuk Pemilik --}}
-                    <?php if (Auth::user()->id_role == '2'): ?>
-
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/dashboard">
-                                <div class="card-body">
-                                    <p>Dashboard</p>
-                                </div>
-                            </a>
+                    @if (Auth::user()->id_role == '2')
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/dashboard">
+                                    <div class="card-body">
+                                        <img src="/images/menu/dashboard.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Dashboard</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/dataKandang">
-                                <div class="card-body">
-                                    <p>Data Kandang</p>
-                                </div>
-                            </a>
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/dataKandang">
+                                    <div class="card-body">
+                                        <img src="/images/menu/monitoringKandang2.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Monitoring Kandang</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/forecast">
-                                <div class="card-body">
-                                    <p>Forecast</p>
-                                </div>
-                            </a>
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/forecast">
+                                    <div class="card-body">
+                                        <img src="/images/menu/forecast.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Forecast</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/klasifikasiMonitoring">
-                                <div class="card-body">
-                                    <p>Klasifikasi </p>
-                                </div>
-                            </a>
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/klasifikasiMonitoring">
+                                    <div class="card-body">
+                                        <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Klasifikasi</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/notifikasi">
-                                <div class="card-body">
-                                    <p>Notifikasi</p>
-                                </div>
-                            </a>
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/hasilPanen">
+                                    <div class="card-body">
+                                        <img src="/images/menu/hasilPanen.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Hasil Panen</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/hasilPanen">
-                                <div class="card-body">
-                                    <p>Hasil Panen</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <?php endif; ?>
+                    @endif
 
                     {{-- Daftar menu untuk peternak --}}
-                    <?php if(Auth::user()->id_role == '3'): ?>
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/inputHarian">
-                                <div class="card-body">
-                                    <p>Input Harian</p>
-                                </div>
-                            </a>
+                    @if (Auth::user()->id_role == '3')
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/inputHarian">
+                                    <div class="card-body">
+                                        <img src="/images/menu/inputHarian.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Input Harian</h5>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="card shadow-sm">
-                            <a href="/notifikasi">
-                                <div class="card-body">
-                                    <p>Notifikasi</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+                    @endif
 
+                    {{-- Daftar menu pemilik dan peternak --}}
+                    @if (Auth::user()->id_role == '2' || Auth::user()->id_role == '3')
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/notifikasi">
+                                    <div class="card-body">
+                                        <img src="/images/menu/notification.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Notifikasi</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

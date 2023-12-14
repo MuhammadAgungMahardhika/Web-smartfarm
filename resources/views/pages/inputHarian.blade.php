@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
+                                                @foreach ($kandang as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach;
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-
+                                        {{ $kandang[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                             </thead>
@@ -43,11 +51,77 @@
 
             <div class="card-body table-responsive bg-light p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
-
+                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id_kandang }}')">
+                        <i class="fa fa-plus"></i>
+                    </a>
                 </div>
 
                 <div id="tableData">
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    Tanggal
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Pakan
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Minum
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Bobot
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Jumlah Kematian harian
+                                </th>
 
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data as $dataKandang)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $dataKandang->hari_ke }}</td>
+                                    <td>{{ $dataKandang->date }}</td>
+                                    <td>{{ $dataKandang->pakan }}</td>
+                                    <td>{{ $dataKandang->minum }}</td>
+                                    <td>{{ $dataKandang->bobot }}</td>
+                                    <td>{{ $dataKandang->total_kematian }}
+                                    </td>
+                                    <td style="min-width: 180px">
+                                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="editModal('{{ $dataKandang->id }}')"><i class="fa fa-edit"></i>
+                                        </a>
+                                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="deleteModal('{{ $dataKandang->id }}')"><i
+                                                class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -55,42 +129,7 @@
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(<?= auth()->user()->id ?>)
-
-    function fetchKandang(peternakId) {
-
-        let dataKandang
-        let optionButton = ""
-
-        $.ajax({
-            type: "GET",
-            url: `/kandang/peternak/${peternakId}`,
-            success: function(response) {
-                dataKandang = response.data
-
-                // looping all kandang option
-                for (let i = 0; i < dataKandang.length; i++) {
-                    optionButton +=
-                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
-                }
-
-                $('#namaKandang').html(`
-                <fieldset class="form-group">
-                    <select class="form-select" id="selectKandang" onchange="initKandang()">
-                        ${optionButton}
-                    </select>
-                </fieldset>
-                `)
-
-                // init kandang data
-                initKandang()
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-
-    }
+    initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()
@@ -110,6 +149,7 @@
             contentType: "application/json",
             async: false,
             success: function(response) {
+                console.log(response)
                 // asign value
                 let itemData = response.data
                 let data = ''
@@ -361,7 +401,9 @@
         let item = getDataKandang(id)
         let dataKematian = item.data_kematians
         let idKandang = item.id_kandang
-        let namaKandang = getKandang(idKandang).nama_kandang
+        let dataKandang = getKandang(idKandang)
+        let namaKandang = dataKandang.nama_kandang
+        let populasiSaatIni = dataKandang.populasi_saat_ini
         let hariKe = item.hari_ke
         let date = item.date
         let pakan = item.pakan
@@ -417,10 +459,16 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">Nama kandang</label>
+                                    <i>Nama Kandang</i>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${namaKandang}" class="form-control" readonly>
+                                    <i>${namaKandang}</i>
+                                </div>
+                                <div class="col-md-4">
+                                    <i>Populasi Saat ini</i>
+                                </div>
+                                <div class="col-md-8 form-group mb-4">
+                                    <i>${populasiSaatIni}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="hariKe">Hari ke-</label>
@@ -607,14 +655,11 @@
             dataKematian.push(allValues)
         })
 
-        console.log(dataKematian)
         // validasi
         let totalKematian = 0
         for (i = 0; i < dataKematian.length; i++) {
             totalKematian += parseInt(dataKematian[i].jumlah_kematian)
         }
-
-
 
         let sisa_populasi = populasiSaatIni - totalKematian
 
@@ -625,7 +670,15 @@
         if (hariKe <= 0) {
             return Swal.fire("Hari tidak boleh kurang dari 1!");
         }
-
+        if (pakan <= 0) {
+            return Swal.fire("Pakan tidak boleh kurang dari 1!");
+        }
+        if (minum <= 0) {
+            return Swal.fire("Minum tidak boleh kurang dari 1!");
+        }
+        if (bobot <= 0) {
+            return Swal.fire("Bobot tidak boleh kurang dari 1!");
+        }
 
         // asign value if validated
         let data = {
@@ -659,6 +712,7 @@
                 }).then(() => {
                     $('#default').modal('hide')
                     showTableData(idKandang)
+                    // window.location.reload()
                 })
             },
             error: function(err) {
@@ -673,6 +727,7 @@
             type: "DELETE",
             url: `/data-kandang/${id}`,
             contentType: "application/json",
+            async: false,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -686,7 +741,9 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
+                    console.log(response.dataKandang.id_kandang)
                     showTableData(response.dataKandang.id_kandang)
+                    // window.location.reload()
                 })
             },
             error: function(err) {
@@ -718,8 +775,10 @@
 
         let totalKematian = 0
         for (i = 0; i < dataKematian.length; i++) {
-            totalKematian += dataKematian[i].jumlah_kematian
+            totalKematian += parseInt(dataKematian[i].jumlah_kematian)
         }
+
+
 
         let kembalikanNilaiPopulasi = parseInt(getDataKematianByDataKandangId(id).total_kematian)
         let populasiSaatIni = parseInt(getKandang(idKandang).populasi_saat_ini) + parseInt(kembalikanNilaiPopulasi)
@@ -729,6 +788,19 @@
         // validasi
         if (sisa_populasi < 0) {
             return Swal.fire("Kematian melebihi populasi saat ini!");
+        }
+
+        if (hariKe <= 0) {
+            return Swal.fire("Hari tidak boleh kurang dari 1!");
+        }
+        if (pakan <= 0) {
+            return Swal.fire("Pakan tidak boleh kurang dari 1!");
+        }
+        if (minum <= 0) {
+            return Swal.fire("Minum tidak boleh kurang dari 1!");
+        }
+        if (bobot <= 0) {
+            return Swal.fire("Bobot tidak boleh kurang dari 1!");
         }
         // asign value if validated
         let data = {
@@ -761,7 +833,9 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
+                    console.log(idKandang)
                     showTableData(idKandang)
+                    // window.location.reload()
                 })
 
             },

@@ -25,13 +25,21 @@
                                 <tr>
                                     <th>Nama Kandang</th>
                                     <td id="namaKandang">
-
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Alamat Kandang</th>
                                     <td id="alamatKandang">
-
+                                        {{ $data[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                             </thead>
@@ -43,10 +51,64 @@
 
             <div class="card-body table-responsive bg-light p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
-
+                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
+                        <i class="fa fa-plus"></i>
+                    </a>
                 </div>
                 <div id="tableData">
-
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    Tanggal mulai
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Tanggal panen
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Jumlah panen
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Bobot total
+                                </th>
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data[0]['panens'] as $panen)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $panen->tanggal_mulai }}</td>
+                                    <td>{{ $panen->tanggal_panen }}</td>
+                                    <td>{{ $panen->jumlah_panen }}</td>
+                                    <td>{{ $panen->bobot_total }}</td>
+                                    <td style="min-width: 180px">
+                                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="editModal('{{ $panen->id }}}')"><i class="fa fa-edit"></i> </a>
+                                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="deleteModal('{{ $panen->id }}')"><i
+                                                class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -54,40 +116,7 @@
     </section>
 </x-app-layout>
 <script>
-    fetchKandang(<?= auth()->user()->id ?>)
-
-    function fetchKandang(userId) {
-        let dataKandang
-        let optionButton = ""
-
-        $.ajax({
-            type: "GET",
-            url: `/kandang/user/${userId}`,
-            success: function(response) {
-                dataKandang = response.data
-
-                // looping all kandang option
-                for (let i = 0; i < dataKandang.length; i++) {
-                    optionButton +=
-                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
-                }
-
-                $('#namaKandang').html(`
-                <fieldset class="form-group">
-                    <select class="form-select" id="selectKandang" onchange="initKandang()">
-                        ${optionButton}
-                    </select>
-                </fieldset>
-                `)
-
-                // init kandang data
-                initKandang()
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-    }
+    initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()

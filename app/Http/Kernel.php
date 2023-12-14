@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
 
         // My middlewware
         'role' => \App\Http\Middleware\Role::class,
+        'checkKandang' => \App\Http\Middleware\checkKandang::class,
     ];
 }

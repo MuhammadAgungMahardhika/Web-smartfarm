@@ -8,6 +8,7 @@ use App\Http\Controllers\DataKandangController;
 use App\Http\Controllers\RekapDataController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\UserController;
 
@@ -27,6 +28,7 @@ Route::get('/', function () {
 });
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
+    //---------------------API------------------------------
     // user
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/user/{id}', [UserController::class, 'index']);
@@ -36,9 +38,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // role
     Route::get('/roles', [RolesController::class, 'index']);
-
-
-
     // kandang
     Route::get('/kandang', [KandangController::class, 'index']);
     Route::get('/kandang/{id}', [KandangController::class, 'index']);
@@ -97,43 +96,35 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
 
 
-    // Semua
+    //----------------------All Role -----------------------------------//
     Route::get('/daftarMenu', function () {
         return view('pages/daftarMenu');
     })->middleware('role:1,2,3')->name('daftarMenu');
-    // Admin
-    Route::get('/userList', function () {
-        return view('pages/users');
-    })->middleware('role:1')->name('userList');
+    //----------------------Admin---------------------------------------//
+    Route::middleware(['role:1'])->group(function () {
+        Route::get('/userList', [PageController::class, "user"])->name('userList');
+    });
 
-    // Pemilik
-    Route::get('/dashboard', function () {
-        return view('pages/dashboard');
-    })->middleware('role:2')->name('dashboard');
 
-    Route::get('/dataKandang', function () {
-        return view('pages/dataKandang');
-    })->middleware('role:2')->name('dataKandang');
-    Route::get('/forecast', function () {
-        return view('pages/forecast');
-    })->middleware('role:2')->name('forecast');
+    //----------------------Pemilik--------------------------------------//
+    Route::middleware(['role:2'])->group(function () {
+        Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
+        // data kandang
+        Route::get('/dataKandang', [PageController::class, "dataKandang"])->name('dataKandang');
+        // forecast
+        Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
+        // Hasil Panen
+        Route::get('/hasilPanen', [PageController::class, "hasilPanen"])->name('hasilPanen');
+        // Peternak
+        Route::get('/inputHarian', [PageController::class, "inputHarian"])->name('inputHarian');
+    });
 
-    Route::get('/hasilPanen', function () {
-        return view('pages/hasilPanen');
-    })->middleware('role:2')->name('hasilPanen');
+    //-----------------------Pemilik & Peternak---------------------------//
+    Route::middleware(['role:2,3'])->group(function () {
+        Route::get('/notifikasi', [PageController::class, "notifikasi"])->name('notifikasi');
+        Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
+    });
 
-    // Peternak
-    Route::get('/inputHarian', function () {
-        return view('pages/inputHarian');
-    })->middleware('role:2,3')->name('inputHarian');
-
-    // Pemilik & Peternak
-    Route::get('/notifikasi', function () {
-        return view('pages/notifikasi');
-    })->middleware(['role:2,3'])->name('notifikasi');
-    Route::get('/klasifikasiMonitoring', function () {
-        return view('pages/klasifikasi');
-    })->middleware('role:2,3')->name('klasifikasiMonitoring');
 
     // error 
     Route::get('/error-403', function () {

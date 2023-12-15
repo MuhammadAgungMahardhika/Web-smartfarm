@@ -35,20 +35,47 @@ class SensorController extends Controller
 		$this->suhuKelembapanRepository = $suhuKelembapanRepository;
 	}
 
-	public function sensorLuar($suhu, $kelembapan, $amonia)
+	public function sensorLuar($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
 	{
+
+		// Suhu dan Kelembapan
+		if ($suhu != null || $kelembapan != null) {
+			$this->suhuKelembapanRepository->createSuhuKelembapanSensor((object)[
+				"id_kandang" => $idKandang,
+				"date" => Carbon::now()->timezone('Asia/Jakarta'),
+				"suhu" => $suhu,
+				"kelembapan" => $kelembapan
+			]);
+		}
+
+		// Amonia
+		if ($amonia != null) {
+			$this->amoniakRepository->createAmoniak((object)[
+				"id_kandang" => $idKandang,
+				"date" => Carbon::now()->timezone('Asia/Jakarta'),
+				"amoniak" => $amonia
+			]);
+		}
+
+
 		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
 	}
 
-	public function indexAmonia()
+	public function indexAmonia($idKandang)
 	{
-		$items = $this->modelAmoniak->get();
+		$items = $this->modelAmoniak
+			->where('id_kandang', '=', $idKandang)
+			->orderBy('date', 'DESC')
+			->first();
 		return response(['data' => $items, 'status' => 200]);
 	}
 
-	public function indexSuhuKelembapan()
+	public function indexSuhuKelembapan($idKandang)
 	{
-		$items = $this->modelSuhuKelembapanSensor->get();
+		$items = $this->modelSuhuKelembapanSensor
+			->where('id_kandang', '=', $idKandang)
+			->orderBy('date', 'DESC')
+			->first();
 		return response(['data' => $items, 'status' => 200]);
 	}
 

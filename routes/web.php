@@ -57,17 +57,16 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::delete('/panen/{id}', [PanenController::class, 'delete']);
 
     // sensor amoniak dan suhu
-    Route::get('/sensor-amoniak', [SensorController::class, 'indexAmonia']);
+    Route::get('/sensor-amoniak/kandang/{idKandang}', [SensorController::class, 'indexAmonia']);
+    Route::get('/sensor-suhu-kelembapan/kandang/{idKandang}', [SensorController::class, 'indexSuhuKelembapan']);
     Route::get('/sensor-amoniak/{id}', [SensorController::class, 'indexAmonia']);
-    Route::get('/sensor-suhu', [SensorController::class, 'indexSuhuKelembapan']);
     Route::post('/sensor-amoniak', [SensorController::class, 'storeAmoniak']);
-    Route::post('/sensor-suhu', [SensorController::class, 'storeSuhuKelembapan']);
+    Route::post('/sensor-suhu-kelembapan', [SensorController::class, 'storeSuhuKelembapan']);
 
     // menerima sensor dari luar
-    Route::get('/sensor/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'sensorLuar']);
+    Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'sensorLuar']);
 
     // data kandang
-
     Route::get('/data-kandang', [DataKandangController::class, 'index']);
     Route::get('/data-kandang/{id}', [DataKandangController::class, 'index']);
     Route::get('/jumlah-kematian/data-kandang/{id}', [DataKandangController::class, 'getJumlahKematianByDataKandangId']);
@@ -127,8 +126,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
         });
     });
-
-
 
     // error 
     Route::get('/error-403', function () {

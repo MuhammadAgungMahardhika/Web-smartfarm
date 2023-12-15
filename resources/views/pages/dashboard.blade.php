@@ -46,7 +46,7 @@
                                                         <strong id="suhuData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
-                                                        <a class="btn btn-danger" id="suhuStatus">Aman</a>
+                                                        <a class="btn btn-success" id="suhuStatus">Aman</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -68,7 +68,7 @@
                                                         <strong id="kelembapanData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
-                                                        <a class="btn btn-danger" id="kelembapanStatus">Aman</a>
+                                                        <a class="btn btn-success" id="kelembapanStatus">Aman</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -90,7 +90,7 @@
                                                         <strong id="amoniaData" class="h2">0</strong>
                                                     </div>
                                                     <div class="col text-center">
-                                                        <a class="btn btn-danger" id="amoniaStatus">Aman</a>
+                                                        <a class="btn btn-success" id="amoniaStatus">Aman</a>
                                                     </div>
                                                 </div>
                                             </div>

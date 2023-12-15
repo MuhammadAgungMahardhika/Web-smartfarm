@@ -172,62 +172,69 @@
         // Function to update chart data in real-time
         function updateData() {
 
-            // Suhu , kelembapan dan Amonia Data
             let idKandang = $('#selectKandang').val()
 
-            let kelembapanData = Math.floor(Math.random() * 100)
-            let suhuData = Math.floor(Math.random() * 100)
-            let amoniaData = Math.floor(Math.random() * 100)
-
-
-            let dataSuhuKelembapan = {
-                id_kandang: idKandang,
-                suhu: suhuData,
-                kelembapan: kelembapanData
-            }
-
-            // save data to database suhu kelembapan
+            // get data from database suhu kelembapan
             $.ajax({
-                type: "POST",
-                url: `/sensor-suhu`,
-                data: JSON.stringify(dataSuhuKelembapan),
-                contentType: "application/json",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                type: "GET",
+                url: `/sensor-suhu-kelembapan/kandang/${idKandang}`,
                 success: function(response) {
-                    console.log(response)
+                    if (response.data != null) {
+                        let suhuData = response.data.suhu
+                        let kelembapanData = response.data.kelembapan
+                        console.log("suhu data =" + suhuData)
+                        console.log("kelembapan data =" + kelembapanData)
 
-                    kelembapanChart.updateSeries([kelembapanData]);
-                    $('#kelembapanData').html(kelembapanData)
+                        if (suhuData != null) {
+                            suhuChart.updateSeries([suhuData]);
+                            $('#suhuData').html(suhuData)
+                        } else {
+                            suhuChart.updateSeries([0]);
+                            $('#suhuData').html(0)
+                        }
 
-                    suhuChart.updateSeries([suhuData]);
-                    $('#suhuData').html(suhuData)
+                        if (kelembapanData != null) {
+                            kelembapanChart.updateSeries([kelembapanData]);
+                            $('#kelembapanData').html(kelembapanData)
+                        } else {
+                            kelembapanChart.updateSeries([0]);
+                            $('#kelembapanData').html(0)
+                        }
+
+
+
+                    } else {
+                        kelembapanChart.updateSeries([0]);
+                        $('#kelembapanData').html(0)
+
+                        suhuChart.updateSeries([0]);
+                        $('#suhuData').html(0)
+                    }
                 },
                 error: function(err) {
                     console.log(err.responseText)
                 }
             })
 
-            // Amonia
-
-
-            let dataAmonia = {
-                id_kandang: idKandang,
-                amoniak: amoniaData
-            }
-            // save to database amonia
+            // get data from  database amonia
             $.ajax({
-                type: "POST",
-                url: `/sensor-amoniak`,
-                data: JSON.stringify(dataAmonia),
-                contentType: "application/json",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                type: "GET",
+                url: `/sensor-amoniak/kandang/${idKandang}`,
                 success: function(response) {
-                    amoniaChart.updateSeries([amoniaData])
-                    $('#amoniaData').html(amoniaData)
+                    console.log(response)
+                    if (response.data != null) {
+                        let amoniaData = response.data.amoniak
+                        console.log("amonia data =" + amoniaData)
+                        if (amoniaData != null) {
+                            amoniaChart.updateSeries([amoniaData])
+                            $('#amoniaData').html(amoniaData)
+                        } else {
+                            amoniaChart.updateSeries([0])
+                            $('#amoniaData').html(0)
+                        }
+
+
+                    }
 
                 },
                 error: function(err) {

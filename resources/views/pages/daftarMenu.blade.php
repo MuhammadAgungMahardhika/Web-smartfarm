@@ -64,7 +64,7 @@
                                     <div class="card-body">
                                         <img src="/images/menu/monitoringKandang2.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">Monitoring Kandang</h5>
+                                        <h5 class="card-title mt-4">Data Kandang</h5>
                                     </div>
                                 </a>
                             </div>

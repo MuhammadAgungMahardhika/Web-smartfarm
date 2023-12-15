@@ -120,38 +120,49 @@
 
     function initKandang() {
         let id = $("#selectKandang").val()
-        let kandang = getKandang(id)
-
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        $('#addButton').html(
-            ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
-        )
-        showTableData(id)
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#alamatKandang').html(kandang.alamat_kandang)
+                $('#addButton').html(
+                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
+                )
+                showTableData(id)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
     function showTableData(kandangId) {
-        let panenData = ''
         $.ajax({
             type: "GET",
             url: `/panen/kandang/${kandangId}`,
-            async: false,
             success: function(response) {
-                // asign value
-                panenData = response.data
+                let panenData = response.data
                 let data = ''
-                console.log(response)
                 // adding panen data
                 for (let i = 0; i < panenData.length; i++) {
+                    let {
+                        id,
+                        tanggal_mulai,
+                        tanggal_panen,
+                        jumlah_panen,
+                        bobot_total
+                    } = panenData[i]
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${panenData[i].tanggal_mulai}</td>
-                    <td>${panenData[i].tanggal_panen}</td>
-                    <td>${panenData[i].jumlah_panen}</td>
-                    <td>${panenData[i].bobot_total}</td>
+                    <td>${tanggal_mulai}</td>
+                    <td>${tanggal_panen}</td>
+                    <td>${jumlah_panen}</td>
+                    <td>${bobot_total}</td>
                     <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${panenData[i].id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${panenData[i].id}')"><i class="fa fa-trash"></i></a>
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
                     </td>
                     </tr>
                     `
@@ -235,14 +246,15 @@
     }
 
 
-    function reset() {
-
-    }
 
     function addModal(idKandang) {
-        let kandang = getKandang(idKandang)
-        $('#modalTitle').html("Menambahkan Hasil Panen")
-        $('#modalBody').html(`
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${idKandang}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#modalTitle').html("Menambahkan Hasil Panen")
+                $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body"> 
                             <div class="row">
@@ -283,76 +295,92 @@
                     </form>
                 `)
 
-        $('#modalFooter').html(`
-         <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-         <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
-
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
     function editModal(id) {
-        let item = getPanen(id)
-        let idKandang = item.id_kandang
-        let namaKandang = getKandang(idKandang).nama_kandang
-        let tanggalMulai = item.tanggal_mulai
-        let tanggalPanen = item.tanggal_panen
-        let jumlahPanen = item.jumlah_panen
-        let bobotTotal = item.bobot_total
-        $('#modalTitle').html("Mengubah Hasil Panen")
-        $('#modalBody').html(`
+        $.ajax({
+            type: "GET",
+            url: `/panen/${id}`,
+            success: function(response) {
+                let {
+                    id_kandang,
+                    kandang,
+                    tanggal_mulai,
+                    tanggal_panen,
+                    jumlah_panen,
+                    bobot_total
+                } = response.data;
+                $('#modalTitle').html("Mengubah Hasil Panen")
+                $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
-                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
+                                <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
                                     <label for="namaKandang">Nama kandang</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${namaKandang}" class="form-control" readonly>
+                                    <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="tanggalMulai">Tanggal mulai</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalMulai" value="${tanggalMulai}" class="form-control">
+                                    <input type="date" id="tanggalMulai" value="${tanggal_mulai}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="tanggalPanen">Tanggal panen</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalPanen" value="${tanggalPanen}" class="form-control">
+                                    <input type="date" id="tanggalPanen" value="${tanggal_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="jumlahPanen">Jumlah panen</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahPanen" value="${jumlahPanen}" class="form-control">
+                                    <input type="number" id="jumlahPanen" value="${jumlah_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="bobotTotal">Bobot Total</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="bobotTotal" value="${bobotTotal}" class="form-control">
+                                    <input type="number" id="bobotTotal" value="${bobot_total}" class="form-control">
                                 </div>
                                 
                             </div>
                         </div>
                     </form>
                 `)
-        $('#modalFooter').html(
-            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
-
+                $('#modalFooter').html(
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
     function deleteModal(id) {
-        let item = getPanen(id)
-        let namaKandang = getKandang(item.id_kandang).nama_kandang
-        let tanggalMulai = item.tanggal_mulai
-        let tanggalPanen = item.tanggal_panen
-        let bobotTotal = item.bobot_total
-        let jumlahPanen = item.jumlah_panen
+        $.ajax({
+            type: "GET",
+            url: `/panen/${id}`,
+            success: function(response) {
+                let {
+                    kandang,
+                    tanggal_mulai,
+                    tanggal_panen,
+                    bobot_total,
+                    jumlah_panen
+                } = response.data
 
-        $('#modalTitle').html("Hapus Hasil Panen")
-        $('#modalBody').html(`
+                $('#modalTitle').html("Hapus Hasil Panen")
+                $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
@@ -360,61 +388,33 @@
                                     <th class="text-center" colspan="2">Data panen</th>
                                 </tr>
                                 <tr>
-                                    <td>Nama Kandang</td> <td>${namaKandang}</td>
+                                    <td>Nama Kandang</td> <td>${kandang.nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Tanggal Mulai</td> <td>${tanggalMulai}</td>
+                                    <td>Tanggal Mulai</td> <td>${tanggal_mulai}</td>
                                 </tr> 
                                 <tr>
-                                <td>Tanggal Panen</td><td>${tanggalPanen}</td>
+                                <td>Tanggal Panen</td><td>${tanggal_panen}</td>
                                 </tr>
                                 <tr>
-                                <td>Jumlah Panen</td>  <td>${jumlahPanen}</td>
+                                <td>Jumlah Panen</td>  <td>${jumlah_panen}</td>
                                 </tr>  
                                 <tr>
-                                <td>Bobot Total</td>  <td>${bobotTotal}</td>
+                                <td>Bobot Total</td>  <td>${bobot_total}</td>
                                 </tr> 
                             </tbody>
                         </table>
                     </div>
                     `)
-        $('#modalFooter').html(
-            `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
-    }
-
-    function getPanen(id) {
-        let data
-        $.ajax({
-            type: "GET",
-            url: `/panen/${id}`,
-            async: false,
-            success: function(response) {
-                data = response.data
+                $('#modalFooter').html(
+                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
             }
         })
-        return data;
+
     }
-
-    function getKandang(id) {
-        let data
-        $.ajax({
-            type: "GET",
-            url: `/kandang/${id}`,
-            async: false,
-            success: function(response) {
-                data = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return data
-    }
-
-
     // -------------------------------API---------------------------------------------------------------------
 
     function save() {

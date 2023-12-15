@@ -198,50 +198,57 @@
 
     function initKandang() {
         let id = $("#selectKandang").val()
-        let kandang = getKandang(id)
-
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        showTableData(id)
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#alamatKandang').html(kandang.alamat_kandang)
+                showTableData(id)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
     function showTableData(kandangId) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/detail/kandang/${kandangId}`,
-            async: false,
+            url: `/data-kandang/kandang/${kandangId}`,
             success: function(response) {
                 // asign value
                 let kandangs = response.data
                 let data = ''
-                let iDataKandang = ''
-                let iDataPopulations = ''
-
                 // adding data kandang data
                 for (let i = 0; i < kandangs.length; i++) {
-                    let date = kandangs[i].date
-                    let namaKandang = kandangs[i].nama_kandang
-                    let alamatKandang = kandangs[i].alamat_kandang
-                    let pakan = kandangs[i].pakan
-                    let minum = kandangs[i].minum
-                    let bobot = kandangs[i].bobot
-                    let populasiAwal = kandangs[i].populasi_awal
-                    let riwayatPopulasi = kandangs[i].riwayat_populasi
-                    let luasKandang = kandangs[i].luas_kandang
-                    let klasifikasi = kandangs[i].classification
+                    let {
+                        date,
+                        nama_kandang,
+                        alamat_kandang,
+                        pakan,
+                        minum,
+                        bobot,
+                        populasi_awal,
+                        riwayat_populasi,
+                        luas_kandang,
+                        classification
+                    } = kandangs[i]
+
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
                     <td>${date}</td>
-                    <td>${namaKandang}</td>
-                    <td>${alamatKandang}</td>
+                    <td>${nama_kandang}</td>
+                    <td>${alamat_kandang}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
                     <td>${bobot}</td>
-                    <td>${populasiAwal}</td>
-                    <td>${riwayatPopulasi}</td>
-                    <td>${luasKandang}</td>
-                    <td>${klasifikasi}</td>
+                    <td>${populasi_awal}</td>
+                    <td>${riwayat_populasi}</td>
+                    <td>${luas_kandang}</td>
+                    <td>${classification}</td>
                     </tr>
                     `
                 }
@@ -339,304 +346,5 @@
         };
         setTableColor();
         jquery_datatable.on("draw", setTableColor);
-    }
-
-
-    function reset() {
-
-    }
-
-    function addModal(idKandang) {
-        let kandang = getKandang(idKandang)
-        $('#modalTitle').html("Menambahkan Hasil Panen")
-        $('#modalBody').html(`
-                <form class="form form-horizontal">
-                        <div class="form-body">
-                            <div class="row">
-                                <input type="hidden" id="idKandang" value="${kandang.id}" class="form-control">
-                                <div class="col-md-4">
-                                    <label for="namaKandang">Nama kandang</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="tanggalMulai">Tanggal mulai</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalMulai" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="tanggalPanen">Tanggal panen</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalPanen" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="jumlahPanen">Jumlah panen</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahPanen" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="bobotAyam">Bobot Total</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="bobotAyam" class="form-control">
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </form>
-                `)
-
-        $('#modalFooter').html(`
-         <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-         <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
-
-    }
-
-    function editModal(id) {
-        let item = getPanen(id)
-        let idKandang = item.id_kandang
-        let namaKandang = getKandang(idKandang).nama_kandang
-        let tanggalMulai = item.tanggal_mulai
-        let tanggalPanen = item.tanggal_panen
-        let jumlahPanen = item.jumlah_panen
-        let bobotTotal = item.bobot_total
-        $('#modalTitle').html("Mengubah Hasil Panen")
-        $('#modalBody').html(`
-                <form class="form form-horizontal">
-                        <div class="form-body">
-                            <div class="row">
-                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
-                                <div class="col-md-4">
-                                    <label for="namaKandang">Nama kandang</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${namaKandang}" class="form-control" readonly>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="tanggalMulai">Tanggal mulai</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalMulai" value="${tanggalMulai}" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="tanggalPanen">Tanggal panen</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalPanen" value="${tanggalPanen}" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="jumlahPanen">Jumlah panen</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahPanen" value="${jumlahPanen}" class="form-control">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="bobotTotal">Bobot Total</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="bobotTotal" value="${bobotTotal}" class="form-control">
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </form>
-                `)
-        $('#modalFooter').html(
-            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
-
-    }
-
-    function deleteModal(id) {
-        let item = getPanen(id)
-        let namaKandang = getKandang(item.id_kandang).nama_kandang
-        let tanggalMulai = item.tanggal_mulai
-        let tanggalPanen = item.tanggal_panen
-        let bobotTotal = item.bobot_total
-        let jumlahPanen = item.jumlah_panen
-
-        $('#modalTitle').html("Hapus Hasil Panen")
-        $('#modalBody').html(`
-                    <div>
-                        <table class="table table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th class="text-center" colspan="2">Data panen</th>
-                                </tr>
-                                <tr>
-                                    <td>Nama Kandang</td> <td>${namaKandang}</td>
-                                </tr>
-                                <tr>
-                                    <td>Tanggal Mulai</td> <td>${tanggalMulai}</td>
-                                </tr>
-                                <tr>
-                                <td>Tanggal Panen</td><td>${tanggalPanen}</td>
-                                </tr>
-                                <tr>
-                                <td>Jumlah Panen</td>  <td>${jumlahPanen}</td>
-                                </tr>
-                                <tr>
-                                <td>Bobot Total</td>  <td>${bobotTotal}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    `)
-        $('#modalFooter').html(
-            `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
-    }
-
-    function getPanen(id) {
-        let data
-        $.ajax({
-            type: "GET",
-            url: `/panen/${id}`,
-            async: false,
-            success: function(response) {
-                data = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return data;
-    }
-
-    function getKandang(id) {
-        let data
-        $.ajax({
-            type: "GET",
-            url: `/kandang/${id}`,
-            async: false,
-            success: function(response) {
-                data = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return data
-    }
-
-
-    // -------------------------------API---------------------------------------------------------------------
-
-    function save() {
-        let idKandang = $('#idKandang').val()
-        let tanggalMulai = $('#tanggalMulai').val()
-        let tanggalPanen = $('#tanggalPanen').val()
-        let jumlahPanen = $('#jumlahPanen').val()
-        let bobotAyam = $('#bobotAyam').val()
-
-        // validasi
-
-        // asign value if validated
-        let data = {
-            id_kandang: idKandang,
-            tanggal_mulai: tanggalMulai,
-            tanggal_panen: tanggalPanen,
-            jumlah_panen: jumlahPanen,
-            bobot_total: bobotAyam
-        }
-
-        $.ajax({
-            type: "POST",
-            url: `/panen`,
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: JSON.stringify(data),
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Berhasil menambahkan data",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#default').modal('hide')
-                    showTableData(response.panen.id_kandang)
-                })
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-
-        })
-
-    }
-
-
-
-    function update(id) {
-        let idKandang = $('#idKandang').val()
-        let tanggalMulai = $('#tanggalMulai').val()
-        let tanggalPanen = $('#tanggalPanen').val()
-        let jumlahPanen = $('#jumlahPanen').val()
-        let bobotTotal = $('#bobotTotal').val()
-
-        let data = {
-            id_kandang: idKandang,
-            tanggal_mulai: tanggalMulai,
-            tanggal_panen: tanggalPanen,
-            jumlah_panen: jumlahPanen,
-            bobot_total: bobotTotal
-        }
-        $.ajax({
-            type: "PUT",
-            url: `/panen/${id}`,
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Berhasil mengubah data",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#default').modal('hide')
-                    showTableData(idKandang)
-                })
-
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-    }
-
-    function deleteItem(id) {
-        $.ajax({
-            type: "DELETE",
-            url: `/panen/${id}`,
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Berhasil menghapus data",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#default').modal('hide')
-                    showTableData(response.panen.id_kandang)
-                })
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-
-        })
     }
 </script>

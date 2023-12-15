@@ -29,9 +29,9 @@ class UserController extends Controller
     public function index($id = null)
     {
         if ($id != null) {
-            $items = $this->model::findOrFail($id);
+            $items = User::with('roles')->where('id', $id)->first();
         } else {
-            $items = $this->model::with('roles')->get();
+            $items = User::with('roles')->orderBy('id', 'ASC')->get();
         }
         return response(['data' => $items, 'status' => 200]);
     }

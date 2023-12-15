@@ -171,79 +171,82 @@
 
         // Function to update chart data in real-time
         function updateData() {
-
             let idKandang = $('#selectKandang').val()
-
-            // get data from database suhu kelembapan
+            // get data from database suhu kelembapan amoniak
             $.ajax({
                 type: "GET",
-                url: `/sensor-suhu-kelembapan/kandang/${idKandang}`,
+                url: `/sensor-suhu-kelembapan-amoniak/kandang/${idKandang}`,
                 success: function(response) {
-                    if (response.data != null) {
-                        let suhuData = response.data.suhu
-                        let kelembapanData = response.data.kelembapan
-                        console.log("suhu data =" + suhuData)
-                        console.log("kelembapan data =" + kelembapanData)
 
-                        if (suhuData != null) {
-                            suhuChart.updateSeries([suhuData]);
-                            $('#suhuData').html(suhuData)
+                    if (response.data != null) {
+                        console.log(response.data)
+                        let suhuKelembapan = response.data.suhuKelembapan
+                        if (suhuKelembapan != null) {
+                            let suhuData = suhuKelembapan.suhu
+                            let kelembapanData = suhuKelembapan.kelembapan
+
+                            // masukan nilai suhu
+                            if (suhuData != null) {
+                                suhuChart.updateSeries([suhuData]);
+                                $('#suhuData').html(suhuData)
+                            } else {
+                                suhuChart.updateSeries([0]);
+                                $('#suhuData').html(0)
+                            }
+
+                            // masukan nilai kelembapan
+                            if (kelembapanData != null) {
+                                kelembapanChart.updateSeries([kelembapanData]);
+                                $('#kelembapanData').html(kelembapanData)
+                            } else {
+                                kelembapanChart.updateSeries([0]);
+                                $('#kelembapanData').html(0)
+                            }
+
                         } else {
                             suhuChart.updateSeries([0]);
                             $('#suhuData').html(0)
-                        }
-
-                        if (kelembapanData != null) {
-                            kelembapanChart.updateSeries([kelembapanData]);
-                            $('#kelembapanData').html(kelembapanData)
-                        } else {
                             kelembapanChart.updateSeries([0]);
                             $('#kelembapanData').html(0)
                         }
 
-
-
-                    } else {
-                        kelembapanChart.updateSeries([0]);
-                        $('#kelembapanData').html(0)
-
-                        suhuChart.updateSeries([0]);
-                        $('#suhuData').html(0)
-                    }
-                },
-                error: function(err) {
-                    console.log(err.responseText)
-                }
-            })
-
-            // get data from  database amonia
-            $.ajax({
-                type: "GET",
-                url: `/sensor-amoniak/kandang/${idKandang}`,
-                success: function(response) {
-                    console.log(response)
-                    if (response.data != null) {
-                        let amoniaData = response.data.amoniak
-                        console.log("amonia data =" + amoniaData)
-                        if (amoniaData != null) {
-                            amoniaChart.updateSeries([amoniaData])
-                            $('#amoniaData').html(amoniaData)
+                        let amoniaDatas = response.data.amoniak
+                        if (amoniaDatas != null) {
+                            let amoniak = amoniaDatas.amoniak
+                            // masukan nilai amonia
+                            if (amoniaData != null) {
+                                amoniaChart.updateSeries([amoniak])
+                                $('#amoniaData').html(amoniak)
+                            } else {
+                                amoniaChart.updateSeries([0])
+                                $('#amoniaData').html(0)
+                            }
                         } else {
                             amoniaChart.updateSeries([0])
                             $('#amoniaData').html(0)
                         }
 
+                    } else {
+                        // jika semua data kosong
 
+                        kelembapanChart.updateSeries([0]);
+                        $('#kelembapanData').html(0)
+
+                        suhuChart.updateSeries([0]);
+                        $('#suhuData').html(0)
+
+                        amoniaChart.updateSeries([0])
+                        $('#amoniaData').html(0)
                     }
-
                 },
                 error: function(err) {
                     console.log(err.responseText)
                 }
             })
+
         }
 
-        // Update data every 3 seconds (3000 milliseconds)
+        // Update data every 1 seconds (1000 milliseconds)
         setInterval(updateData, 1000);
 
 

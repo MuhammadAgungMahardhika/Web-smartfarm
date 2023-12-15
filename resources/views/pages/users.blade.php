@@ -28,7 +28,51 @@
                         data-bs-target="#default" onclick="addModal()"><i class="fa fa-plus"></i> </a>
                 </div>
                 <div id="tableData">
+                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                        <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Role
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Email
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Action
+                                </th>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $no = 1;
+                            @endphp
+                            @foreach ($data as $user)
+                                <tr>
+                                    <td>{{ $no++ }}</td>
+                                    <td>{{ $user->roles->nama_role }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td style="min-width: 180px">
+                                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="editModal('{{ $user->id }}')"><i class="fa fa-edit"></i> </a>
+                                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
+                                            data-bs-toggle="modal" data-bs-target="#default"
+                                            onclick="deleteModal('{{ $user->id }}')"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -36,9 +80,7 @@
     </section>
 </x-app-layout>
 <script>
-    fetchUsers()
-
-    function fetchUsers() {
+    function showTable() {
         $.ajax({
             type: "GET",
             url: `/users`,
@@ -48,16 +90,22 @@
 
                 let data = ''
                 for (let i = 0; i < userData.length; i++) {
-                    let userRole = userData[i].roles
+                    let {
+                        id,
+                        roles,
+                        name,
+                        email
+                    } = userData[i]
+
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${userRole.nama_role}</td>
-                    <td>${userData[i].name}</td>
-                    <td>${userData[i].email}</td>
+                    <td>${roles.nama_role}</td>
+                    <td>${name}</td>
+                    <td>${email}</td>
                     <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${userData[i].id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${userData[i].id}')"><i class="fa fa-trash"></i></a>
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
                     </td>
                     </tr>
                     `
@@ -142,15 +190,20 @@
     }
 
     function addModal() {
-        let roles = getRoles()
-        let roleData = ''
-        roles.forEach(role => {
-            roleData +=
-                `<option value="${role.id_role}">${role.nama_role}</option>`
-        });
+        $.ajax({
+            type: "GET",
+            url: `/roles`,
+            success: function(response) {
+                let roles = response.data
+                let roleData = ''
 
-        $('#modalTitle').html("Menambahkan User ")
-        $('#modalBody').html(`
+                roles.forEach(role => {
+                    roleData +=
+                        `<option value="${role.id_role}">${role.nama_role}</option>`
+                });
+
+                $('#modalTitle').html("Menambahkan User ")
+                $('#modalBody').html(`
         <form class="form form-horizontal">
                 <div class="form-body"> 
                     <div class="row">
@@ -223,27 +276,43 @@
             </form>
         `)
 
-        $('#modalFooter').html(`
-        <a class="btn btn-secondary btn-sm" onclick="reset()">Reset</a>
-        <a class="btn btn-success btn-sm" onclick="save()">Tambah</a>`)
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Tambah</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
     }
 
     function editModal(id) {
-        let item = getUser(id)
-        let idRole = item.id_role
-        let roles = getRoles()
-        let name = item.name
-        let email = item.email
-        let phoneNumber = item.phone_number
-        let roleData = ''
-        // Roles data
-        roles.forEach(role => {
-            roleData +=
-                `<option ${idRole == role.id_role ? 'selected' : ''} value="${role.id_role}">${role.nama_role}</option>`
-        });
+        $.ajax({
+            type: "GET",
+            url: `/user/${id}`,
+            success: function(response) {
+                console.log(response)
+                let {
+                    id_role,
+                    roles,
+                    name,
+                    email,
+                    phone_number
+                } = response.data
 
-        $('#modalTitle').html("Mengubah User")
-        $('#modalBody').html(`
+
+                let allRole = getRoles()
+
+                let roleData = ""
+                // Roles data
+                allRole.forEach(r => {
+                    console.log(r.id_role)
+                    console.log(id_role)
+                    roleData +=
+                        `<option ${id_role == r.id_role ? 'selected' : ''} value="${r.id_role }">${r.nama_role}</option>`
+                });
+
+                $('#modalTitle').html("Mengubah User")
+                $('#modalBody').html(`
         <form class="form form-horizontal">
                 <div class="form-body">
                     <div class="row">
@@ -271,14 +340,20 @@
                             <label for="phoneNumber">Phone Number</label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="number" id="phoneNumber" value="${phoneNumber}" class="form-control">
+                            <input type="number" id="phoneNumber" value="${phone_number}" class="form-control">
                         </div>
                     </div>
                 </div>
             </form>
         `)
-        $('#modalFooter').html(
-            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+                $('#modalFooter').html(
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
     }
 
     function deleteModal(id) {
@@ -292,22 +367,6 @@
         $.ajax({
             type: "GET",
             url: `/roles`,
-            async: false,
-            success: function(response) {
-                item = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return item
-    }
-
-    function getUser(id) {
-        let item
-        $.ajax({
-            type: "GET",
-            url: `/user/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -418,7 +477,7 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    fetchUsers()
+                    showTable()
                 })
             },
             error: function(err) {
@@ -502,7 +561,7 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    fetchUsers()
+                    showTable()
                 })
 
             },
@@ -529,7 +588,7 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    fetchUsers()
+                    showTable()
                 })
             },
             error: function(err) {

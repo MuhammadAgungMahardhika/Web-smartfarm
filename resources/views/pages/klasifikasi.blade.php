@@ -58,6 +58,10 @@
                                     aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
                                     Kandang
                                 </th>
@@ -66,10 +70,7 @@
                                     Alamat
                                     Kandang
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Tanggal
-                                </th>
+
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
                                     Hari-ke
@@ -99,9 +100,9 @@
                             @foreach ($data[0]['data_kandangs'] as $dataKandang)
                                 <tr>
                                     <td>{{ $no++ }}</td>
+                                    <td>{{ $dataKandang->date }}</td>
                                     <td>{{ $data[0]->nama_kandang }}</td>
                                     <td>{{ $data[0]->alamat_kandang }}</td>
-                                    <td>{{ $dataKandang->date }}</td>
                                     <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
@@ -124,145 +125,57 @@
 
     function initKandang() {
         let id = $("#selectKandang").val()
-        let kandang = getKandang(id)
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        showTableData(id)
-    }
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#alamatKandang').html(kandang.alamat_kandang)
+                showTableData(id)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
 
-    function addModal(idKandang) {
-        $('#modalTitle').html("Menambahkan Hasil Panen")
-        $('#modalBody').html(`
-        <form class="form form-horizontal">
-                <div class="form-body"> 
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namaKandang">Nama kandang</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="namaKandang" value="namaKandangTes" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalMulai">Tanggal mulai</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalMulai" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalPanen">Tanggal panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalPanen" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahPanen">Jumlah panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahPanen" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" class="form-control">
-                        </div>
-                        
-                    </div>
-                </div>
-            </form>
-        `)
-        $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
-    }
-
-    function editModal(id) {
-        $('#modalTitle').html("Mengubah Hasil Panen")
-        $('#modalBody').html(`
-        <form class="form form-horizontal">
-                <div class="form-body">
-                    <div class="row">
-                        <input type="hidden" id="idKandang" value="${id}" class="form-control">
-                        <div class="col-md-4">
-                            <label for="namaKandang">Nama kandang</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="text" id="namaKandang" value="Kandang 1" class="form-control" readonly>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggalMulai">Tanggal mulai</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggalMulai" value="2023-12-11" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="tanggaPanen">Tanggal panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="date" id="tanggaPanen" value="2023-12-11" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="jumlahPanen">Jumlah panen</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="jumlahPanen" value="20" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="bobotAyam">Bobot Ayam</label>
-                        </div>
-                        <div class="col-md-8 form-group">
-                            <input type="number" id="bobotAyam" value="20" class="form-control">
-                        </div>
-                        
-                    </div>
-                </div>
-            </form>
-        `)
-        $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="update('${id}')">Laporkan</a>`)
-    }
-
-    function deleteModal(id) {
-        $('#modalTitle').html("Hapus Hasil Panen")
-        $('#modalBody').html(`Apakah anda yakin ingin menghapus hasil panen ini?`)
-        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="delete('${id}'')">Hapus</a>`)
     }
 
     function showTableData(kandangId) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/detail/kandang/${kandangId}`,
-            async: false,
+            url: `/data-kandang/kandang/${kandangId}`,
             success: function(response) {
-                // asign value
+
                 let kandangs = response.data
-                console.log(kandangs)
                 let data = ''
-                let iDataKandang = ''
-                let iDataPopulations = ''
 
                 // adding data kandang data
                 for (let i = 0; i < kandangs.length; i++) {
-                    let date = kandangs[i].date
-                    let hari = kandangs[i].hari_ke
-                    let namaKandang = kandangs[i].nama_kandang
-                    let alamatKandang = kandangs[i].alamat_kandang
-                    let pakan = kandangs[i].pakan
-                    let minum = kandangs[i].minum
-                    let bobot = kandangs[i].bobot
-                    let populasiAwal = kandangs[i].populasi_awal
-                    let riwayatPopulasi = kandangs[i].riwayat_populasi
-                    let luasKandang = kandangs[i].luas_kandang
-                    let klasifikasi = kandangs[i].classification
+                    let {
+                        date,
+                        hari_ke,
+                        nama_kandang,
+                        alamat_kandang,
+                        pakan,
+                        minum,
+                        bobot,
+                        populasi_awal,
+                        riwayat_populasi,
+                        luas_kandang,
+                        classification
+                    } = kandangs[i]
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
                     <td>${date}</td>
-                    <td>${namaKandang}</td>             
-                    <td>${alamatKandang}</td>             
-                    <td>${hari}</td>             
+                    <td>${nama_kandang}</td>             
+                    <td>${alamat_kandang}</td>             
+                    <td>${hari_ke}</td>             
                     <td>${pakan}</td>
                     <td>${minum}</td>
                     <td>${bobot}</td>
-                    <td>${klasifikasi}</td>
+                    <td>${classification}</td>
                     </tr>
                     `
                 }
@@ -273,38 +186,42 @@
                     <thead>
                         <tr>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama Kandang
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Alamat Kandang
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Hari-ke
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                            Pakan
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                            Minum
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                            Bobot
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                            Klasifikasi
-                            </th>
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
+                                    Kandang
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Alamat
+                                    Kandang
+                                </th>
+
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Hari-ke
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Pakan
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Minum
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Bobot
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Klasifikasi
+                                </th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
@@ -352,21 +269,5 @@
         };
         setTableColor();
         jquery_datatable.on("draw", setTableColor);
-    }
-
-    function getKandang(id) {
-        let data
-        $.ajax({
-            type: "GET",
-            url: `/kandang/${id}`,
-            async: false,
-            success: function(response) {
-                data = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return data
     }
 </script>

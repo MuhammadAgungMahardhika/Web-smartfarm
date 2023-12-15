@@ -6,7 +6,9 @@
 @import "~bootstrap-icons/font/bootstrap-icons";
 
 // Fix icon placement
-body .bi::before, [class^=bi-]::before, [class*=" bi-"]::before {
+body .bi::before,
+[class^="bi-"]::before,
+[class*=" bi-"]::before {
     vertical-align: sub;
 }
 

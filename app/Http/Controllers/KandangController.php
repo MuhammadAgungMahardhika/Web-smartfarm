@@ -7,7 +7,6 @@ use App\Models\Kandang;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use App\Events\AddKandangEvent;
 use App\Repositories\KandangRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -47,21 +46,6 @@ class KandangController extends Controller
 		$items = DB::table('kandang')->where('id_peternak', '=', $id)->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
-	public function getDetailKandangById($id)
-	{
-		$items =
-			DB::table('kandang')
-			->where('kandang.id', '=', $id)
-			->join('data_kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
-			->join('populations', 'kandang.id', '=', 'populations.id_kandang')
-			->select('kandang.*', DB::raw('Sum(data_kandang.pakan) as total_pakan,Sum(data_kandang.minum) as total_minum,Sum(data_kandang.bobot) as total_bobot'), DB::raw('Min(populations.population) as sisa_population'))
-			->groupBy('kandang.id')
-			->get();
-
-
-		// $items = $this->model->where('id', '=', $id)->with(['data_kandangs', 'populations'])->get();
-		return response(['data' => $items, 'status' => 200]);
-	}
 
 	public function store(Request $request)
 	{
@@ -81,7 +65,6 @@ class KandangController extends Controller
 					"created_by" => Auth::user()->id,
 				]
 			);
-			// event(new AddKandangEvent( $this->model->get() ));
 			return response()->json([
 				'message' => 'success created kandang',
 				'kandang' => $kandang
@@ -112,7 +95,7 @@ class KandangController extends Controller
 				"alamat_kandang" => $request->alamat_kandang,
 				"updated_by" => Auth::user()->id,
 			]);
-			// event(new AddKandangEvent( $this->model->get() ));
+
 			return response()->json([
 				'message' => 'success update kandang',
 				'kandang' => $kandang

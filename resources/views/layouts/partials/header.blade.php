@@ -100,28 +100,19 @@
         var Hours = dt.getHours();
         var Min = dt.getMinutes();
         var Sec = dt.getSeconds();
-        // var MilliSec = dt.getMilliseconds();  + MilliSec + "MilliSec " (for milliseconds).
-
-        //strings
         var days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-
-        //strings
         var months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
             "November", "Desember"
         ];
 
-        // var localTime = dt.getLocaleTimeString();
-        // var localDate = dt.getLocaleDateString();
-
         if (Min < 10) {
             Min === "0" + Min;
-        } //displays two digits even Min less than 10
-
+        }
         if (Sec < 10) {
             Sec === "0" + Sec;
-        } //displays two digits even Sec less than 10
+        }
 
-        var suffix = " AM"; //cunverting 24Hours to 12Hours with AM & PM suffix
+        var suffix = " AM";
         if (Hours >= 12) {
             suffix = " PM";
             Hours = Hours - 12;
@@ -129,9 +120,6 @@
         if (Hours === 0) {
             Hours = 12;
         }
-
-        // document.getElementById("time").innerHTML = localTime;
-
         document.getElementById("dateTime").innerHTML =
             days[dt.getDay()] +
             ", " +

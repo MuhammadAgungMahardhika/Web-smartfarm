@@ -61,21 +61,20 @@ class SensorController extends Controller
 		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
 	}
 
-	public function indexAmonia($idKandang)
+	public function indexSuhuKelembapanAmoniak($idKandang)
 	{
-		$items = $this->modelAmoniak
+		$suhuKelembapan = $this->modelSuhuKelembapanSensor
 			->where('id_kandang', '=', $idKandang)
 			->orderBy('date', 'DESC')
 			->first();
-		return response(['data' => $items, 'status' => 200]);
-	}
-
-	public function indexSuhuKelembapan($idKandang)
-	{
-		$items = $this->modelSuhuKelembapanSensor
+		$amoniak = $this->modelAmoniak
 			->where('id_kandang', '=', $idKandang)
 			->orderBy('date', 'DESC')
 			->first();
+		$items = [
+			'suhuKelembapan' => $suhuKelembapan,
+			'amoniak' => $amoniak
+		];
 		return response(['data' => $items, 'status' => 200]);
 	}
 

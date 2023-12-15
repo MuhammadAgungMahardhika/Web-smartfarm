@@ -116,10 +116,18 @@
 
     function initKandang() {
         let id = $("#selectKandang").val()
-        let kandang = getKandang(id)
-
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        showTableData(id)
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#alamatKandang').html(kandang.alamat_kandang)
+                showTableData(id)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
 
@@ -128,32 +136,37 @@
             type: "GET",
             url: `/notification/kandang/${kandangId}`,
             contentType: "application/json",
-            async: false,
             success: function(response) {
-                // asign value
+
                 let itemData = response.data
-                console.log(itemData)
                 let data = ''
 
                 // adding input harian data
                 for (let i = 0; i < itemData.length; i++) {
-                    let status = ''
-                    if (itemData[i].status == 1) {
-                        status =
-                            ` <a title="tandain telah dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${itemData[i].id}','${2}','${kandangId}')"><i class="fa fa-envelope"></i> </a>`
-                    } else if (itemData[i].status == 2) {
-                        status =
-                            `<a title="tandain belum dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${itemData[i].id}','${1}','${kandangId}')"><i class="fa fa-envelope-open"></i></a>`
+                    let {
+                        id,
+                        status,
+                        pesan,
+                        waktu
+                    } = itemData[i]
+                    let statusInfo = ""
+
+                    if (status == 1) {
+                        statusInfo =
+                            ` <a title="tandain telah dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${2}','${kandangId}')"><i class="fa fa-envelope"></i> </a>`
+                    } else if (status == 2) {
+                        statusInfo =
+                            `<a title="tandain belum dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${1}','${kandangId}')"><i class="fa fa-envelope-open"></i></a>`
                     }
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${itemData[i].pesan}</td>
-                    <td class="${ itemData[i].status == 1? 'text-primary' : 'text-success'  }">${itemData[i].status == 1 ? "<i>belum dibaca</i>" : "<i>sudah dibaca</i>"}</td>
-                    <td>${itemData[i].waktu}</td>
-                    <td>
-                       ${status}
+                    <td>${pesan}</td>
+                    <td class="${ status == 1? 'text-primary' : 'text-success'  }">${status == 1 ? "<i>belum dibaca</i>" : "<i>sudah dibaca</i>"}</td>
+                    <td>${waktu}</td>
+                    <td class="text-center">
+                       ${statusInfo}
                     </td>
                     </tr>
                     `
@@ -233,21 +246,6 @@
         jquery_datatable.on("draw", setTableColor);
     }
 
-    function getKandang(id) {
-        let item
-        $.ajax({
-            type: "GET",
-            url: `/kandang/${id}`,
-            async: false,
-            success: function(response) {
-                item = response.data
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-        return item
-    }
 
     // API
     function updateItem(id, status, idKandang) {

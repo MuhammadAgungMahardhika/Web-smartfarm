@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
+use App\Models\Kandang;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,7 @@ class DataKandangController extends Controller
 	public function index($id = null)
 	{
 		if ($id != null) {
-			$items = $this->model::with('data_kematians')->find($id);
+			$items = $this->model::with(['kandang', 'data_kematians'])->find($id);
 		} else {
 
 			$items = $this->model->get();
@@ -54,24 +55,21 @@ class DataKandangController extends Controller
 
 	public function getDataKandangByIdKandang($id)
 	{
-		$items = DB::table('data_kandang')->where('id_kandang', '=', $id)
-			->join('data_kematian', 'data_kandang.id', '=', 'data_kematian.id_data_kandang', 'left')
-			->select('data_kandang.*', DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))
-			->groupBy('data_kandang.id')
-			->orderBy('data_kandang.id', 'ASC')
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $id)
+			->orderBy('data_kandang.created_at', 'ASC')
 			->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
 
 	public function getDetailKandangByIdKandang($id)
 	{
-		$items = DB::table('data_kandang')->where('id_kandang', '=', $id)
-			->join('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id', 'left')
-			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
-			->select('data_kandang.*', 'kandang.*', DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))
-			->groupBy('data_kandang.id', 'data_kematian.id_data_kandang')
-			->orderBy('data_kandang.id', 'ASC')
-			->get();
+		$items = Kandang::with('data_kandangs')->where('id', $id)->get();
+
 		return response(['data' => $items, 'status' => 200]);
 	}
 	public function getJumlahKematianByDataKandangId($id)

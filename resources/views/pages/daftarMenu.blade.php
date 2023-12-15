@@ -82,17 +82,7 @@
                             </div>
                         </div>
 
-                        <div class="col-3">
-                            <div class="card shadow-sm daftarMenu">
-                                <a href="/klasifikasiMonitoring">
-                                    <div class="card-body">
-                                        <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
-                                            alt="singleminded">
-                                        <h5 class="card-title mt-4">Klasifikasi</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+
 
                         <div class="col-3">
                             <div class="card shadow-sm daftarMenu">
@@ -124,6 +114,17 @@
 
                     {{-- Daftar menu pemilik dan peternak --}}
                     @if (Auth::user()->id_role == '2' || Auth::user()->id_role == '3')
+                        <div class="col-3">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/klasifikasiMonitoring">
+                                    <div class="card-body">
+                                        <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">Klasifikasi</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                         <div class="col-3">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/notifikasi">

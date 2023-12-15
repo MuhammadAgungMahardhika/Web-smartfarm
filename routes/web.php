@@ -26,6 +26,9 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('landing-page');
 });
+
+// menerima sensor dari luar dan menambahkan ke database
+Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'sensorLuar']);
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     //---------------------API------------------------------
@@ -56,15 +59,14 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::put('/panen/{id}', [PanenController::class, 'update']);
     Route::delete('/panen/{id}', [PanenController::class, 'delete']);
 
-    // sensor amoniak dan suhu
-    Route::get('/sensor-amoniak/kandang/{idKandang}', [SensorController::class, 'indexAmonia']);
-    Route::get('/sensor-suhu-kelembapan/kandang/{idKandang}', [SensorController::class, 'indexSuhuKelembapan']);
-    Route::get('/sensor-amoniak/{id}', [SensorController::class, 'indexAmonia']);
-    Route::post('/sensor-amoniak', [SensorController::class, 'storeAmoniak']);
-    Route::post('/sensor-suhu-kelembapan', [SensorController::class, 'storeSuhuKelembapan']);
 
-    // menerima sensor dari luar
-    Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'sensorLuar']);
+    // mendapatkan sensor dari database
+    Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'indexSuhuKelembapanAmoniak']);
+
+    // Route::post('/sensor-amoniak', [SensorController::class, 'storeAmoniak']);
+    // Route::post('/sensor-suhu-kelembapan', [SensorController::class, 'storeSuhuKelembapan']);
+
+
 
     // data kandang
     Route::get('/data-kandang', [DataKandangController::class, 'index']);

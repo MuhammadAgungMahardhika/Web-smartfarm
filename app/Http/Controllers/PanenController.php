@@ -29,7 +29,7 @@ class PanenController extends Controller
 	public function index($id = null)
 	{
 		if ($id != null) {
-			$items = $this->model::find($id);
+			$items = Panen::with('kandang')->find($id);
 		} else {
 
 			$items = $this->model->get();

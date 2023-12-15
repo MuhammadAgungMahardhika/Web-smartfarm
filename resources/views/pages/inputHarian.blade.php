@@ -133,13 +133,23 @@
 
     function initKandang() {
         let id = $("#selectKandang").val()
-        let kandang = getKandang(id)
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${id}`,
+            success: function(response) {
+                let kandang = response.data
+                $('#alamatKandang').html(kandang.alamat_kandang)
+                $('#addButton').html(
+                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
+                )
+                showTableData(id)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
 
-        $('#alamatKandang').html(kandang.alamat_kandang)
-        $('#addButton').html(
-            ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
-        )
-        showTableData(id)
+
     }
 
     function showTableData(kandangId) {
@@ -147,7 +157,6 @@
             type: "GET",
             url: `/data-kandang/kandang/${kandangId}`,
             contentType: "application/json",
-            async: false,
             success: function(response) {
                 console.log(response)
                 // asign value
@@ -156,18 +165,28 @@
 
                 // adding input harian data
                 for (let i = 0; i < itemData.length; i++) {
+                    let {
+                        id,
+                        hari_ke,
+                        date,
+                        pakan,
+                        minum,
+                        bobot,
+                        total_kematian
+                    } = itemData[i]
+
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${itemData[i].hari_ke}</td>
-                    <td>${itemData[i].date}</td>
-                    <td>${itemData[i].pakan}</td>
-                    <td>${itemData[i].minum}</td>
-                    <td>${itemData[i].bobot}</td>
-                    <td>${itemData[i].total_kematian }</td>
+                    <td>${hari_ke}</td>
+                    <td>${date}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${total_kematian }</td>
                     <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${itemData[i].id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${itemData[i].id}')"><i class="fa fa-trash"></i></a>
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
                     </td>
                     </tr>
                     `
@@ -262,21 +281,27 @@
     }
 
     function addModal(idKandang) {
-        let item = getKandang(idKandang)
-        let namaKandang = item.nama_kandang
-        let populasiAwal = item.populasi_awal
-        let populasiSaatIni = item.populasi_saat_ini
+        $.ajax({
+            type: "GET",
+            url: `/kandang/${idKandang}`,
+            success: function(response) {
 
-        let today = new Date()
-        let yyyy = today.getFullYear()
-        let mm = today.getMonth() + 1
-        let dd = today.getDate()
-        if (dd < 10) dd = '0' + dd;
-        if (mm < 10) mm = '0' + mm;
-        let dateNow = yyyy + "-" + mm + "-" + dd
+                let {
+                    nama_kandang,
+                    populasi_awal,
+                    populasi_saat_ini
+                } = response.data
 
-        $('#modalTitle').html("Menambahkan Input Harian")
-        $('#modalBody').html(`
+                let today = new Date()
+                let yyyy = today.getFullYear()
+                let mm = today.getMonth() + 1
+                let dd = today.getDate()
+                if (dd < 10) dd = '0' + dd;
+                if (mm < 10) mm = '0' + mm;
+                let dateNow = yyyy + "-" + mm + "-" + dd
+
+                $('#modalTitle').html("Menambahkan Input Harian")
+                $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
@@ -285,19 +310,19 @@
                                     <i>Nama Kandang</i>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <i>${namaKandang}</i>
+                                    <i>${nama_kandang}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <i>Populasi awal</i>
                                 </div>
                                 <div class="col-md-8 form-group ">
-                                    <i>${populasiAwal}</i>
+                                    <i>${populasi_awal}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <i>Populasi Saat ini</i>
                                 </div>
                                 <div class="col-md-8 form-group mb-4">
-                                    <i>${populasiSaatIni}</i>
+                                    <i>${populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="hariKe">Hari ke-</label>
@@ -356,8 +381,13 @@
                     </form>
                 `)
 
-        $('#modalFooter').html(`
-                <a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
     }
 
     function addRowKematian() {
@@ -398,31 +428,39 @@
     }
 
     function editModal(id) {
-        let item = getDataKandang(id)
-        let dataKematian = item.data_kematians
-        let idKandang = item.id_kandang
-        let dataKandang = getKandang(idKandang)
-        let namaKandang = dataKandang.nama_kandang
-        let populasiSaatIni = dataKandang.populasi_saat_ini
-        let hariKe = item.hari_ke
-        let date = item.date
-        let pakan = item.pakan
-        let minum = item.minum
-        let bobot = item.bobot
-        let riwayatPopulasi = parseInt(item.riwayat_populasi)
-        let klasifikasi = item.classification
+        $.ajax({
+            type: "GET",
+            url: `/data-kandang/${id}`,
+            success: function(response) {
+                let {
+                    data_kematians,
+                    id_kandang,
+                    kandang,
+                    hari_ke,
+                    date,
+                    pakan,
+                    minum,
+                    bobot,
+                    riwayat_populasi,
+                    classification
+                } = response.data
 
-        let optionButton = klasifikasi == "normal" ?
-            '<option selected value="normal">Normal</option><option value="abnormal">Abnormal</option>' :
-            '<option value="normal">Normal</option> <option selected value="abnormal">Abnormal</option>'
-        let rowKematian = ''
-        if (dataKematian.length > 0) {
-            for (let i = 0; i < dataKematian.length; i++) {
-                let id = Math.floor(Math.random() * 1000000000);
-                let jumlah = dataKematian[i].jumlah_kematian
-                let jam = dataKematian[i].jam
-                rowKematian +=
-                    `<tr id="${id}">
+                riwayat_populasi = parseInt(riwayat_populasi)
+
+                let optionButton = classification == "normal" ?
+                    '<option selected value="normal">Normal</option><option value="abnormal">Abnormal</option>' :
+                    '<option value="normal">Normal</option> <option selected value="abnormal">Abnormal</option>'
+                let rowKematian = ''
+                if (data_kematians.length > 0) {
+                    for (let i = 0; i < data_kematians.length; i++) {
+                        let id = Math.floor(Math.random() * 1000000000);
+                        let {
+                            jumlah_kematian,
+                            jam
+                        } = data_kematians[i]
+
+                        rowKematian +=
+                            `<tr id="${id}">
                     <td>
                         <div class="form-group">
                         <label for="jumlah">Jumlah</label>
@@ -430,7 +468,7 @@
                     </td> 
                     <td>
                         <div class="form-group">
-                        <input type="number" value="${jumlah}" name="jumlah_kematian" class="form-control" required>
+                        <input type="number" value="${jumlah_kematian}" name="jumlah_kematian" class="form-control" required>
                         </div>
                     </td> 
                     <td>
@@ -449,32 +487,32 @@
                         </div>
                     </td>
                 </tr>`
-            }
-        }
+                    }
+                }
 
-        $('#modalTitle').html("Mengubah Input Harian")
-        $('#modalBody').html(`
+                $('#modalTitle').html("Mengubah Input Harian")
+                $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
-                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
+                                <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
                                     <i>Nama Kandang</i>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <i>${namaKandang}</i>
+                                    <i>${kandang.nama_kandang}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <i>Populasi Saat ini</i>
                                 </div>
                                 <div class="col-md-8 form-group mb-4">
-                                    <i>${populasiSaatIni}</i>
+                                    <i>${kandang.populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="hariKe">Hari ke-</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control">
+                                    <input type="number" value="${hari_ke}" id="hariKe" class="form-control">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="date">Tanggal</label>
@@ -510,7 +548,7 @@
                                         </select>
                                     </fieldset>
                                 </div>
-                                <input type="hidden" value="${riwayatPopulasi}" id="riwayatPopulasi">
+                                <input type="hidden" value="${riwayat_populasi}" id="riwayatPopulasi">
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
                                         <p class="text-center">Data Kematian</p>
@@ -526,26 +564,38 @@
                         </div>
                     </form>
                 `)
-        $('#modalFooter').html(
-            `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+                $('#modalFooter').html(
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+
 
     }
 
     function deleteModal(id) {
-        let item = getDataKandang(id)
-        let kandang = getKandang(item.id_kandang)
-        let namaKandang = kandang.nama_kandang
-        let populasiSaatIni = kandang.populasi_saat_ini
-        let hariKe = item.hari_ke
-        let date = item.date
-        let pakan = item.pakan
-        let minum = item.minum
-        let bobot = item.bobot
-        let riwayatPopulasi = item.riwayat_populasi
-        let klasifikasi = item.classification
+        $.ajax({
+            type: "GET",
+            url: `/data-kandang/${id}`,
+            success: function(response) {
+                let {
+                    kandang,
+                    nama_kandang,
+                    populasi_saat_ini,
+                    hari_ke,
+                    date,
+                    pakan,
+                    minum,
+                    bobot,
+                    riwayat_populasi,
+                    classification
+                } = response.data
 
-        $('#modalTitle').html("Hapus Data Harian")
-        $('#modalBody').html(`
+
+                $('#modalTitle').html("Hapus Data Harian")
+                $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
@@ -553,10 +603,10 @@
                                     <th class="text-center" colspan="2">Data Harian</th>
                                 </tr>
                                 <tr>
-                                    <td>Nama Kandang</td> <td>${namaKandang}</td>
+                                    <td>Nama Kandang</td> <td>${kandang.nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Hari ke</td> <td>${hariKe}</td>
+                                    <td>Hari ke</td> <td>${hari_ke}</td>
                                 </tr> 
                                 <tr>
                                     <td>Tanggal</td> <td>${date}</td>
@@ -571,34 +621,26 @@
                                     <td>Bobot</td><td>${bobot}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Riwayat Populasi</td><td>${riwayatPopulasi}</td>
+                                    <td>Riwayat Populasi</td><td>${riwayat_populasi}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Klasifikasi</td><td>${klasifikasi}</td>
+                                    <td>Klasifikasi</td><td>${classification}</td>
                                 </tr> 
                             </tbody>
                         </table>
                     </div>
                     `)
-        $('#modalFooter').html(
-            `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
-    }
-
-    function getDataKandang(id) {
-        let item
-        $.ajax({
-            type: "GET",
-            url: `/data-kandang/${id}`,
-            async: false,
-            success: function(response) {
-                item = response.data
+                $('#modalFooter').html(
+                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
             }
         })
-        return item
+
     }
+
+
 
     function getKandang(id) {
         let item
@@ -702,7 +744,6 @@
             },
             data: JSON.stringify(data),
             success: function(response) {
-
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -712,7 +753,6 @@
                 }).then(() => {
                     $('#default').modal('hide')
                     showTableData(idKandang)
-                    // window.location.reload()
                 })
             },
             error: function(err) {
@@ -727,12 +767,10 @@
             type: "DELETE",
             url: `/data-kandang/${id}`,
             contentType: "application/json",
-            async: false,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -743,7 +781,6 @@
                     $('#default').modal('hide')
                     console.log(response.dataKandang.id_kandang)
                     showTableData(response.dataKandang.id_kandang)
-                    // window.location.reload()
                 })
             },
             error: function(err) {
@@ -777,8 +814,6 @@
         for (i = 0; i < dataKematian.length; i++) {
             totalKematian += parseInt(dataKematian[i].jumlah_kematian)
         }
-
-
 
         let kembalikanNilaiPopulasi = parseInt(getDataKematianByDataKandangId(id).total_kematian)
         let populasiSaatIni = parseInt(getKandang(idKandang).populasi_saat_ini) + parseInt(kembalikanNilaiPopulasi)
@@ -814,7 +849,6 @@
             classification: klasifikasi,
             data_kematian: dataKematian
         }
-
         $.ajax({
             type: "PUT",
             url: `/data-kandang/${id}`,
@@ -824,7 +858,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -835,9 +868,7 @@
                     $('#default').modal('hide')
                     console.log(idKandang)
                     showTableData(idKandang)
-                    // window.location.reload()
                 })
-
             },
             error: function(err) {
                 console.log(err.responseText)

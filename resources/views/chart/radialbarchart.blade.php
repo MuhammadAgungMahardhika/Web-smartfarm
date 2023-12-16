@@ -36,7 +36,6 @@
 
 
 {{-- Script Kelembapan dan Suhu dan Amonia --}}
-<script></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         // suhu
@@ -175,11 +174,11 @@
             // get data from database suhu kelembapan amoniak
             $.ajax({
                 type: "GET",
+                cache: false,
                 url: `/sensor-suhu-kelembapan-amoniak/kandang/${idKandang}`,
                 success: function(response) {
 
                     if (response.data != null) {
-                        console.log(response.data)
                         let suhuKelembapan = response.data.suhuKelembapan
                         if (suhuKelembapan != null) {
                             let suhuData = suhuKelembapan.suhu
@@ -187,26 +186,44 @@
 
                             // masukan nilai suhu
                             if (suhuData != null) {
-                                suhuChart.updateSeries([suhuData]);
-                                $('#suhuData').html(suhuData)
+                                if (suhuData !== suhuChart.series[0]) {
+                                    console.log(response)
+                                    suhuChart.updateSeries([suhuData], true, {
+                                        duration: 200
+                                    });
+                                    $('#suhuData').html(suhuData)
+                                }
+
                             } else {
-                                suhuChart.updateSeries([0]);
+                                suhuChart.updateSeries([0], true, {
+                                    duration: 200
+                                });
                                 $('#suhuData').html(0)
                             }
 
                             // masukan nilai kelembapan
                             if (kelembapanData != null) {
-                                kelembapanChart.updateSeries([kelembapanData]);
-                                $('#kelembapanData').html(kelembapanData)
+                                if (kelembapanData !== kelembapanChart.series[0]) {
+                                    kelembapanChart.updateSeries([kelembapanData], true, {
+                                        duration: 200
+                                    });
+                                    $('#kelembapanData').html(kelembapanData)
+                                }
                             } else {
-                                kelembapanChart.updateSeries([0]);
+                                kelembapanChart.updateSeries([0], true, {
+                                    duration: 200
+                                });
                                 $('#kelembapanData').html(0)
                             }
 
                         } else {
-                            suhuChart.updateSeries([0]);
+                            suhuChart.updateSeries([0], true, {
+                                duration: 200
+                            });
                             $('#suhuData').html(0)
-                            kelembapanChart.updateSeries([0]);
+                            kelembapanChart.updateSeries([0], true, {
+                                duration: 200
+                            });
                             $('#kelembapanData').html(0)
                         }
 
@@ -215,27 +232,41 @@
                             let amoniak = amoniaDatas.amoniak
                             // masukan nilai amonia
                             if (amoniaData != null) {
-                                amoniaChart.updateSeries([amoniak])
+                                // if (amoniak !== amoniaChart.series[0]) {
+                                amoniaChart.updateSeries([amoniak], true, {
+                                    duration: 200
+                                })
                                 $('#amoniaData').html(amoniak)
+                                // }
                             } else {
-                                amoniaChart.updateSeries([0])
+                                amoniaChart.updateSeries([0], true, {
+                                    duration: 200
+                                })
                                 $('#amoniaData').html(0)
                             }
                         } else {
-                            amoniaChart.updateSeries([0])
+                            amoniaChart.updateSeries([0], true, {
+                                duration: 200
+                            })
                             $('#amoniaData').html(0)
                         }
 
                     } else {
                         // jika semua data kosong
 
-                        kelembapanChart.updateSeries([0]);
+                        kelembapanChart.updateSeries([0], true, {
+                            duration: 200
+                        });
                         $('#kelembapanData').html(0)
 
-                        suhuChart.updateSeries([0]);
+                        suhuChart.updateSeries([0], true, {
+                            duration: 200
+                        });
                         $('#suhuData').html(0)
 
-                        amoniaChart.updateSeries([0])
+                        amoniaChart.updateSeries([0], true, {
+                            duration: 200
+                        })
                         $('#amoniaData').html(0)
                     }
                 },

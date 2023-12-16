@@ -31,7 +31,7 @@
                 <div class="row justify-content-center text-center">
                     {{-- Daftar menu untuk admin --}}
                     @if (Auth::user()->id_role == '1')
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/userList">
                                     <div class="card-body">
@@ -46,7 +46,7 @@
 
                     {{-- Daftar menu untuk Pemilik --}}
                     @if (Auth::user()->id_role == '2')
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/dashboard">
                                     <div class="card-body">
@@ -58,7 +58,7 @@
                             </div>
                         </div>
 
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/dataKandang">
                                     <div class="card-body">
@@ -70,7 +70,7 @@
                             </div>
                         </div>
 
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/forecast">
                                     <div class="card-body">
@@ -84,7 +84,7 @@
 
 
 
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/hasilPanen">
                                     <div class="card-body">
@@ -99,7 +99,7 @@
 
                     {{-- Daftar menu untuk peternak --}}
                     @if (Auth::user()->id_role == '3')
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/inputHarian">
                                     <div class="card-body">
@@ -114,7 +114,7 @@
 
                     {{-- Daftar menu pemilik dan peternak --}}
                     @if (Auth::user()->id_role == '2' || Auth::user()->id_role == '3')
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/klasifikasiMonitoring">
                                     <div class="card-body">
@@ -125,7 +125,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
                                 <a href="/notifikasi">
                                     <div class="card-body">

@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('amoniak_sensors', function (Blueprint $table) {
+        Schema::create('sensors', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->integer('id_kandang')->index('fk_amoniak_sensors_kandang');
-            $table->timestamp('date')->useCurrentOnUpdate()->useCurrent();
-            $table->integer('amoniak');
+            $table->integer('id_kandang')->index('fk_sensors_kandang');
+            $table->integer('suhu');
+            $table->integer('kelembapan');
+            $table->integer('amonia');
+            $table->timestamp('datetime')->useCurrent();
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('amoniak_sensors');
+        Schema::dropIfExists('sensors');
     }
 };

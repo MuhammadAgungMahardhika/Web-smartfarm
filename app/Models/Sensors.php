@@ -10,37 +10,42 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class AmoniakSensor
+ * Class SuhuKelembapanSensor
  * 
- * @property int $id_amoniak_sensor
+ * @property int $id_suhu_kelembapan_sensor
  * @property int $id_kandang
+ * @property int $suhu
  * @property Carbon $date
- * @property int $amoniak
+ * @property int $kelembapan
  * 
  * @property Kandang $kandang
  *
  * @package App\Models
  */
-class AmoniakSensor extends Model
+class Sensors extends Model
 {
-	protected $table = 'amoniak_sensors';
+	protected $table = 'sensors';
 	protected $primaryKey = 'id';
 	public $timestamps = false;
 
 	protected $casts = [
 		'id_kandang' => 'int',
-		'date' => 'datetime',
-		'amoniak' => 'int'
+		'suhu' => 'int',
+		'kelembapan' => 'int',
+		'amonia' => 'int',
+		'datetime' => 'datetime:Y-m-d H:i:s'
 	];
 
 	protected $fillable = [
 		'id_kandang',
-		'date',
-		'amoniak'
+		'suhu',
+		'kelembapan',
+		'amonia',
+		'datetime'
 	];
 
 	public function kandang()
 	{
-		return $this->belongsTo(Kandang::class, 'id');
+		return $this->belongsTo(Kandang::class, 'id_kandang');
 	}
 }

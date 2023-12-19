@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\AmoniakSensor;
+use App\Models\Sensors;
 use App\Models\SuhuKelembapanSensor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Repositories\AmoniakRepository;
+use App\Repositories\SensorRepository;
 use App\Repositories\SuhuKelembapanRepository;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -17,43 +19,31 @@ use Illuminate\Validation\ValidationException;
 class SensorController extends Controller
 {
 
-	protected $amoniakRepository;
-	protected $suhuKelembapanRepository;
-	protected $modelSuhuKelembapanSensor, $modelAmoniak;
+	protected $sensorRepository;
+	protected $modelSensor, $modelAmoniak;
 	/**
 	 * Create a new controller instance.
 	 */
 	public function __construct(
-		AmoniakSensor $amoniakSensor,
-		SuhuKelembapanSensor $suhuKelembapanSensor,
-		AmoniakRepository $amoniakRepository,
-		SuhuKelembapanRepository $suhuKelembapanRepository
+		Sensors $sensors,
+		SensorRepository $sensorRepository
 	) {
-		$this->modelAmoniak = $amoniakSensor;
-		$this->modelSuhuKelembapanSensor = $suhuKelembapanSensor;
-		$this->amoniakRepository = $amoniakRepository;
-		$this->suhuKelembapanRepository = $suhuKelembapanRepository;
+
+		$this->modelSensor = $sensors;
+		$this->sensorRepository = $sensorRepository;
 	}
 
-	public function sensorLuar($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
+	public function storeSensorFromOutside($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
 	{
 
 		// Suhu dan Kelembapan
-		if ($suhu != null || $kelembapan != null) {
-			$this->suhuKelembapanRepository->createSuhuKelembapanSensor((object)[
+		if ($suhu != null || $kelembapan != null || $amonia != null) {
+			$this->sensorRepository->createSensor((object)[
 				"id_kandang" => $idKandang,
-				"date" => Carbon::now()->timezone('Asia/Jakarta'),
+				"datetime" => Carbon::now()->timezone('Asia/Jakarta'),
 				"suhu" => $suhu,
-				"kelembapan" => $kelembapan
-			]);
-		}
-
-		// Amonia
-		if ($amonia != null) {
-			$this->amoniakRepository->createAmoniak((object)[
-				"id_kandang" => $idKandang,
-				"date" => Carbon::now()->timezone('Asia/Jakarta'),
-				"amoniak" => $amonia
+				"kelembapan" => $kelembapan,
+				"amonia" => $amonia,
 			]);
 		}
 
@@ -61,80 +51,27 @@ class SensorController extends Controller
 		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
 	}
 
-	public function indexSuhuKelembapanAmoniak($idKandang)
+	public function getSensor($idKandang)
 	{
-		$suhuKelembapan = $this->modelSuhuKelembapanSensor
+		$sensor = $this->modelSensor
 			->where('id_kandang', '=', $idKandang)
-			->orderBy('date', 'DESC')
-			->first();
-		$amoniak = $this->modelAmoniak
-			->where('id_kandang', '=', $idKandang)
-			->orderBy('date', 'DESC')
+			->orderBy('datetime', 'DESC')
 			->first();
 		$items = [
-			'suhuKelembapan' => $suhuKelembapan,
-			'amoniak' => $amoniak
+			'sensor' => $sensor
 		];
 		return response(['data' => $items, 'status' => 200]);
 	}
-
-	public function storeAmoniak(Request $request)
+	public function getSensorByKandangId($idKandang)
 	{
-		try {
-			$request->validate([
-				'id_kandang' => 'required',
-				'amoniak' => 'required',
-			]);
-
-			$amoniak = $this->amoniakRepository->createAmoniak(
-				(object) [
-					"id_kandang" => $request->id_kandang,
-					"date" => Carbon::now()->timezone('Asia/Jakarta'),
-					"amoniak" => $request->amoniak,
-				]
-			);
-			return response()->json([
-				'message' => 'success created sensor amoniak',
-				'amoniak' => $amoniak
-			], Response::HTTP_CREATED);
-		} catch (ValidationException $e) {
-			return response()->json([
-				'message' => 'Validation Error',
-				'errors' => $e->errors()
-			], 422);
-		} catch (QueryException $th) {
-			return $th->getMessage();
-		}
-	}
-
-	public function storeSuhuKelembapan(Request $request)
-	{
-		try {
-			$request->validate([
-				'id_kandang' => 'required',
-				'suhu' => 'required',
-				'kelembapan' => 'required',
-			]);
-
-			$suhuKelembapan = $this->suhuKelembapanRepository->createSuhuKelembapanSensor(
-				(object) [
-					"id_kandang" => $request->id_kandang,
-					"date" => Carbon::now()->timezone('Asia/Jakarta'),
-					"suhu" => $request->suhu,
-					"kelembapan" => $request->kelembapan,
-				]
-			);
-			return response()->json([
-				'message' => 'success created sensor suhu kelembapan',
-				'suhuKelembapan' => $suhuKelembapan
-			], Response::HTTP_CREATED);
-		} catch (ValidationException $e) {
-			return response()->json([
-				'message' => 'Validation Error',
-				'errors' => $e->errors()
-			], 422);
-		} catch (QueryException $th) {
-			return $th->getMessage();
-		}
+		$sensor = $this->modelSensor
+			->where('id_kandang', '=', $idKandang)
+			->join('kandang', 'kandang.id', '=', 'sensors.id_kandang')
+			->orderBy('datetime', 'DESC')
+			->get();
+		$items = [
+			'sensor' => $sensor
+		];
+		return response(['data' => $items, 'status' => 200]);
 	}
 }

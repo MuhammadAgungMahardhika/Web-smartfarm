@@ -26,6 +26,17 @@ class PageController extends Controller
         ];
         return view('pages/dashboard', $send);
     }
+    public function monitoringKandang()
+    {
+        $data =  Kandang::with(['sensors' => function ($query) {
+            $query->orderBy('datetime', 'desc');
+        }])->where('id_user', Auth::user()->id)->get();
+
+        $send = [
+            'data' => $data
+        ];
+        return view('pages/monitoringKandang', $send);
+    }
     public function dataKandang()
     {
         $data =  Kandang::with('data_kandangs')->where('id_user', Auth::user()->id)->get();

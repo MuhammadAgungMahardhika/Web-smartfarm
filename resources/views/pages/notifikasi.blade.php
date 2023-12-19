@@ -49,7 +49,7 @@
 
             </div>
 
-            <div class="card-body table-responsive bg-light p-4 rounded">
+            <div class="card-body table-responsive  p-4 rounded">
 
                 <div id="tableData">
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">

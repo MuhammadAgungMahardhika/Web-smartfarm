@@ -12,7 +12,7 @@
     @include('layouts.partials.styles')
 </head>
 
-<body style="background-color: #ffff">
+<body>
     <div id="app">
         {{-- Modal --}}
         <div class="modal fade text-left" id="default" tabindex="-1" aria-labelledby="myModalLabel1"

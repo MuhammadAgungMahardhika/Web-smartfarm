@@ -49,7 +49,7 @@
 
             </div>
 
-            <div class="card-body table-responsive bg-light p-4 rounded text-center">
+            <div class="card-body table-responsive  p-4 rounded text-center">
                 <h1>Upcoming!</h1>
                 {{-- <div id="tableData">
 

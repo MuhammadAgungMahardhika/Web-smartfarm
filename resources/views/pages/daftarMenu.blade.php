@@ -26,7 +26,7 @@
     </x-slot>
 
     <section class="section">
-        <div class="card bg-light">
+        <div class="card">
             <div class="card-body">
                 <div class="row justify-content-center text-center">
                     {{-- Daftar menu untuk admin --}}

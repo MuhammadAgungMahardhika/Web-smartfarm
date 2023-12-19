@@ -59,18 +59,9 @@ class Kandang extends Model
 		return $this->belongsTo(User::class, 'id_user');
 	}
 
-	public function amoniak_sensors()
-	{
-		return $this->hasMany(AmoniakSensor::class, 'id_kandang');
-	}
-
 	public function data_kandangs()
 	{
 		return $this->hasMany(DataKandang::class, 'id_kandang');
-	}
-	public function populations()
-	{
-		return $this->hasMany(Populations::class, 'id_kandang');
 	}
 
 	public function notification()
@@ -93,8 +84,8 @@ class Kandang extends Model
 		return $this->hasOne(RekapDataHarian::class, 'id_kandang');
 	}
 
-	public function suhu_kelembapan_sensors()
+	public function sensors()
 	{
-		return $this->hasMany(SuhuKelembapanSensor::class, 'id_kandang');
+		return $this->hasMany(Sensors::class, 'id_kandang');
 	}
 }

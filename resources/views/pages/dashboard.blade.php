@@ -40,7 +40,7 @@
                                                 </svg>
                                                 <span class="text-white" style="font-size: 20px">Suhu</span>
                                             </div>
-                                            <div class="card-body bg-light">
+                                            <div class="card-body ">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
                                                         <strong id="suhuData" class="h2">0</strong>
@@ -62,7 +62,7 @@
                                                 </svg>
                                                 <span class="text-white" style="font-size: 20px">Kelembapan</span>
                                             </div>
-                                            <div class="card-body bg-light">
+                                            <div class="card-body ">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
                                                         <strong id="kelembapanData" class="h2">0</strong>
@@ -84,7 +84,7 @@
                                                 </svg>
                                                 <span class="text-white" style="font-size: 20px">Amonia</span>
                                             </div>
-                                            <div class="card-body bg-light">
+                                            <div class="card-body ">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
                                                         <strong id="amoniaData" class="h2">0</strong>
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <div class="card bg-light">
+                                        <div class="card shadow-sm">
                                             <div class="card-body ">
                                                 {{-- chart --}}
                                                 @include('chart.radialbarchart')

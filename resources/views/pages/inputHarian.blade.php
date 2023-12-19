@@ -49,7 +49,7 @@
 
             </div>
 
-            <div class="card-body table-responsive bg-light p-4 rounded">
+            <div class="card-body table-responsive  p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
                     <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
                         data-bs-target="#default" onclick="addModal('{{ $data[0]->id_kandang }}')">

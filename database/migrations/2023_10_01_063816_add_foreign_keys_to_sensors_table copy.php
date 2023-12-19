@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('suhu_kelembapan_sensors', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('id_kandang')->index('fk_suhu_kelembapan_sensors_kandang');
-            $table->integer('suhu');
-            $table->timestamp('date')->useCurrent();
-            $table->integer('kelembapan');
+        Schema::table('sensors', function (Blueprint $table) {
+            $table->foreign(['id_kandang'], 'fk_sensors_kandang')->references(['id'])->on('kandang')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('suhu_kelembapan_sensors');
+        Schema::table('sensors', function (Blueprint $table) {
+            $table->dropForeign('fk_sensors_kandang');
+        });
     }
 };

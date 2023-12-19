@@ -107,7 +107,7 @@
             /* Mengubah arah tata letak menjadi kolom */
             align-items: center;
             justify-content: center;
-            background: url('https://source.unsplash.com/1600x900/?chicken-farm') no-repeat center center/cover;
+            background: url('/images/bg/farm.jpg') no-repeat center center/cover;
             color: #fff;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -256,13 +256,13 @@
 
     <section class="features" id="features">
         <div class="feature">
-            <img src="https://source.unsplash.com/600x400/?precision-farming" alt="Precision Farming">
+            <img src="/images/bg/precision.jpg" alt="Precision Farming">
             <h3>Precision Farming</h3>
             <p>Tingkatkan hasil dengan wawasan berbasis data. Optimalkan penggunaan sumber daya untuk efisiensi
                 maksimal.</p>
         </div>
         <div class="feature">
-            <img src="https://source.unsplash.com/600x400/?remote-monitoring" alt="Remote Monitoring">
+            <img src="/images/bg/monitoring.jpg" alt="Remote Monitoring">
             <h3>Remote Monitoring</h3>
             <p>Monitor peternakan Anda dari mana saja secara real-time. Dapatkan pemberitahuan tentang informasi
                 peternakan anda secara Realtime.</p>

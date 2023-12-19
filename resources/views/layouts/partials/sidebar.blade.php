@@ -12,6 +12,7 @@
     {{-- Menu untuk pemilik --}}
     <?php if(Auth::user()->id_role == '2'): ?>
     <x-maz-sidebar-item name="Dashboard" :link="route('dashboard')" icon="bi bi-house"></x-maz-sidebar-item>
+    <x-maz-sidebar-item name="Monitoring Kandang" :link="route('monitoringKandang')" icon="bi bi-display"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Data Kandang" :link="route('dataKandang')" icon="bi bi-display"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Forecast" :link="route('forecast')" icon="bi bi-cloud-hail"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Klasifikasi Monitoring" :link="route('klasifikasiMonitoring')" icon="bi bi-collection"></x-maz-sidebar-item>

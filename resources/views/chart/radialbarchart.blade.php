@@ -17,17 +17,17 @@
 
 {{-- Element --}}
 <div class="row text-center">
-    <div class="col-4">
+    <div class="col-12 col-md-4 col-lg-4">
         <div id="suhuChart">
 
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-12 col-md-4 col-lg-4">
         <div id="kelembapanChart">
 
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-12 col-md-4 col-lg-4">
         <div id="amoniaChart">
 
         </div>
@@ -149,7 +149,7 @@
                                 } else if (opt.angle === 90) {
                                     return '100°C'; // Label for end value
                                 } else {
-                                    return `${val}NH3`; // Display the value with 
+                                    return `${val}PPM`; // Display the value with 
                                 }
                             },
                         }
@@ -174,106 +174,82 @@
             // get data from database suhu kelembapan amoniak
             $.ajax({
                 type: "GET",
-                cache: false,
+                // cache: false,
                 url: `/sensor-suhu-kelembapan-amoniak/kandang/${idKandang}`,
                 success: function(response) {
+                    if (response.data.sensor != null) {
+                        let sensor = response.data.sensor
+                        // masukkan nilai suhu
+                        console.log("suhu =" + sensor.suhu)
+                        console.log("kelembapan =" + sensor.kelembapan)
+                        console.log("amonia =" + sensor.amonia)
 
-                    if (response.data != null) {
-                        let suhuKelembapan = response.data.suhuKelembapan
-                        if (suhuKelembapan != null) {
-                            let suhuData = suhuKelembapan.suhu
-                            let kelembapanData = suhuKelembapan.kelembapan
+                        let suhuData = sensor.suhu;
+                        if (suhuData != null && !isNaN(suhuData)) {
+                            suhuChart.updateSeries([suhuData], true, {
+                                duration: 200
+                            });
 
-                            // masukan nilai suhu
-                            if (suhuData != null) {
-                                if (suhuData !== suhuChart.series[0]) {
-                                    console.log(response)
-                                    suhuChart.updateSeries([suhuData], true, {
-                                        duration: 200
-                                    });
-                                    $('#suhuData').html(suhuData)
-                                }
-
-                            } else {
-                                suhuChart.updateSeries([0], true, {
-                                    duration: 200
-                                });
-                                $('#suhuData').html(0)
-                            }
-
-                            // masukan nilai kelembapan
-                            if (kelembapanData != null) {
-                                if (kelembapanData !== kelembapanChart.series[0]) {
-                                    kelembapanChart.updateSeries([kelembapanData], true, {
-                                        duration: 200
-                                    });
-                                    $('#kelembapanData').html(kelembapanData)
-                                }
-                            } else {
-                                kelembapanChart.updateSeries([0], true, {
-                                    duration: 200
-                                });
-                                $('#kelembapanData').html(0)
-                            }
-
+                            $('#suhuData').html(suhuData);
                         } else {
                             suhuChart.updateSeries([0], true, {
                                 duration: 200
                             });
-                            $('#suhuData').html(0)
+                            $('#suhuData').html(0);
+                        }
+
+                        // masukkan nilai kelembapan
+                        let kelembapanData = sensor.kelembapan;
+                        if (kelembapanData != null && !isNaN(kelembapanData)) {
+
+                            kelembapanChart.updateSeries([kelembapanData], true, {
+                                duration: 200
+                            });
+                            $('#kelembapanData').html(kelembapanData);
+                        } else {
                             kelembapanChart.updateSeries([0], true, {
                                 duration: 200
                             });
-                            $('#kelembapanData').html(0)
+                            $('#kelembapanData').html(0);
                         }
 
-                        let amoniaDatas = response.data.amoniak
-                        if (amoniaDatas != null) {
-                            let amoniak = amoniaDatas.amoniak
-                            // masukan nilai amonia
-                            if (amoniaData != null) {
-                                // if (amoniak !== amoniaChart.series[0]) {
-                                amoniaChart.updateSeries([amoniak], true, {
-                                    duration: 200
-                                })
-                                $('#amoniaData').html(amoniak)
-                                // }
-                            } else {
-                                amoniaChart.updateSeries([0], true, {
-                                    duration: 200
-                                })
-                                $('#amoniaData').html(0)
-                            }
+                        // masukkan nilai amonia
+                        let amoniaData = sensor.amonia;
+                        if (amoniaData != null && !isNaN(amoniaData)) {
+
+                            amoniaChart.updateSeries([amoniaData], true, {
+                                duration: 200
+                            });
+                            $('#amoniaData').html(amoniaData);
                         } else {
                             amoniaChart.updateSeries([0], true, {
                                 duration: 200
-                            })
-                            $('#amoniaData').html(0)
+                            });
+                            $('#amoniaData').html(0);
                         }
-
                     } else {
+                        console.log("semua kosong")
                         // jika semua data kosong
-
                         kelembapanChart.updateSeries([0], true, {
                             duration: 200
                         });
-                        $('#kelembapanData').html(0)
+                        $('#kelembapanData').html(0);
 
                         suhuChart.updateSeries([0], true, {
                             duration: 200
                         });
-                        $('#suhuData').html(0)
+                        $('#suhuData').html(0);
 
                         amoniaChart.updateSeries([0], true, {
                             duration: 200
-                        })
-                        $('#amoniaData').html(0)
+                        });
+                        $('#amoniaData').html(0);
                     }
                 },
                 error: function(err) {
-                    console.log(err.responseText)
+                    console.log(err.responseText);
                 }
-            })
+            });
 
         }
 

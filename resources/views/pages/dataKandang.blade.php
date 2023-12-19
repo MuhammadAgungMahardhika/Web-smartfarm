@@ -16,7 +16,7 @@
     </x-slot>
 
     <section class="section">
-        <div class="card">
+        <div class="card ">
             <div class="card-header">
                 <div class="row">
                     <div class="col-12 col-md-4 col-lg-4">
@@ -60,7 +60,7 @@
 
             </div>
 
-            <div class="card-body table-responsive bg-light p-4 rounded">
+            <div class="card-body table-responsive p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
 
                 </div>

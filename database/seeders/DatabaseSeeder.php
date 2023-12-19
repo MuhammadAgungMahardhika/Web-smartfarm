@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             Kandang::class,
             DataKandang::class,
-            Population::class,
             Notification::class
         ]);
     }

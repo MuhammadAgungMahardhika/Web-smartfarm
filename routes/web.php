@@ -28,7 +28,7 @@ Route::get('/', function () {
 });
 
 // menerima sensor dari luar dan menambahkan ke database
-Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'sensorLuar']);
+Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'storeSensorFromOutside']);
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     //---------------------API------------------------------
@@ -61,7 +61,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
 
     // mendapatkan sensor dari database
-    Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'indexSuhuKelembapanAmoniak']);
+    Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
+    Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
 
     // Route::post('/sensor-amoniak', [SensorController::class, 'storeAmoniak']);
     // Route::post('/sensor-suhu-kelembapan', [SensorController::class, 'storeSuhuKelembapan']);
@@ -100,31 +101,41 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         return view('pages/daftarMenu');
     })->middleware('role:1,2,3')->name('daftarMenu');
     //----------------------Admin---------------------------------------//
+    // Check role = 1, apakah admin yang login
     Route::middleware(['role:1'])->group(function () {
         Route::get('/userList', [PageController::class, "user"])->name('userList');
     });
 
+    // check apakah pemilik atau peternak memiliki kandang
     Route::middleware(['checkKandang'])->group(function () {
 
         //----------------------Pemilik--------------------------------------//
+        // Check role = 2, apakah pemilik yang login
         Route::middleware(['role:2'])->group(function () {
+            // Halaman dashboard
             Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
-            // data kandang
+            // Halaman monitoring kandang
+            Route::get('/monitoringKandang', [PageController::class, "monitoringKandang"])->name('monitoringKandang');
+            // Halaman data kandang
             Route::get('/dataKandang', [PageController::class, "dataKandang"])->name('dataKandang');
-            // forecast
+            // Halaman forecast
             Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
-            // Hasil Panen
+            // Halaman Hasil Panen
             Route::get('/hasilPanen', [PageController::class, "hasilPanen"])->name('hasilPanen');
         });
         //---------------------Peternak--------------------------------------//
+        // Check role = 3, apakah peternak yang login
         Route::middleware(['role:3'])->group(function () {
             Route::get('/inputHarian', [PageController::class, "inputHarian"])->name('inputHarian');
         });
 
 
         //-----------------------Pemilik & Peternak---------------------------//
+        // Check role = 2 & 3, apakah pemilik & peternak yang login
         Route::middleware(['role:2,3'])->group(function () {
+            // halaman notifikasi
             Route::get('/notifikasi', [PageController::class, "notifikasi"])->name('notifikasi');
+            // Halaman klasifikasi
             Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
         });
     });

@@ -22,8 +22,23 @@
                     <div class="col">
                         <div class="card">
                             <div class="card-header">
-                                <div id="namaKandang">
-
+                                <div class="row">
+                                    <div class="col">
+                                        <fieldset class="form-group">
+                                            <select class="form-select" id="selectKandang" onchange="updateData()">
+                                                @foreach ($data as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->nama_kandang }}
+                                                    </option>
+                                                @endforeach; ?>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col">
+                                        <div id="status">
+                                            <span class="badge bg-secondary">Offline</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -116,39 +131,3 @@
         </div>
     </section>
 </x-app-layout>
-<script>
-    fetchKandang(<?= auth()->user()->id ?>)
-
-    function fetchKandang(userId) {
-
-        let dataKandang
-        let optionButton = ""
-
-        $.ajax({
-            type: "GET",
-            url: `/kandang/user/${userId}`,
-            success: function(response) {
-                dataKandang = response.data
-                console.log(dataKandang)
-                // looping all kandang option
-                for (let i = 0; i < dataKandang.length; i++) {
-                    optionButton +=
-                        `<option ${i == 0 ? 'selected': ''} value="${dataKandang[i].id}">${dataKandang[i].nama_kandang}</option>`
-                }
-
-                $('#namaKandang').html(`
-                <fieldset class="form-group">
-                    <select class="form-select" id="selectKandang">
-                        ${optionButton}
-                    </select>
-                </fieldset>
-                `)
-
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-        })
-
-    }
-</script>

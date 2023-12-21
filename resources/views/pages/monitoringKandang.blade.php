@@ -177,7 +177,7 @@
 </script>
 <script>
     initDataTable('table')
-    setInterval(initKandang, 5000);
+    // setInterval(initKandang, 5000);
 
     function initKandang() {
         let id = $("#selectKandang").val()
@@ -201,7 +201,7 @@
             url: `/sensors/kandang/${kandangId}`,
             success: function(response) {
                 // asign value
-                let sensors = response.data.sensor
+                let sensors = response.data
                 let data = ''
                 // adding data kandang data
                 for (let i = 0; i < sensors.length; i++) {
@@ -272,7 +272,7 @@
     }
 
     function initDataTable(id) {
-        let jquery_datatable = $(`#${id}`).DataTable({
+        jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
                 [25, 50, 75, 100, 200, -1],
@@ -306,4 +306,26 @@
         setTableColor();
         jquery_datatable.on("draw", setTableColor);
     }
+</script>
+<script>
+    let suhu, kelembapan, amonia
+
+    var pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('sensor-data');
+    channel.bind('pusher:subscription_succeeded', function() {
+        // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+        channel.bind('App\\Events\\SensorDataUpdated', function(data) {
+            idKandang = data.idKandang
+            suhu = parseInt(data.suhu)
+            kelembapan = parseInt(data.kelembapan)
+            amonia = parseInt(data.amonia)
+            let selectedKandang = $("#selectKandang").val()
+            if (idKandang == selectedKandang) {
+                console.log(suhu)
+            }
+        });
+    });
 </script>

@@ -25,9 +25,14 @@
 
 <!-- Excel Exporter -->
 <script src="{{ asset('/js/extensions/exporter/xlsx.full.min.js') }}"></script>
+{{-- Laravel Echo untuk komunikasi dengan serve channel --}}
+<script src="{{ asset('/js/extensions/echo.js') }}"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
 
 @livewireScripts
 <script src="{{ asset('/js/main.js') }}"></script>
+
 {{-- <script src="{{ asset('/js/app.js') }}"></script> --}}
 
 

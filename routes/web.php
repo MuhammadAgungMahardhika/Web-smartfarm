@@ -64,9 +64,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
     Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
 
-    // Route::post('/sensor-amoniak', [SensorController::class, 'storeAmoniak']);
-    // Route::post('/sensor-suhu-kelembapan', [SensorController::class, 'storeSuhuKelembapan']);
-
 
 
     // data kandang

@@ -94,9 +94,9 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::delete('/notification/{id}', [NotificationController::class, 'delete']);
 
     //----------------------All Role -----------------------------------//
-    Route::get('/daftarMenu', function () {
+    Route::get('/menuList', function () {
         return view('pages/daftarMenu');
-    })->middleware('role:1,2,3')->name('daftarMenu');
+    })->middleware('role:1,2,3')->name('menuList');
     //----------------------Admin---------------------------------------//
     // Check role = 1, apakah admin yang login
     Route::middleware(['role:1'])->group(function () {
@@ -118,12 +118,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             // Halaman forecast
             Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
             // Halaman Hasil Panen
-            Route::get('/hasilPanen', [PageController::class, "hasilPanen"])->name('hasilPanen');
+            Route::get('/broilerHarvest', [PageController::class, "hasilPanen"])->name('broilerHarvest');
         });
         //---------------------Peternak--------------------------------------//
         // Check role = 3, apakah peternak yang login
         Route::middleware(['role:3'])->group(function () {
-            Route::get('/inputHarian', [PageController::class, "inputHarian"])->name('inputHarian');
+            Route::get('/dailyInput', [PageController::class, "inputHarian"])->name('dailyInput');
         });
 
 
@@ -131,7 +131,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         // Check role = 2 & 3, apakah pemilik & peternak yang login
         Route::middleware(['role:2,3'])->group(function () {
             // halaman notifikasi
-            Route::get('/notifikasi', [PageController::class, "notifikasi"])->name('notifikasi');
+            Route::get('/notification', [PageController::class, "notifikasi"])->name('notification');
             // Halaman klasifikasi
             Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
         });

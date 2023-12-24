@@ -11,36 +11,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    {{-- <li class="nav-item dropdown me-1">
-                        <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class='bi bi-envelope bi-sub fs-4 text-gray-600'></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <li>
-                                <h6 class="dropdown-header">Mail</h6>
-                            </li>
-                            <li><a class="dropdown-item" href="#">No new mail</a></li>
-                        </ul>
-                    </li> --}}
-
+                    {{-- datetime --}}
                     <li class="nav-item dropdown mx-3 mb-0  mt-4">
                         <span id="dateTime">
 
                         </span>
                     </li>
-                    {{-- <li class="nav-item dropdown me-3">
-                        <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 
-                            <li>
-                                <h6 class="dropdown-header">Notifications</h6>
-                            </li>
-                            <li><a class="dropdown-item">No notification available</a></li>
-                        </ul>
+                    {{-- languange --}}
+                    {{-- <li class="nav-item dropdown mx-3 mb-0  mt-4">
+                        <span id="lang">
+                            <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
+                                EN
+                                <div class="form-check form-switch fs-6">
+                                    <input class="form-check-input  me-0" type="checkbox" id="toggle-lang"
+                                        onclick="toggleLang()">
+                                    <label class="form-check-label"></label>
+                                </div>
+                                ID
+                            </div>
+                        </span>
                     </li> --}}
                 </ul>
                 <div class="dropdown">
@@ -91,6 +81,7 @@
         </div>
     </nav>
 </header>
+{{-- Clock --}}
 <script>
     new DateAndTime();
     setInterval("DateAndTime()", 1000);
@@ -100,9 +91,9 @@
         var Hours = dt.getHours();
         var Min = dt.getMinutes();
         var Sec = dt.getSeconds();
-        var days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        var months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
-            "November", "Desember"
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var months = ["January", "February", "March", "April", "Mei", "June", "July", "August", "September", "October",
+            "November", "December"
         ];
 
         if (Min < 10) {
@@ -129,5 +120,19 @@
             " " +
             dt.getFullYear() + "," + Hours + ":" + Min + ":" + Sec + ":" + suffix;
 
+    }
+</script>
+{{-- Language --}}
+<script>
+    let lang = localStorage.getItem("locale")
+    let togglerLang = document.getElementById('toggle-lang')
+    lang == "id" ? togglerLang.checked = true : false
+
+    function toggleLang() {
+        togglerLang.checked ? setLanguage("id") : setLanguage("en")
+    }
+
+    function setLanguage(locale) {
+        localStorage.setItem("locale", locale)
     }
 </script>

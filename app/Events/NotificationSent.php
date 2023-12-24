@@ -2,27 +2,24 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SensorDataUpdated implements ShouldBroadcast
+class NotificationSent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $idKandang, $suhu, $kelembapan, $amonia;
+    public $idKandang, $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($idKandang, $suhu, $kelembapan, $amonia)
+    public function __construct($idKandang, $message)
     {
         $this->idKandang = $idKandang;
-        $this->suhu = $suhu;
-        $this->kelembapan = $kelembapan;
-        $this->amonia = $amonia;
+        $this->message = $message;
     }
 
     /**
@@ -32,6 +29,6 @@ class SensorDataUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('sensor-data');
+        return new PrivateChannel('telegram-notif');
     }
 }

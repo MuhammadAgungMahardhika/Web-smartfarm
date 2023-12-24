@@ -43,13 +43,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Ekspor Laporan</th>
+                                    <th>Export to</th>
                                     <td>
                                         <a class="btn btn-outline-danger btn-sm me-2" onclick="exportToPDF()"><i
                                                 class="fa fa-file-pdf-o"> </i> Pdf
                                         </a>
-                                        <a class="btn btn-outline-success btn-sm" onclick="exportToExcel()"><i
+                                        <a class="btn btn-outline-success btn-sm me-2" onclick="exportToExcel()"><i
                                                 class="fa fa-file-excel-o"> </i> Excel
+                                        </a>
+                                        <a class="btn btn-outline-success btn-sm" onclick="exportToCsv()"><i
+                                                class="fa fa-file-csv"> </i> Csv
                                         </a>
                                     </td>
                                 </tr>
@@ -57,58 +60,64 @@
                         </table>
                     </div>
                 </div>
-
             </div>
 
             <div class="card-body table-responsive p-4 rounded">
-                <div class="text-start mb-4" id="addButton">
-
+                <div class="text-start mb-4" id="filterMenu">
+                    <a href="" class="btn btn-success">Filter</a>
                 </div>
                 <div id="tableData">
-                    <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <table class="table dataTable no-footer " id="table" aria-describedby="table1_info">
                         <thead>
                             <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                    aria-label="Name: activate to sort column ascending" style="width: 30px;">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
-                                    Kandang
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Pen
+                                    Name
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending" style="width: 239.078px;">
-                                    Alamat Kandang
+                                    Pen Address
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Pakan
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">Pen
+                                    Area (M<sup>2</sup>)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Minum
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">
+                                    Initial Population (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Bobot
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Populasi Awal
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Riwayat Populasi
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">
+                                    Remaining Population (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 117.891px;">Luas Kandang
+                                    style="width: 223.344px;">
+                                    Feed (G)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 117.891px;">Klasifikasi
+                                    style="width: 223.344px;">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 223.344px;">
+                                    Weight (Kg)
+                                </th>
+
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Classification
                                 </th>
 
                             </tr>
@@ -121,14 +130,15 @@
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $dataKandang->date }}</td>
+                                    <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $data[0]->nama_kandang }}</td>
                                     <td>{{ $data[0]->alamat_kandang }}</td>
+                                    <td>{{ $data[0]->luas_kandang }}</td>
+                                    <td>{{ $data[0]->populasi_awal }}</td>
+                                    <td>{{ $dataKandang->riwayat_populasi }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
                                     <td>{{ $dataKandang->bobot }}</td>
-                                    <td>{{ $data[0]->populasi_awal }}</td>
-                                    <td>{{ $dataKandang->riwayat_populasi }}</td>
-                                    <td>{{ $data[0]->luas_kandang }}</td>
                                     <td>{{ $dataKandang->classification }}</td>
                                 </tr>
                             @endforeach
@@ -192,6 +202,25 @@
         // Simpan ke file Excel
         XLSX.writeFile(wb, `laporan-kandang-${today}.xlsx`);
     }
+
+    function exportToCsv() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+
+        const table = document.getElementById("table");
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Buat objek workbook dan tambahkan sheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        // Simpan ke file Csv
+        XLSX.writeFile(wb, `laporan-kandang-${today}.csv`);
+    }
 </script>
 <script>
     initDataTable('table')
@@ -224,6 +253,7 @@
                 for (let i = 0; i < kandangs.length; i++) {
                     let {
                         date,
+                        hari_ke,
                         nama_kandang,
                         alamat_kandang,
                         pakan,
@@ -240,14 +270,15 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${date}</td>
+                    <td>${hari_ke}</td>
                     <td>${nama_kandang}</td>
                     <td>${alamat_kandang}</td>
+                    <td>${luas_kandang}</td>
+                    <td>${populasi_awal}</td>
+                    <td>${riwayat_populasi}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
                     <td>${bobot}</td>
-                    <td>${populasi_awal}</td>
-                    <td>${riwayat_populasi}</td>
-                    <td>${luas_kandang}</td>
                     <td>${classification}</td>
                     </tr>
                     `
@@ -257,49 +288,57 @@
                 let table = `
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
-                        <tr>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama Kandang
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Alamat Kandang
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Pakan
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Minum
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Bobot
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Populasi Awal
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Riwayat Populasi
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Luas Kandang
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Klasifikasi
-                            </th>
-                          
-                        </tr>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 30px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Pen
+                                    Name
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Pen Address
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">Pen
+                                    Area (M<sup>2</sup>)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">
+                                    Initial Population (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 239.078px;">
+                                    Remaining Population (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 223.344px;">
+                                    Feed (G)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 223.344px;">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 223.344px;">
+                                    Weight (Kg)
+                                </th>
+
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Classification
+                                </th>
+
+                            </tr>
                     </thead>
                     <tbody>
                         ${data}
@@ -316,35 +355,9 @@
         let jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
-                [25, 50, 75, 100, 200, -1],
-                [25, 50, 75, 100, 200, "All"],
-            ],
-            pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
+                [10, 25, 50, 75, 100, 200, -1],
+                [10, 25, 50, 75, 100, 200, "All"],
+            ]
         });
-
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
     }
 </script>

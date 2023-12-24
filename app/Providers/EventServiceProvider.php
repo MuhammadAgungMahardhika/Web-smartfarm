@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\NotificationSent;
 use App\Events\SensorDataUpdated;
+use App\Listeners\NotificationSentListener;
 use App\Listeners\SensorDataUpdatedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         SensorDataUpdated::class => [
             SensorDataUpdatedListener::class
+        ],
+        NotificationSent::class => [
+            NotificationSentListener::class
         ]
     ];
 

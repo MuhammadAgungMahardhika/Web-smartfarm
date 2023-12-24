@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Data Kandang</h3>
+                <h3 style="color: #cb8e8e">Monitoring Kandang</h3>
                 <p class="text-subtitle text-muted">Halaman Data Kandang</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -48,8 +48,11 @@
                                         <a class="btn btn-outline-danger btn-sm me-2" onclick="exportToPDF()"><i
                                                 class="fa fa-file-pdf-o"> </i> Pdf
                                         </a>
-                                        <a class="btn btn-outline-success btn-sm" onclick="exportToExcel()"><i
+                                        <a class="btn btn-outline-success btn-sm me-2" onclick="exportToExcel()"><i
                                                 class="fa fa-file-excel-o"> </i> Excel
+                                        </a>
+                                        <a class="btn btn-outline-success btn-sm" onclick="exportToCsv()"><i
+                                                class="fa fa-file-csv"> </i> Csv
                                         </a>
                                     </td>
                                 </tr>
@@ -69,34 +72,24 @@
                         <thead>
                             <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                                </th>
-
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama
-                                    Kandang
+                                    aria-label="Name: activate to sort column ascending">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
-                                    Alamat Kandang
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Datetime
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Suhu
+                                    aria-label="Status: activate to sort column ascending">
+                                    Temperature ( &deg; Celcius )
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Kelembapan
+                                    aria-label="Status: activate to sort column ascending">
+                                    Humidity ( % Rh )
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Amonia
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amonia ( Ppm )
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
-                                    Waktu
-                                </th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -106,12 +99,10 @@
                             @foreach ($data[0]['sensors'] as $sensor)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $data[0]->nama_kandang }}</td>
-                                    <td>{{ $data[0]->alamat_kandang }}</td>
+                                    <td>{{ $sensor->datetime }}</td>
                                     <td>{{ $sensor->suhu }}</td>
                                     <td>{{ $sensor->kelembapan }}</td>
                                     <td>{{ $sensor->amonia }}</td>
-                                    <td>{{ $sensor->datetime }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -174,6 +165,25 @@
         // Simpan ke file Excel
         XLSX.writeFile(wb, `data-suhu-kelembapan-amonia-kandang-${today}.xlsx`);
     }
+
+    function exportToCsv() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = mm + '/' + dd + '/' + yyyy;
+
+        const table = document.getElementById("table");
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Buat objek workbook dan tambahkan sheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+        // Simpan ke file Csv
+        XLSX.writeFile(wb, `laporan-kandang-${today}.csv`);
+    }
 </script>
 <script>
     initDataTable('table')
@@ -207,8 +217,6 @@
                 for (let i = 0; i < sensors.length; i++) {
                     let {
                         datetime,
-                        nama_kandang,
-                        alamat_kandang,
                         suhu,
                         kelembapan,
                         amonia,
@@ -218,8 +226,6 @@
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${nama_kandang}</td>
-                    <td>${alamat_kandang}</td>
                     <td>${suhu}</td>
                     <td>${kelembapan}</td>
                     <td>${amonia}</td>
@@ -234,29 +240,22 @@
                     <thead>
                         <tr>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                            </th>
-                            
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Nama Kandang
+                                                aria-label="Name: activate to sort column ascending">No
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Alamat Kandang
+                                                aria-label="Status: activate to sort column ascending">
+                                                Temperature
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Suhu
+                                                aria-label="Status: activate to sort column ascending">
+                                                Humidity
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Kelembapan
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                                aria-label="Status: activate to sort column ascending">
                                                 Amonia
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Waktu
+                                                aria-label="Phone: activate to sort column ascending">Datetime
                             </th>
                         </tr>
                     </thead>
@@ -275,36 +274,10 @@
         jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
-                [25, 50, 75, 100, 200, -1],
-                [25, 50, 75, 100, 200, "All"],
+                [10, 25, 50, 75, 100, 200, -1],
+                [10, 25, 50, 75, 100, 200, "All"],
             ],
-            pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
         });
-
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
     }
 </script>
 <script>

@@ -41,9 +41,9 @@ class SensorDataUpdatedListener
                 "datetime" => Carbon::now()->timezone('Asia/Jakarta'),
                 "suhu" => $suhu,
                 "kelembapan" => $kelembapan,
+                "is_outlier" => false,
                 "amonia" => $amonia,
             ]);
         }
-        // broadcast(new SensorDataUpdated($event->suhu, $event->kelembapan, $event->amonia));
     }
 }

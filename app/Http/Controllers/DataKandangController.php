@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
 use App\Models\Kandang;
@@ -87,7 +88,6 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
-			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -95,7 +95,8 @@ class DataKandangController extends Controller
 		try {
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
-			$klasifikasi = $request->classification;
+			$dataKematian = $request->data_kematian;
+			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
 			$dataKandang = $this->dataKandangRepository->createDataKandang(
 				(object) [
 					"id_kandang" => $idKandang,
@@ -106,11 +107,11 @@ class DataKandangController extends Controller
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,
 					"date" => $request->date,
+					"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 					"created_by" => Auth::user()->id,
 				]
 			);
 
-			$dataKematian = $request->data_kematian;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
 					$jamKematian = $dataKematian[$i]['jam'];
@@ -121,6 +122,7 @@ class DataKandangController extends Controller
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $jumlahKematian,
 							"jam" => $jamKematian,
+							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 							"created_by" => Auth::user()->id
 						]
 					);
@@ -133,6 +135,7 @@ class DataKandangController extends Controller
 
 			// give notification
 			if ($klasifikasi == "abnormal") {
+				// triggered event
 				$this->notificationRepository->createNotification((object)[
 					"id_kandang" => $idKandang,
 					"pesan" => "Ditemukan status tidak normal pada kandang",
@@ -167,7 +170,6 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
-			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -175,6 +177,8 @@ class DataKandangController extends Controller
 		try {
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
+			$dataKematian = $request->data_kematian;
+			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
 			$dataKandang = $this->dataKandangRepository->editDataKandang(
 				$id,
 				(object) [
@@ -184,8 +188,9 @@ class DataKandangController extends Controller
 					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
-					"classification" => $request->classification,
+					"classification" => $klasifikasi,
 					"date" => $request->date,
+					"updated_at" => Carbon::now()->timezone('Asia/Jakarta'),
 					"updated_by" => Auth::user()->id,
 				]
 			);
@@ -193,7 +198,6 @@ class DataKandangController extends Controller
 			// delete data kematian
 			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
-			$dataKematian = $request->data_kematian;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
 					$this->dataKematianRepository->createDataKematian(
@@ -201,6 +205,7 @@ class DataKandangController extends Controller
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
 							"jam" => $dataKematian[$i]['jam'],
+							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 							"created_by" => Auth::user()->id
 						]
 					);
@@ -211,6 +216,11 @@ class DataKandangController extends Controller
 			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
+
+			// Kirim notifikasi
+			if ($klasifikasi == "abnormal") {
+				Event(new NotificationSent($idKandang, "Ditemukan keadaan Abnormal pada kandang"));
+			}
 
 			DB::commit();
 			return response()->json([

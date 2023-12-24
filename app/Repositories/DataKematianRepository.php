@@ -20,10 +20,9 @@ class DataKematianRepository
     try {
       $dataKematian = new DataKematian();
       $dataKematian->id_data_kandang = $data->id_data_kandang;
-      // $dataKematian->kematian_terbaru = $data->kematian_terbaru;
       $dataKematian->jumlah_kematian = $data->jumlah_kematian;
       $dataKematian->jam = $data->jam;
-      // $dataKematian->hari = $data->hari;
+      $dataKematian->created_at = $data->created_at;
       $dataKematian->created_by = $data->created_by;
       $dataKematian->save();
 
@@ -44,6 +43,7 @@ class DataKematianRepository
       $dataKematian->jumlah_kematian = $data->jumlah_kematian;
       $dataKematian->jam = $data->jam;
       $dataKematian->hari = $data->hari;
+      $dataKematian->updated_at = $data->updated_at;
       $dataKematian->updated_by = $data->updated_by;
       $dataKematian->save();
 

@@ -31,7 +31,6 @@ class PanenController extends Controller
 		if ($id != null) {
 			$items = Panen::with('kandang')->find($id);
 		} else {
-
 			$items = $this->model->get();
 		}
 		return response(['data' => $items, 'status' => 200]);

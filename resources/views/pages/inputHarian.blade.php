@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Input Harian</h3>
-                <p class="text-subtitle text-muted">Halaman Input Harian</p>
+                <h3 style="color: #cb8e8e">Daily Input </h3>
+                <p class="text-subtitle text-muted">Daily input page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -23,7 +23,7 @@
                         <table class="table table-borderless text-start">
                             <thead>
                                 <tr>
-                                    <th>Nama Kandang</th>
+                                    <th>House Name</th>
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
@@ -37,7 +37,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Alamat Kandang</th>
+                                    <th>House Address</th>
                                     <td id="alamatKandang">
                                         {{ $kandang[0]->alamat_kandang }}
                                     </td>
@@ -52,7 +52,7 @@
             <div class="card-body table-responsive  p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
                     <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
-                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id_kandang }}')">
+                        data-bs-target="#default" onclick="addModal('{{ $kandang[0]->id }}')">
                         <i class="fa fa-plus"></i>
                     </a>
                 </div>
@@ -65,27 +65,28 @@
                                     aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
-                                    Tanggal
+                                    Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                </th>
+
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Feed (G)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Pakan
+                                    Watering (L)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Minum
+                                    Weight (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Bobot
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Jumlah Kematian harian
+                                    Daily mortality (Head)
                                 </th>
 
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
@@ -101,8 +102,8 @@
                             @foreach ($data as $dataKandang)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $dataKandang->date }}</td>
+                                    <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
                                     <td>{{ $dataKandang->bobot }}</td>
@@ -178,8 +179,8 @@
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${hari_ke}</td>
                     <td>${date}</td>
+                    <td>${hari_ke}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
                     <td>${bobot}</td>
@@ -195,38 +196,38 @@
                 let table = `
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
-                        <tr>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Hari
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Tanggal
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Pakan
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Minum
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Bobot
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Jumlah Kematian harian
-                            </th>
-                        
-                            <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Action
-                            </th>
-                        </tr>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    Date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Feed (G)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Weight (Kg)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    Daily mortality (Head)
+                                </th>
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending"
+                                    style="width: 117.891px;">Action
+                                </th>
+                            </tr>
                     </thead>
                     <tbody>
                         ${data}
@@ -248,36 +249,11 @@
         let jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
-                [25, 50, 75, 100, 200, -1],
-                [25, 50, 75, 100, 200, "All"],
+                [10, 25, 50, 75, 100, 200, -1],
+                [10, 25, 50, 75, 100, 200, "All"],
             ],
-            pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
+            pageLength: 10
         });
-
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
     }
 
     function addModal(idKandang) {
@@ -300,74 +276,63 @@
                 if (mm < 10) mm = '0' + mm;
                 let dateNow = yyyy + "-" + mm + "-" + dd
 
-                $('#modalTitle').html("Menambahkan Input Harian")
+                $('#modalTitle').html("Add Daily Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <i>Nama Kandang</i>
+                                    <i>House Name</i>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <i>${nama_kandang}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <i>Populasi awal</i>
+                                    <i>Initial Population</i>
                                 </div>
                                 <div class="col-md-8 form-group ">
                                     <i>${populasi_awal}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <i>Populasi Saat ini</i>
+                                    <i>Remain Population</i>
                                 </div>
                                 <div class="col-md-8 form-group mb-4">
                                     <i>${populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="hariKe">Hari ke-</label>
+                                    <label for="hariKe">Day-</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="" id="hariKe" class="form-control" placeholder="" autofocus>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="date">Tanggal</label>
+                                    <label for="date">Date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" value="${dateNow}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="pakan">Pakan</label>
+                                    <label for="pakan">Feed (G)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="pakan" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="minum">Minum</label>
+                                    <label for="minum">Watering (L)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="minum" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobot">Bobot</label>
+                                    <label for="bobot">Weight (Kg)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobot" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="klasifikasi">Klasifikasi</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <fieldset class="form-group">
-                                        <select class="form-select" id="klasifikasi">
-                                            <option value="normal">Normal</option>
-                                            <option value="abnormal">Abnormal</option>
-                                        </select>
-                                    </fieldset>
-                                </div>
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
-                                        <p class="text-center">Data Kematian  </p>
+                                        <p class="text-center">Daily Mortalities</p>
                                         <a title="tambahkan data kematian" class="btn btn-success btn-sm" onclick="addRowKematian()"><i class="fa fa-plus"></i></a>
                                         <table class="table table-borderless my-2">
                                             <tbody id="tableKematian">
@@ -381,7 +346,7 @@
                     </form>
                 `)
 
-                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -397,7 +362,7 @@
         <tr id="${id}">
             <td>
                 <div class="form-group">
-                   <label for="jumlah">Jumlah</label>
+                   <label for="jumlah">Amount (Head)</label>
                 </div>
             </td> 
             <td>
@@ -407,7 +372,7 @@
             </td> 
             <td>
                 <div class="form-group">
-                   <label for="jam">Jam</label>
+                   <label for="jam">Time </label>
                 </div>
             </td>
             <td colspan="2"> 
@@ -447,9 +412,6 @@
 
                 riwayat_populasi = parseInt(riwayat_populasi)
 
-                let optionButton = classification == "normal" ?
-                    '<option selected value="normal">Normal</option><option value="abnormal">Abnormal</option>' :
-                    '<option value="normal">Normal</option> <option selected value="abnormal">Abnormal</option>'
                 let rowKematian = ''
                 if (data_kematians.length > 0) {
                     for (let i = 0; i < data_kematians.length; i++) {
@@ -463,7 +425,7 @@
                             `<tr id="${id}">
                     <td>
                         <div class="form-group">
-                        <label for="jumlah">Jumlah</label>
+                        <label for="jumlah">Amount (Head)</label>
                         </div>
                     </td> 
                     <td>
@@ -473,7 +435,7 @@
                     </td> 
                     <td>
                         <div class="form-group">
-                        <label for="jam">Jam</label>
+                        <label for="jam">Time</label>
                         </div>
                     </td>
                     <td colspan="2"> 
@@ -490,68 +452,58 @@
                     }
                 }
 
-                $('#modalTitle').html("Mengubah Input Harian")
+                $('#modalTitle').html("Edit Daily Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <i>Nama Kandang</i>
+                                    <i>House Name</i>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <i>${kandang.nama_kandang}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <i>Populasi Saat ini</i>
+                                    <i>Remain Population</i>
                                 </div>
                                 <div class="col-md-8 form-group mb-4">
                                     <i>${kandang.populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="hariKe">Hari ke-</label>
+                                    <label for="hariKe">Day-</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${hari_ke}" id="hariKe" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="date">Tanggal</label>
+                                    <label for="date">Date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" value="${date}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="pakan">Pakan</label>
+                                    <label for="pakan">Feed (G)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${pakan}" id="pakan" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="minum">Minum</label>
+                                    <label for="minum">Watering (L)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${minum}" id="minum" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobot">Bobot</label>
+                                    <label for="bobot">Weight (Kg)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${bobot}" id="bobot" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="klasifikasi">Klasifikasi</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <fieldset class="form-group">
-                                        <select class="form-select" id="klasifikasi">
-                                           ${optionButton}
-                                        </select>
-                                    </fieldset>
-                                </div>
                                 <input type="hidden" value="${riwayat_populasi}" id="riwayatPopulasi">
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
-                                        <p class="text-center">Data Kematian</p>
+                                        <p class="text-center">Daily Mortalities</p>
                                         <a title="tambahkan data kematian" class="btn btn-success btn-sm" onclick="addRowKematian()"><i class="fa fa-plus"></i></a>
                                         <table class="table table-borderless my-2">
                                             <tbody id="tableKematian">
@@ -594,37 +546,31 @@
                 } = response.data
 
 
-                $('#modalTitle').html("Hapus Data Harian")
+                $('#modalTitle').html("Delete Daily Data")
                 $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
                                 <tr>
-                                    <th class="text-center" colspan="2">Data Harian</th>
+                                    <th class="text-center" colspan="2">Daily Input</th>
                                 </tr>
                                 <tr>
-                                    <td>Nama Kandang</td> <td>${kandang.nama_kandang}</td>
+                                    <td>House Name</td> <td>${kandang.nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Hari ke</td> <td>${hari_ke}</td>
+                                    <td>Day-</td> <td>${hari_ke}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Tanggal</td> <td>${date}</td>
+                                    <td>Date</td> <td>${date}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Pakan</td><td>${pakan}</td>
+                                    <td>Feed (G)</td><td>${pakan}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Minum</td><td>${minum}</td>
+                                    <td>Watering (L)</td><td>${minum}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Bobot</td><td>${bobot}</td>
-                                </tr> 
-                                <tr>
-                                    <td>Riwayat Populasi</td><td>${riwayat_populasi}</td>
-                                </tr> 
-                                <tr>
-                                    <td>Klasifikasi</td><td>${classification}</td>
+                                    <td>Weight (Kg)</td><td>${bobot}</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -700,26 +646,31 @@
         // validasi
         let totalKematian = 0
         for (i = 0; i < dataKematian.length; i++) {
-            totalKematian += parseInt(dataKematian[i].jumlah_kematian)
+            if (dataKematian[i].jumlah_kematian > 0 && dataKematian[i].jam.length > 0) {
+                totalKematian += parseInt(dataKematian[i].jumlah_kematian)
+
+            } else {
+                return Swal.fire("Please check your daily mortality data");
+            }
         }
 
         let sisa_populasi = populasiSaatIni - totalKematian
 
         if (sisa_populasi < 0) {
-            return Swal.fire("Kematian melebihi populasi saat ini!");
+            return Swal.fire("Deaths exceed the current population!");
         }
 
         if (hariKe <= 0) {
-            return Swal.fire("Hari tidak boleh kurang dari 1!");
+            return Swal.fire("Day must not be less than 1!");
         }
         if (pakan <= 0) {
-            return Swal.fire("Pakan tidak boleh kurang dari 1!");
+            return Swal.fire("Feed must not be less than 1!");
         }
         if (minum <= 0) {
-            return Swal.fire("Minum tidak boleh kurang dari 1!");
+            return Swal.fire("Watering must not be less than 1!");
         }
         if (bobot <= 0) {
-            return Swal.fire("Bobot tidak boleh kurang dari 1!");
+            return Swal.fire("Weight must not be less than 1!");
         }
 
         // asign value if validated
@@ -747,7 +698,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menambahkan data",
+                    title: "Data Added",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -774,7 +725,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menghapus data",
+                    title: "Data deleted",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -812,7 +763,11 @@
 
         let totalKematian = 0
         for (i = 0; i < dataKematian.length; i++) {
-            totalKematian += parseInt(dataKematian[i].jumlah_kematian)
+            if (dataKematian[i].jumlah_kematian > 0 && dataKematian[i].jam.length > 0) {
+                totalKematian += parseInt(dataKematian[i].jumlah_kematian)
+            } else {
+                return Swal.fire("Please check your daily mortality data!");
+            }
         }
 
         let kembalikanNilaiPopulasi = parseInt(getDataKematianByDataKandangId(id).total_kematian)
@@ -822,20 +777,20 @@
 
         // validasi
         if (sisa_populasi < 0) {
-            return Swal.fire("Kematian melebihi populasi saat ini!");
+            return Swal.fire("Deaths exceed the current population!");
         }
 
         if (hariKe <= 0) {
-            return Swal.fire("Hari tidak boleh kurang dari 1!");
+            return Swal.fire("Day must not be less than 1!");
         }
         if (pakan <= 0) {
-            return Swal.fire("Pakan tidak boleh kurang dari 1!");
+            return Swal.fire("Feed must not be less than 1!");
         }
         if (minum <= 0) {
-            return Swal.fire("Minum tidak boleh kurang dari 1!");
+            return Swal.fire("Watering must not be less than 1!");
         }
         if (bobot <= 0) {
-            return Swal.fire("Bobot tidak boleh kurang dari 1!");
+            return Swal.fire("Weight must not be less than 1!");
         }
         // asign value if validated
         let data = {
@@ -861,12 +816,11 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil mengubah data",
+                    title: "Data edited",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    console.log(idKandang)
                     showTableData(idKandang)
                 })
             },

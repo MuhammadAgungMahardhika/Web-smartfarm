@@ -99,7 +99,7 @@
                                     <td style="min-width: 180px">
                                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="editModal('{{ $panen->id }}}')"><i class="fa fa-edit"></i> </a>
+                                            onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i> </a>
                                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
                                             onclick="deleteModal('{{ $panen->id }}')"><i
@@ -316,6 +316,9 @@
                     jumlah_panen,
                     bobot_total
                 } = response.data;
+                console.log(response.data)
+                console.log(kandang)
+                console.log(kandang.nama_kandang)
                 $('#modalTitle').html("Mengubah Hasil Panen")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">

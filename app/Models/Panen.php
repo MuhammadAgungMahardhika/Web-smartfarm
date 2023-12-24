@@ -52,6 +52,6 @@ class Panen extends Model
 
 	public function kandang()
 	{
-		return $this->belongsTo(Kandang::class, 'id');
+		return $this->belongsTo(Kandang::class, 'id_kandang', 'id');
 	}
 }

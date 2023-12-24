@@ -12,13 +12,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Daftar Menu</h3>
-                <p class="text-subtitle text-muted">Halaman menu </p>
+                <h3 style="color: #cb8e8e">Menu List</h3>
+                <p class="text-subtitle text-muted">Menu page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Daftar Menu</li>
+                        <li class="breadcrumb-item active" aria-current="page">Menu List</li>
                     </ol>
                 </nav>
             </div>
@@ -72,20 +72,6 @@
 
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
-                                <a href="/forecast">
-                                    <div class="card-body">
-                                        <img src="/images/menu/forecast.jpg" class="card-img-top img-fluid"
-                                            alt="singleminded">
-                                        <h5 class="card-title mt-4">Forecast</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-
-
-
-                        <div class="col-12 col-md-3 col-lg-4">
-                            <div class="card shadow-sm daftarMenu">
                                 <a href="/hasilPanen">
                                     <div class="card-body">
                                         <img src="/images/menu/hasilPanen.jpg" class="card-img-top img-fluid"
@@ -101,11 +87,11 @@
                     @if (Auth::user()->id_role == '3')
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
-                                <a href="/inputHarian">
+                                <a href="/dailyInput">
                                     <div class="card-body">
                                         <img src="/images/menu/inputHarian.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">Input Harian</h5>
+                                        <h5 class="card-title mt-4">Daily Input</h5>
                                     </div>
                                 </a>
                             </div>
@@ -116,22 +102,11 @@
                     @if (Auth::user()->id_role == '2' || Auth::user()->id_role == '3')
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
-                                <a href="/klasifikasiMonitoring">
-                                    <div class="card-body">
-                                        <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
-                                            alt="singleminded">
-                                        <h5 class="card-title mt-4">Klasifikasi</h5>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-4">
-                            <div class="card shadow-sm daftarMenu">
-                                <a href="/notifikasi">
+                                <a href="/notification">
                                     <div class="card-body">
                                         <img src="/images/menu/notification.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">Notifikasi</h5>
+                                        <h5 class="card-title mt-4">Notification</h5>
                                     </div>
                                 </a>
                             </div>

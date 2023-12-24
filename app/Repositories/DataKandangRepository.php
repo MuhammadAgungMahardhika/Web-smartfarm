@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\DataKandang;
 use Illuminate\Support\Facades\Log;
-use stdClass;
 use Exception;
 
 class DataKandangRepository
@@ -26,6 +25,7 @@ class DataKandangRepository
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
       $dataKandang->classification = $data->classification;
       $dataKandang->date = $data->date;
+      $dataKandang->created_at = $data->created_at;
       $dataKandang->created_by = $data->created_by;
       $dataKandang->save();
 
@@ -49,6 +49,7 @@ class DataKandangRepository
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
       $dataKandang->classification = $data->classification;
       $dataKandang->date = $data->date;
+      $dataKandang->updated_at = $data->updated_at;
       $dataKandang->updated_by = $data->updated_by;
       $dataKandang->save();
 

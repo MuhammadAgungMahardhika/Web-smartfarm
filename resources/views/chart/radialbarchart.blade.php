@@ -100,7 +100,7 @@
                 }
             },
             series: [0],
-            labels: ['Suhu']
+            labels: ['Temperature']
         }
 
         suhuChart = new ApexCharts(document.querySelector("#suhuChart"), optionSuhuChart);
@@ -126,11 +126,11 @@
                             show: true,
                             formatter: function(val, opt) {
                                 if (opt.angle === -90) {
-                                    return '0°C'; // Label for start value
+                                    return '0'; // Label for start value
                                 } else if (opt.angle === 90) {
-                                    return '100°C'; // Label for end value
+                                    return '100'; // Label for end value
                                 } else {
-                                    return `${val}%rh`; // Display temperature value with °C
+                                    return `${val}%RH`; // Display temperature value with °C
                                 }
                             },
                         }
@@ -143,7 +143,7 @@
                 }
             },
             series: [0],
-            labels: ['Kelembapan']
+            labels: ['Humidity']
         }
 
         kelembapanChart = new ApexCharts(document.querySelector("#kelembapanChart"), optionKelembapanChart);
@@ -169,9 +169,9 @@
                             show: true,
                             formatter: function(val, opt) {
                                 if (opt.angle === -90) {
-                                    return '0°C'; // Label for start value
+                                    return '0'; // Label for start value
                                 } else if (opt.angle === 90) {
-                                    return '100°C'; // Label for end value
+                                    return '100'; // Label for end value
                                 } else {
                                     return `${val}PPM`; // Display the value with 
                                 }
@@ -201,9 +201,10 @@
             // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
             channel.bind('App\\Events\\SensorDataUpdated', function(data) {
                 idKandang = data.idKandang;
-                suhu = parseInt(data.suhu);
-                kelembapan = parseInt(data.kelembapan);
-                amonia = parseInt(data.amonia);
+                suhu = parseFloat(data.suhu);
+                kelembapan = parseFloat(data.kelembapan);
+                amonia = parseFloat(data.amonia);
+                console.log(data)
                 let selectedKandang = $('#selectKandang').val()
 
                 if (idKandang == selectedKandang) {

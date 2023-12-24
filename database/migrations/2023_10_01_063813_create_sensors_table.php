@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('sensors', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_kandang')->index('fk_sensors_kandang');
-            $table->integer('suhu');
-            $table->integer('kelembapan');
-            $table->integer('amonia');
+            $table->double('suhu', 15, 3);
+            $table->double('kelembapan', 15, 3);
+            $table->double('amonia', 15, 3);
+            $table->boolean('is_outlier')->default(false);
             $table->timestamp('datetime')->useCurrent();
         });
     }

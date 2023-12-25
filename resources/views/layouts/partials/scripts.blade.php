@@ -30,6 +30,10 @@
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 
 
+<!-- DateRangePicker JS -->
+<script src="{{ asset('/js/extensions/daterangepicker/moment.min.js') }}"></script>
+<script src="{{ asset('/js/extensions/daterangepicker/daterangepicker.js') }}"></script>
+
 @livewireScripts
 <script src="{{ asset('/js/main.js') }}"></script>
 

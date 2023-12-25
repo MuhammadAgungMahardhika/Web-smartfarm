@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Hasil Panen</h3>
-                <p class="text-subtitle text-muted">Halaman Hasil Panen</p>
+                <h3 style="color: #cb8e8e">Harvest Data</h3>
+                <p class="text-subtitle text-muted">harvest data page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Hasil Panen</li>
+                        <li class="breadcrumb-item active" aria-current="page">Harvest data</li>
                     </ol>
                 </nav>
             </div>
@@ -23,7 +23,7 @@
                         <table class="table table-borderless text-start">
                             <thead>
                                 <tr>
-                                    <th>Nama Kandang</th>
+                                    <th>House Name</th>
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
@@ -37,7 +37,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Alamat Kandang</th>
+                                    <th>House Address</th>
                                     <td id="alamatKandang">
                                         {{ $data[0]->alamat_kandang }}
                                     </td>
@@ -51,37 +51,47 @@
 
             <div class="card-body table-responsive  p-4 rounded">
                 <div class="text-start mb-4" id="addButton">
-                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                    <a title="add" class="btn btn-success btn-sm block me-2" data-bs-toggle="modal"
                         data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
                         <i class="fa fa-plus"></i>
                     </a>
+                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
+                        data-bs-toggle="modal" data-bs-target="#default" onclick="filterModal('{{ $data[0]->id }}')">
+                        <i class="fa fa-calendar"></i>
+                        Filter Harvest By Date
+                    </a>
+                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
+                        onclick="showTableData('{{ $data[0]->id }}')">
+                        <i class="fa fa-sync"></i>
+                        Reload Data
+                    </a>
                 </div>
+
                 <div id="tableData">
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                         <thead>
                             <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                    aria-label="Name: activate to sort column ascending">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
-                                    Tanggal mulai
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Start date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
-                                    Tanggal panen
+                                    aria-label="City: activate to sort column ascending">
+                                    Harvest date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Jumlah panen
+                                    aria-label="Status: activate to sort column ascending">
+                                    Harvest amount (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Bobot total
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 117.891px;">Action
+                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
                                 </th>
                             </tr>
                         </thead>
@@ -127,7 +137,18 @@
                 let kandang = response.data
                 $('#alamatKandang').html(kandang.alamat_kandang)
                 $('#addButton').html(
-                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
+                    `<a title="tambah" class="btn btn-success btn-sm block me-2" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>
+                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
+                        data-bs-toggle="modal" data-bs-target="#default" onclick="filterModal('${id}')">
+                        <i class="fa fa-calendar"></i>
+                        Filter Harvest By Date
+                    </a>
+                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
+                        onclick="showTableData('${id}')">
+                        <i class="fa fa-sync"></i>
+                        Reload Data
+                    </a>
+                    `
                 )
                 showTableData(id)
             },
@@ -136,6 +157,7 @@
             }
         })
     }
+
 
     function showTableData(kandangId) {
         $.ajax({
@@ -172,29 +194,30 @@
                 let table = `
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
-                        <tr>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Tanggal mulai
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Tanggal panen
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Jumlah panen
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Bobot total
-                            </th>
-                            <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                                colspan="1" aria-label="Status: activate to sort column ascending"
-                                                style="width: 117.891px;">Action
-                            </th>
-                        </tr>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Start date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending">
+                                    Harvest date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Harvest amount (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount(Kg)
+                                </th>
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                </th>
+                            </tr>
                     </thead>
                     <tbody>
                         ${data}
@@ -205,8 +228,6 @@
                 initDataTable('table')
             }
         })
-
-
     }
 
     function initDataTable(id) {
@@ -217,74 +238,193 @@
                 [25, 50, 75, 100, 200, "All"],
             ],
             pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
         });
-
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
     }
 
+    function filterModal(idKandang) {
+        $('#modalTitle').html("Filter Harvest By Date")
+        $('#modalBody').html(`
+                <form class="form form-horizontal">
+                        <div class="form-body"> 
+                            <div class="row">
+                                <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
+                                <div class="col-md-3">
+                                    <label for="from"><i class="fa fa-calendar"></i> Date range </label>
+                                </div>
+                                <div class="col-md-9 form-group">
+                                    <input type="text" id="from" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+            `)
 
+        let dateNow = new Date();
 
+        $('#from').daterangepicker({
+            opens: 'left', // Tampilan kalender saat datepicker dibuka (left/right)
+            autoUpdateInput: false, // Otomatis memperbarui input setelah memilih tanggal
+            locale: {
+                format: 'YYYY-MM-DD', // Format tanggal yang diinginkan
+                separator: ' to ', // Pemisah untuk rentang tanggal
+            }
+        });
+
+        // Menangani perubahan tanggal
+        $('#from').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+
+            // Tangkap tanggal awal dan akhir
+            var startDate = picker.startDate.format('YYYY-MM-DD');
+            var endDate = picker.endDate.format('YYYY-MM-DD');
+
+            // Tampilkan pada console 
+            filterByDate(idKandang, startDate, endDate)
+        });
+
+        // Menangani reset tanggal
+        $('#from').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    }
+
+    // Filter tanggal
+    function filterByDate(idKandang, startDate, endDate) {
+        new Date(startDate)
+        new Date(endDate)
+
+        // check jika from date kosong
+        if (!startDate) {
+            return Swal.fire("Please fill the from date")
+        }
+
+        // check jika to date kosong
+        if (!endDate) {
+            return Swal.fire("Please fill the end date");
+        }
+
+        let data = {
+            id_kandang: idKandang,
+            from: startDate,
+            to: endDate
+        }
+        $.ajax({
+            type: "POST",
+            url: `/panen/date`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+
+                let panenData = response.data
+
+                let data = ''
+                // adding panen data
+                for (let i = 0; i < panenData.length; i++) {
+                    let {
+                        id,
+                        tanggal_mulai,
+                        tanggal_panen,
+                        jumlah_panen,
+                        bobot_total
+                    } = panenData[i]
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${tanggal_mulai}</td>
+                    <td>${tanggal_panen}</td>
+                    <td>${jumlah_panen}</td>
+                    <td>${bobot_total}</td>
+                    <td style="min-width: 180px">
+                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
+                    </td>
+                    </tr>
+                    `
+                }
+
+                // construct table
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                            <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Start date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending">
+                                    Harvest date
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Harvest amount (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount(Kg)
+                                </th>
+                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                </th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                $('#default').modal('hide')
+                initDataTable('table')
+            }
+        })
+    }
+
+    // menambahkan data panen
     function addModal(idKandang) {
         $.ajax({
             type: "GET",
             url: `/kandang/${idKandang}`,
             success: function(response) {
                 let kandang = response.data
-                $('#modalTitle').html("Menambahkan Hasil Panen")
+                $('#modalTitle').html("Add Harvest Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body"> 
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${kandang.id}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">Nama kandang</label>
+                                    <label for="namaKandang">House name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Tanggal mulai</label>
+                                    <label for="tanggalMulai">Start date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalMulai" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Tanggal panen</label>
+                                    <label for="tanggalPanen">Harvest date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalPanen" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Jumlah panen</label>
+                                    <label for="jumlahPanen">Harvest amount (Head)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="jumlahPanen" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotAyam">Bobot Total</label>
+                                    <label for="bobotAyam">Weight amount(Kg)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobotAyam" class="form-control">
@@ -295,7 +435,7 @@
                     </form>
                 `)
 
-                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Laporkan</a>`)
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -303,6 +443,7 @@
         })
     }
 
+    // mengubah data panen
     function editModal(id) {
         $.ajax({
             type: "GET",
@@ -316,41 +457,39 @@
                     jumlah_panen,
                     bobot_total
                 } = response.data;
-                console.log(response.data)
-                console.log(kandang)
-                console.log(kandang.nama_kandang)
-                $('#modalTitle').html("Mengubah Hasil Panen")
+
+                $('#modalTitle').html("Edit Harvest Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">Nama kandang</label>
+                                    <label for="namaKandang">House name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Tanggal mulai</label>
+                                    <label for="tanggalMulai">Start date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalMulai" value="${tanggal_mulai}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Tanggal panen</label>
+                                    <label for="tanggalPanen">Harvest date</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalPanen" value="${tanggal_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Jumlah panen</label>
+                                    <label for="jumlahPanen">Harvest amount (Head)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="jumlahPanen" value="${jumlah_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotTotal">Bobot Total</label>
+                                    <label for="bobotTotal">Weight amount(Kg)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobotTotal" value="${bobot_total}" class="form-control">
@@ -361,7 +500,7 @@
                     </form>
                 `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Change</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -369,6 +508,7 @@
         })
     }
 
+    // menghapus data panen
     function deleteModal(id) {
         $.ajax({
             type: "GET",
@@ -382,35 +522,35 @@
                     jumlah_panen
                 } = response.data
 
-                $('#modalTitle').html("Hapus Hasil Panen")
+                $('#modalTitle').html("Delete Harvest Data")
                 $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
                                 <tr>
-                                    <th class="text-center" colspan="2">Data panen</th>
+                                    <th class="text-center" colspan="2">Harvest Data</th>
                                 </tr>
                                 <tr>
-                                    <td>Nama Kandang</td> <td>${kandang.nama_kandang}</td>
+                                    <td>House name</td> <td>${kandang.nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Tanggal Mulai</td> <td>${tanggal_mulai}</td>
+                                    <td>Start date</td> <td>${tanggal_mulai}</td>
                                 </tr> 
                                 <tr>
-                                <td>Tanggal Panen</td><td>${tanggal_panen}</td>
+                                <td>Harvest date</td><td>${tanggal_panen}</td>
                                 </tr>
                                 <tr>
-                                <td>Jumlah Panen</td>  <td>${jumlah_panen}</td>
+                                <td>Harvest amount (Head)</td>  <td>${jumlah_panen}</td>
                                 </tr>  
                                 <tr>
-                                <td>Bobot Total</td>  <td>${bobot_total}</td>
+                                <td>Weight amount(Kg)</td>  <td>${bobot_total}</td>
                                 </tr> 
                             </tbody>
                         </table>
                     </div>
                     `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
+                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Delete</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -418,7 +558,7 @@
         })
 
     }
-    // -------------------------------API---------------------------------------------------------------------
+    // -------------------------------API KE DATABASE---------------------------------------------------------------------
 
     function save() {
         let idKandang = $('#idKandang').val()
@@ -450,7 +590,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menambahkan data",
+                    title: "Data added",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -478,7 +618,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menghapus data",
+                    title: "Date deleted",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -519,7 +659,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil mengubah data",
+                    title: "Data edited",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {

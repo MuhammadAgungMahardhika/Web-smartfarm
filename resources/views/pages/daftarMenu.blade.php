@@ -37,7 +37,7 @@
                                     <div class="card-body">
                                         <img src="/images/menu/users.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">List Users</h5>
+                                        <h5 class="card-title mt-4">User List</h5>
                                     </div>
                                 </a>
                             </div>
@@ -57,14 +57,13 @@
                                 </a>
                             </div>
                         </div>
-
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
-                                <a href="/dataKandang">
+                                <a href="/houseMonitoring">
                                     <div class="card-body">
-                                        <img src="/images/menu/monitoringKandang2.jpg" class="card-img-top img-fluid"
+                                        <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">Data Kandang</h5>
+                                        <h5 class="card-title mt-4">House Monitoring</h5>
                                     </div>
                                 </a>
                             </div>
@@ -72,11 +71,23 @@
 
                         <div class="col-12 col-md-3 col-lg-4">
                             <div class="card shadow-sm daftarMenu">
-                                <a href="/hasilPanen">
+                                <a href="/houseData">
+                                    <div class="card-body">
+                                        <img src="/images/menu/monitoringKandang2.jpg" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">House Data</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-3 col-lg-4">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/harvestData">
                                     <div class="card-body">
                                         <img src="/images/menu/hasilPanen.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">Hasil Panen</h5>
+                                        <h5 class="card-title mt-4">Harvest Data</h5>
                                     </div>
                                 </a>
                             </div>

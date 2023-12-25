@@ -66,6 +66,62 @@ class DataKandangController extends Controller
 			->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
+	// Filter by Date
+	public function getDataKandangByDate(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$from = $request->from;
+		$to = $request->to;
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where(function ($query) use ($from, $to) {
+				$query->whereRaw('data_kandang.date >= ? AND data_kandang.date <= ?', [$from, $to]);
+			})
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+
+	// Filter By Classification
+	public function getDataKandangByClassification(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$classification = $request->classification;
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where('data_kandang.classification', '=', $classification)
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+
+	// Filter By Day
+	public function getDataKandangByDay(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$day = $request->day;
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where('data_kandang.hari_ke', '=', $day)
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
 
 	public function getDetailKandangByIdKandang($id)
 	{

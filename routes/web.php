@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // panen
     Route::get('/panen', [PanenController::class, 'index']);
     Route::get('/panen/{id}', [PanenController::class, 'index']);
+    Route::post('/panen/date', [PanenController::class, 'getPanenByDate']);
     Route::get('/panen/kandang/{kandangId}', [PanenController::class, 'getPanenByKandangId']);
     Route::post('/panen', [PanenController::class, 'store']);
     Route::put('/panen/{id}', [PanenController::class, 'update']);
@@ -75,6 +76,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/data-kandang', [DataKandangController::class, 'store']);
     Route::put('/data-kandang/{id}', [DataKandangController::class, 'update']);
     Route::delete('/data-kandang/{id}', [DataKandangController::class, 'delete']);
+    // filter data kandang
+    Route::post('/data-kandang/date', [DataKandangController::class, 'getDataKandangByDate']);
+    Route::post('/data-kandang/classification', [DataKandangController::class, 'getDataKandangByClassification']);
+    Route::post('/data-kandang/day', [DataKandangController::class, 'getDataKandangByDay']);
+
 
 
     // rekap data
@@ -112,13 +118,13 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             // Halaman dashboard
             Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
             // Halaman monitoring kandang
-            Route::get('/monitoringKandang', [PageController::class, "monitoringKandang"])->name('monitoringKandang');
+            Route::get('/houseMonitoring', [PageController::class, "monitoringKandang"])->name('houseMonitoring');
             // Halaman data kandang
-            Route::get('/dataKandang', [PageController::class, "dataKandang"])->name('dataKandang');
+            Route::get('/houseData', [PageController::class, "dataKandang"])->name('houseData');
             // Halaman forecast
             Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
             // Halaman Hasil Panen
-            Route::get('/broilerHarvest', [PageController::class, "hasilPanen"])->name('broilerHarvest');
+            Route::get('/harvestData', [PageController::class, "hasilPanen"])->name('harvestData');
         });
         //---------------------Peternak--------------------------------------//
         // Check role = 3, apakah peternak yang login

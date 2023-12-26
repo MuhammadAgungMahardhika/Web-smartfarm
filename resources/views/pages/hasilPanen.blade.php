@@ -19,6 +19,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="row">
+                    {{-- Nama dan Alamat Kandang --}}
                     <div class="col-12 col-md-4 col-lg-4">
                         <table class="table table-borderless text-start">
                             <thead>
@@ -45,28 +46,36 @@
                             </thead>
                         </table>
                     </div>
-                </div>
+                    {{-- Filter menu --}}
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="text-start p-2 shadow-sm border-circle" id="filterMenu">
+                            <p>Filter Data {{ $data[0]->nama_kandang }}</p>
+                            <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" onclick="filterByDate('{{ $data[0]->id }}')">
+                                    <i class="fa fa-calendar"></i> Filter By Date
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dateDropdown">
+                                    <div class="row p-2">
+                                        <div class="col-12 form-group">
+                                            <input type="text" id="dateFilter" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
+                                onclick="showTableData('{{ $data[0]->id }}')">
+                                <i class="fa fa-sync"></i>
+                                Reload Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
-                <div class="text-start mb-4" id="addButton">
-                    <a title="add" class="btn btn-success btn-sm block me-2" data-bs-toggle="modal"
-                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
-                        <i class="fa fa-plus"></i>
-                    </a>
-                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
-                        data-bs-toggle="modal" data-bs-target="#default" onclick="filterModal('{{ $data[0]->id }}')">
-                        <i class="fa fa-calendar"></i>
-                        Filter Harvest By Date
-                    </a>
-                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
-                        onclick="showTableData('{{ $data[0]->id }}')">
-                        <i class="fa fa-sync"></i>
-                        Reload Data
-                    </a>
-                </div>
-
                 <div id="tableData">
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                         <thead>
@@ -109,7 +118,8 @@
                                     <td style="min-width: 180px">
                                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i> </a>
+                                            onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i>
+                                        </a>
                                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
                                             onclick="deleteModal('{{ $panen->id }}')"><i
@@ -135,19 +145,31 @@
             url: `/kandang/${id}`,
             success: function(response) {
                 let kandang = response.data
-                $('#alamatKandang').html(kandang.alamat_kandang)
-                $('#addButton').html(
-                    `<a title="tambah" class="btn btn-success btn-sm block me-2" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>
-                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
-                        data-bs-toggle="modal" data-bs-target="#default" onclick="filterModal('${id}')">
-                        <i class="fa fa-calendar"></i>
-                        Filter Harvest By Date
-                    </a>
-                    <a id="filterButton" title="filter by date" class="btn btn-outline-secondary btn-sm"
-                        onclick="showTableData('${id}')">
-                        <i class="fa fa-sync"></i>
-                        Reload Data
-                    </a>
+                let namaKandang = kandang.nama_kandang
+                let alamatKandang = kandang.alamat_kandang
+                $('#alamatKandang').html(alamatKandang)
+                $('#filterMenu').html(
+                    `<p>Filter Data ${namaKandang}</p>
+                     <div class="btn-group me-2 mb-2">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" onclick="filterByDate('${id}')">
+                                    <i class="fa fa-calendar"></i> Filter By Date
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dateDropdown">
+                            <div class="row p-2">
+                                <div class="col-12 form-group">
+                                    <input type="text" id="dateFilter" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
+                    onclick="showTableData('${id}')">
+                    <i class="fa fa-sync"></i>
+                    Reload Data
+                    </button>
                     `
                 )
                 showTableData(id)
@@ -241,7 +263,7 @@
         });
     }
 
-    function filterModal(idKandang) {
+    function filterByDate(idKandang) {
         $('#modalTitle').html("Filter Harvest By Date")
         $('#modalBody').html(`
                 <form class="form form-horizontal">
@@ -261,7 +283,7 @@
 
         let dateNow = new Date();
 
-        $('#from').daterangepicker({
+        $('#dateFilter').daterangepicker({
             opens: 'left', // Tampilan kalender saat datepicker dibuka (left/right)
             autoUpdateInput: false, // Otomatis memperbarui input setelah memilih tanggal
             locale: {
@@ -271,7 +293,7 @@
         });
 
         // Menangani perubahan tanggal
-        $('#from').on('apply.daterangepicker', function(ev, picker) {
+        $('#dateFilter').on('apply.daterangepicker', function(ev, picker) {
             $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
 
             // Tangkap tanggal awal dan akhir
@@ -279,58 +301,47 @@
             var endDate = picker.endDate.format('YYYY-MM-DD');
 
             // Tampilkan pada console 
-            filterByDate(idKandang, startDate, endDate)
-        });
+            new Date(startDate)
+            new Date(endDate)
 
-        // Menangani reset tanggal
-        $('#from').on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
-        });
-    }
+            // check jika from date kosong
+            if (!startDate) {
+                return Swal.fire("Please fill the from date")
+            }
 
-    // Filter tanggal
-    function filterByDate(idKandang, startDate, endDate) {
-        new Date(startDate)
-        new Date(endDate)
+            // check jika to date kosong
+            if (!endDate) {
+                return Swal.fire("Please fill the end date");
+            }
 
-        // check jika from date kosong
-        if (!startDate) {
-            return Swal.fire("Please fill the from date")
-        }
+            let data = {
+                id_kandang: idKandang,
+                from: startDate,
+                to: endDate
+            }
+            $.ajax({
+                type: "POST",
+                url: `/panen/date`,
+                contentType: "application/json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: JSON.stringify(data),
+                success: function(response) {
 
-        // check jika to date kosong
-        if (!endDate) {
-            return Swal.fire("Please fill the end date");
-        }
+                    let panenData = response.data
 
-        let data = {
-            id_kandang: idKandang,
-            from: startDate,
-            to: endDate
-        }
-        $.ajax({
-            type: "POST",
-            url: `/panen/date`,
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: JSON.stringify(data),
-            success: function(response) {
-
-                let panenData = response.data
-
-                let data = ''
-                // adding panen data
-                for (let i = 0; i < panenData.length; i++) {
-                    let {
-                        id,
-                        tanggal_mulai,
-                        tanggal_panen,
-                        jumlah_panen,
-                        bobot_total
-                    } = panenData[i]
-                    data += `
+                    let data = ''
+                    // adding panen data
+                    for (let i = 0; i < panenData.length; i++) {
+                        let {
+                            id,
+                            tanggal_mulai,
+                            tanggal_panen,
+                            jumlah_panen,
+                            bobot_total
+                        } = panenData[i]
+                        data += `
                     <tr>
                     <td>${i+1}</td>
                     <td>${tanggal_mulai}</td>
@@ -343,10 +354,10 @@
                     </td>
                     </tr>
                     `
-                }
+                    }
 
-                // construct table
-                let table = `
+                    // construct table
+                    let table = `
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
                             <tr>
@@ -379,11 +390,17 @@
                     </tbody>
                 </table>
                 `
-                $('#tableData').html(table)
-                $('#default').modal('hide')
-                initDataTable('table')
-            }
-        })
+                    $('#tableData').html(table)
+                    $('#default').modal('hide')
+                    initDataTable('table')
+                }
+            })
+        });
+
+        // Menangani reset tanggal
+        $('#dateFilter').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
     }
 
     // menambahkan data panen

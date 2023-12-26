@@ -56,10 +56,11 @@ class DataKandangController extends Controller
 
 	public function getDataKandangByIdKandang($id)
 	{
+
 		$items =  DB::table('data_kandang')
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
-			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->select('data_kandang.*', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'), DB::raw('GROUP_CONCAT(data_kematian.jam SEPARATOR ",") AS jam_kematian'))
 			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $id)
 			->orderBy('data_kandang.created_at', 'ASC')

@@ -62,36 +62,39 @@
                         <thead>
                             <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                    aria-label="Name: activate to sort column ascending">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    aria-label="Phone: activate to sort column ascending">
                                     Date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                    aria-label="Phone: activate to sort column ascending">Day
                                 </th>
 
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Feed (G)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Watering (L)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Weight (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Time of mortality (Hour)
                                 </th>
 
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 117.891px;">Action
+                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
                                 </th>
                             </tr>
                         </thead>
@@ -107,9 +110,12 @@
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
                                     <td>{{ $dataKandang->bobot }}</td>
-                                    <td>{{ $dataKandang->total_kematian }}
+                                    <td>{{ $dataKandang->total_kematian }} </td>
+                                    <td>{!! $dataKandang->jam_kematian != null
+                                        ? str_replace(',', '<br>', $dataKandang->jam_kematian)
+                                        : $dataKandang->jam_kematian !!}
                                     </td>
-                                    <td style="min-width: 180px">
+                                    <td>
                                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
                                             onclick="editModal('{{ $dataKandang->id }}')"><i class="fa fa-edit"></i>
@@ -173,9 +179,11 @@
                         pakan,
                         minum,
                         bobot,
-                        total_kematian
+                        total_kematian,
+                        jam_kematian,
                     } = itemData[i]
 
+                    console.log(jam_kematian)
                     data += `
                     <tr>
                     <td>${i+1}</td>
@@ -185,7 +193,8 @@
                     <td>${minum}</td>
                     <td>${bobot}</td>
                     <td>${total_kematian }</td>
-                    <td style="min-width: 180px">
+                    <td>${jam_kematian != null? jam_kematian.replace(/,/g, '<br>') : ''}</td>
+                    <td>
                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
                     </td>
@@ -198,34 +207,38 @@
                     <thead>
                             <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
+                                    aria-label="Name: activate to sort column ascending" >No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
+                                    aria-label="Phone: activate to sort column ascending" >
                                     Date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Day
+                                    aria-label="Phone: activate to sort column ascending" >Day
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Feed (G)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending" >
                                     Watering (L)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Weight (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
+                                    aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Time of mortality (Hour)
                                 </th>
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 117.891px;">Action
+                                   >Action
                                 </th>
                             </tr>
                     </thead>
@@ -252,7 +265,11 @@
                 [10, 25, 50, 75, 100, 200, -1],
                 [10, 25, 50, 75, 100, 200, "All"],
             ],
-            pageLength: 10
+            pageLength: 10,
+            "rowCallback": function(row, data, index) {
+                // Mengatur vertical-align: top pada setiap sel dalam baris
+                $('td', row).css('vertical-align', 'top');
+            }
         });
     }
 

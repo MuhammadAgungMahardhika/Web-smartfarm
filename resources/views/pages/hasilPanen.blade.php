@@ -54,7 +54,7 @@
                                 <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                                     id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false" onclick="filterByDate('{{ $data[0]->id }}')">
-                                    <i class="fa fa-calendar"></i> Filter By Date
+                                    <i class="fa fa-calendar"></i> Filter Harvest By Date
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dateDropdown">
                                     <div class="row p-2">
@@ -76,6 +76,14 @@
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
+                {{-- add button --}}
+                <div class="text-start mb-4" id="addButton">
+                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+                {{-- table data --}}
                 <div id="tableData">
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                         <thead>
@@ -139,10 +147,10 @@
     initDataTable('table')
 
     function initKandang() {
-        let id = $("#selectKandang").val()
+        let idKandang = $("#selectKandang").val()
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: `/kandang/${idKandang}`,
             success: function(response) {
                 let kandang = response.data
                 let namaKandang = kandang.nama_kandang
@@ -153,8 +161,8 @@
                      <div class="btn-group me-2 mb-2">
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                                     id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false" onclick="filterByDate('${id}')">
-                                    <i class="fa fa-calendar"></i> Filter By Date
+                                    aria-expanded="false" onclick="filterByDate('${idKandang}')">
+                                    <i class="fa fa-calendar"></i> Filter Harvest By Date
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dateDropdown">
                             <div class="row p-2">
@@ -166,11 +174,14 @@
                     </div>
 
                     <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
-                    onclick="showTableData('${id}')">
+                    onclick="showTableData('${idKandang}')">
                     <i class="fa fa-sync"></i>
                     Reload Data
                     </button>
                     `
+                )
+                $('#addButton').html(
+                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
                 )
                 showTableData(id)
             },

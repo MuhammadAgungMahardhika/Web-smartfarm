@@ -27,7 +27,7 @@
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
-                                                @foreach ($data as $item)
+                                                @foreach ($kandang as $item)
                                                     <option value="{{ $item->id }}">
                                                         {{ $item->nama_kandang }}
                                                     </option>
@@ -39,7 +39,7 @@
                                 <tr>
                                     <th>House Address</th>
                                     <td id="alamatKandang">
-                                        {{ $data[0]->alamat_kandang }}
+                                        {{ $kandang[0]->alamat_kandang }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -90,19 +90,39 @@
                                     aria-label="Status: activate to sort column ascending">
                                     Amonia ( Ppm )
                                 </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Feed ( G )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Watering ( L )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount ( Kg )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Daily mortality (Head)
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
                                 $no = 1;
                             @endphp
-                            @foreach ($data[0]['sensors'] as $sensor)
+                            @foreach ($data as $item)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $sensor->datetime }}</td>
-                                    <td>{{ $sensor->suhu }}</td>
-                                    <td>{{ $sensor->kelembapan }}</td>
-                                    <td>{{ $sensor->amonia }}</td>
+                                    <td>{{ $item->datetime }}</td>
+                                    <td>{{ number_format($item->suhu, 3) }}</td>
+                                    <td>{{ number_format($item->kelembapan, 3) }}</td>
+                                    <td>{{ number_format($item->amonia, 3) }}</td>
+                                    <td>{{ $item->pakan }}</td>
+                                    <td>{{ $item->minum }}</td>
+                                    <td>{{ $item->bobot }}</td>
+                                    <td>{{ $item->jumlah_kematian }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -220,16 +240,24 @@
                         suhu,
                         kelembapan,
                         amonia,
+                        pakan,
+                        minum,
+                        bobot,
+                        jumlah_kematian
                     } = sensors[i]
                     console.log(sensors[i])
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${suhu}</td>
-                    <td>${kelembapan}</td>
-                    <td>${amonia}</td>
                     <td>${datetime}</td>
+                    <td>${suhu.toFixed(3)}</td>
+                    <td>${kelembapan.toFixed(3)}</td>
+                    <td>${amonia.toFixed(3)}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${jumlah_kematian}</td>
                     </tr>
                     `
                 }
@@ -239,25 +267,42 @@
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
                         <tr>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Name: activate to sort column ascending">No
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending">
-                                                Temperature
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending">
-                                                Humidity
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Status: activate to sort column ascending">
-                                                Amonia
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending">Datetime
-                            </th>
-                        </tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Temperature ( &deg; Celcius )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Humidity ( % Rh )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amonia ( Ppm )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Feed ( G )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Watering ( L )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount ( Kg )
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Daily mortality (Head)
+                                </th>
+                            </tr>
                     </thead>
                     <tbody>
                         ${data}

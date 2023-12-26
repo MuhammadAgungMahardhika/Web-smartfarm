@@ -201,9 +201,9 @@
             // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
             channel.bind('App\\Events\\SensorDataUpdated', function(data) {
                 idKandang = data.idKandang;
-                suhu = parseFloat(data.suhu);
-                kelembapan = parseFloat(data.kelembapan);
-                amonia = parseFloat(data.amonia);
+                suhu = parseFloat(data.suhu).toFixed(3);
+                kelembapan = parseFloat(data.kelembapan).toFixed(3);
+                amonia = parseFloat(data.amonia).toFixed(3);
                 console.log(data)
                 let selectedKandang = $('#selectKandang').val()
 

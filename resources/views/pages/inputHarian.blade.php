@@ -50,13 +50,14 @@
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
+                {{-- add button --}}
                 <div class="text-start mb-4" id="addButton">
                     <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
                         data-bs-target="#default" onclick="addModal('{{ $kandang[0]->id }}')">
                         <i class="fa fa-plus"></i>
                     </a>
                 </div>
-
+                {{-- Table data --}}
                 <div id="tableData">
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                         <thead>

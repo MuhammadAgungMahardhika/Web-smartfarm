@@ -10,15 +10,16 @@ use Illuminate\Queue\SerializesModels;
 class NotificationSent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $idKandang, $message;
+    public $idKandang, $userId, $message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($idKandang, $message)
+    public function __construct($idKandang, $userId, $message)
     {
         $this->idKandang = $idKandang;
+        $this->userId = $userId;
         $this->message = $message;
     }
 

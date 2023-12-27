@@ -181,9 +181,9 @@
                     `
                 )
                 $('#addButton').html(
-                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
+                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${idKandang}')"><i class="fa fa-plus"></i> </a>`
                 )
-                showTableData(id)
+                showTableData(idKandang)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -402,7 +402,6 @@
                 </table>
                 `
                     $('#tableData').html(table)
-                    $('#default').modal('hide')
                     initDataTable('table')
                 }
             })

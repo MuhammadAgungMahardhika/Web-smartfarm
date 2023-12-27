@@ -6,6 +6,7 @@ use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
 use App\Models\Kandang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ use Illuminate\Validation\ValidationException;
 class DataKandangController extends Controller
 {
 
+	protected $user;
 	protected $kandangRepository;
 	protected $dataKandangRepository;
 	protected $dataKematianRepository;
@@ -30,12 +32,14 @@ class DataKandangController extends Controller
 	 * Create a new controller instance.
 	 */
 	public function __construct(
+		User $user,
 		DataKandang $dataKandang,
 		KandangRepository $kandangRepository,
 		DataKandangRepository $dataKandangRepository,
 		DataKematianRepository $dataKematianRepository,
 		NotificationRepository $notificationRepository
 	) {
+		$this->user = $user;
 		$this->model = $dataKandang;
 		$this->kandangRepository = $kandangRepository;
 		$this->dataKandangRepository = $dataKandangRepository;
@@ -168,9 +172,10 @@ class DataKandangController extends Controller
 					"created_by" => Auth::user()->id,
 				]
 			);
-
+			$countJumlahKematian = 0;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
+					$countJumlahKematian +=  $dataKematian[$i]['jumlah_kematian'];
 					$jamKematian = $dataKematian[$i]['jam'];
 					$jumlahKematian = $dataKematian[$i]['jumlah_kematian'];
 
@@ -190,15 +195,12 @@ class DataKandangController extends Controller
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
-			// give notification
+			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
 			if ($klasifikasi == "abnormal") {
-				// triggered event
-				$this->notificationRepository->createNotification((object)[
-					"id_kandang" => $idKandang,
-					"pesan" => "Ditemukan status tidak normal pada kandang",
-					"status" => 1,
-					"waktu" =>  Carbon::now()->timezone('Asia/Jakarta')
-				]);
+				$kandang = Kandang::findOrFail($idKandang)->first();
+				$namaKandang = $kandang->nama_kandang;
+				$userId = $kandang->id_user; //pemilik kandang
+				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
 			DB::commit();
@@ -255,8 +257,10 @@ class DataKandangController extends Controller
 			// delete data kematian
 			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
+			$countJumlahKematian = 0;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
+					$countJumlahKematian += $dataKematian[$i]['jumlah_kematian'];
 					$this->dataKematianRepository->createDataKematian(
 						(object)[
 							"id_data_kandang" => $dataKandang->id,
@@ -274,9 +278,12 @@ class DataKandangController extends Controller
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
-			// Kirim notifikasi
+			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
 			if ($klasifikasi == "abnormal") {
-				Event(new NotificationSent($idKandang, "Ditemukan keadaan Abnormal pada kandang"));
+				$kandang = Kandang::findOrFail($idKandang)->first();
+				$namaKandang = $kandang->nama_kandang;
+				$userId = $kandang->id_user; //pemilik kandang
+				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
 			DB::commit();

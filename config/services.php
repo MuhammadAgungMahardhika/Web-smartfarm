@@ -13,8 +13,8 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-    'telegram' => [
-        'token' => env('TELEGRAM_BOT_TOKEN', '6469941961:AAEOqhYK3jm2Rxuye88kUI118PU7wgXSwnU'),
+    'telegram-bot-api' => [
+        'token' => env('TELEGRAM_BOT_TOKEN'),
     ],
 
     'mailgun' => [

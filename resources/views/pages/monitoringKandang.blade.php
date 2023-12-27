@@ -59,6 +59,65 @@
                             </thead>
                         </table>
                     </div>
+                    {{-- Filter menu --}}
+                    <div class="col-12 col-md-8 col-lg-8">
+                        <div class="text-start p-2 shadow-sm border-circle" id="filterMenu">
+                            <p>Filter Data {{ $kandang[0]->nama_kandang }}</p>
+                            <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" onclick="filterByDate('{{ $kandang[0]->id }}')">
+                                    <i class="fa fa-calendar"></i> Filter By Date
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dateDropdown">
+                                    <div class="row p-2">
+                                        <div class="col-12 form-group">
+                                            <input type="text" id="dateFilter" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dayDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fa fa-calendar"></i> Filter By Day
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dayDropdown">
+                                    <div class="row p-2">
+                                        <div class="col-md-10 form-group">
+                                            <input type="number" placeholder="Day" id="dayFilter" class="form-control">
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <a class="btn btn-success btn-sm"
+                                                onclick="filterByDay('{{ $kandang[0]->id }}')"><i
+                                                    class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="classificationDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fa fa-calendar"></i> Filter By Classification
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="classificationDropdown"
+                                    style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 40px);"
+                                    data-popper-placement="bottom-start">
+                                    <a class="dropdown-item"
+                                        onclick="filterByClassification('{{ $kandang[0]->id }}','normal')">Normal</a>
+                                    <a class="dropdown-item"
+                                        onclick="filterByClassification('{{ $kandang[0]->id }}','abnormal')">Abnormal</a>
+                                </div>
+                            </div>
+                            <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
+                                onclick="showTableData('{{ $kandang[0]->id }}')">
+                                <i class="fa fa-sync"></i>
+                                Reload Data
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -71,41 +130,44 @@
                     <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                         <thead>
                             <tr>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending">No
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Name: activate to sort column ascending">No
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending">
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Phone: activate to sort column ascending">
                                     Datetime
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Temperature ( &deg; Celcius )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Temperature (&deg;Celcius)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Humidity ( % Rh )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Humidity (% Rh)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Amonia ( Ppm )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Amonia (Ppm)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Feed ( G )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Feed (G)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Watering ( L )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount ( Kg )
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Weight amount (Kg)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
                                 </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Status: activate to sort column ascending">
+                                    Classification </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,6 +185,7 @@
                                     <td>{{ $item->minum }}</td>
                                     <td>{{ $item->bobot }}</td>
                                     <td>{{ $item->jumlah_kematian }}</td>
+                                    <td>{{ $item->jumlah_kematian == 0 ? 'normal' : 'abnormal' }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -210,14 +273,73 @@
     // setInterval(initKandang, 5000);
 
     function initKandang() {
-        let id = $("#selectKandang").val()
+        let idKandang = $("#selectKandang").val()
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: `/kandang/${idKandang}`,
             success: function(response) {
                 let kandang = response.data
+                let namaKandang = kandang.nama_kandang
+                let alamatKandang = kandang.alamat_kandang
+                showTableData(idKandang)
                 $('#alamatKandang').html(kandang.alamat_kandang)
-                showTableData(id)
+                $('#filterMenu').html(`
+                <p>Filter Data ${namaKandang}</p>
+                <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" onclick="filterByDate('${idKandang}')">
+                                    <i class="fa fa-calendar"></i> Filter By Date
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dateDropdown">
+                                    <div class="row p-2">
+                                        <div class="col-12 form-group">
+                                            <input type="text" id="dateFilter" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                </div>
+                <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="dayDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fa fa-calendar"></i> Filter By Day
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dayDropdown">
+                                    <div class="row p-2">
+                                        <div class="col-md-10 form-group">
+                                            <input type="number" placeholder="Day" id="dayFilter" class="form-control">
+                                        </div>
+                                        <div class="col-md-2 form-group">
+                                            <a class="btn btn-success btn-sm"
+                                                onclick="filterByDay('${idKandang}')"><i
+                                                    class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                </div>
+                <div class="btn-group me-2 mb-2">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                    id="classificationDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                    <i class="fa fa-calendar"></i> Filter By Classification
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="classificationDropdown"
+                                    style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 40px);"
+                                    data-popper-placement="bottom-start">
+                                    <a class="dropdown-item"
+                                        onclick="filterByClassification('${idKandang}','normal')">Normal</a>
+                                    <a class="dropdown-item"
+                                        onclick="filterByClassification('${idKandang}','abnormal')">Abnormal</a>
+                                </div>
+                </div>
+                <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
+                                onclick="showTableData('${idKandang}')">
+                                <i class="fa fa-sync"></i>
+                                Reload Data
+                </button>
+                `)
+
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -258,6 +380,7 @@
                     <td>${minum}</td>
                     <td>${bobot}</td>
                     <td>${jumlah_kematian}</td>
+                    <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
                     </tr>
                     `
                 }
@@ -276,31 +399,35 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Temperature ( &deg; Celcius )
+                                    Temperature (&deg;Celcius)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Humidity ( % Rh )
+                                    Humidity (%Rh)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Amonia ( Ppm )
+                                    Amonia (Ppm)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Feed ( G )
+                                    Feed (G)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Watering ( L )
+                                    Watering (L)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Weight amount ( Kg )
+                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                   Classification
                                 </th>
                             </tr>
                     </thead>
@@ -313,6 +440,357 @@
                 initDataTable('table')
             }
         })
+    }
+
+    // Filter data by Day
+    function filterByDay(idKandang) {
+        let day = $('#dayFilter').val()
+        let data = {
+            id_kandang: idKandang,
+            day: day
+        }
+        $.ajax({
+            type: "POST",
+            url: `/sensors/day`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                // asign value
+                let sensors = response.data
+                let data = ''
+                // adding data kandang data
+                for (let i = 0; i < sensors.length; i++) {
+                    let {
+                        datetime,
+                        suhu,
+                        kelembapan,
+                        amonia,
+                        pakan,
+                        minum,
+                        bobot,
+                        jumlah_kematian
+                    } = sensors[i]
+                    console.log(sensors[i])
+
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${datetime}</td>
+                    <td>${suhu.toFixed(3)}</td>
+                    <td>${kelembapan.toFixed(3)}</td>
+                    <td>${amonia.toFixed(3)}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${jumlah_kematian}</td>
+                    <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
+                    </tr>
+                    `
+                }
+
+                // construct table
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Temperature (&deg;Celcius)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Humidity (%Rh)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amonia (Ppm)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Feed (G)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount (Kg)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                   Classification
+                                </th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                initDataTable('table')
+            }
+        })
+    }
+    // Filter data by classification
+    function filterByClassification(idKandang, classification) {
+        let data = {
+            id_kandang: idKandang,
+            classification: classification
+        }
+        $.ajax({
+            type: "POST",
+            url: `/sensors/classification`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                // asign value
+                let sensors = response.data
+                let data = ''
+                // adding data kandang data
+                for (let i = 0; i < sensors.length; i++) {
+                    let {
+                        datetime,
+                        suhu,
+                        kelembapan,
+                        amonia,
+                        pakan,
+                        minum,
+                        bobot,
+                        jumlah_kematian
+                    } = sensors[i]
+                    console.log(sensors[i])
+
+                    data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${datetime}</td>
+                    <td>${suhu.toFixed(3)}</td>
+                    <td>${kelembapan.toFixed(3)}</td>
+                    <td>${amonia.toFixed(3)}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${jumlah_kematian}</td>
+                    <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
+                    </tr>
+                    `
+                }
+
+                // construct table
+                let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Temperature (&deg;Celcius)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Humidity (%Rh)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amonia (Ppm)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Feed (G)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount (Kg)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                   Classification
+                                </th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                $('#tableData').html(table)
+                initDataTable('table')
+            }
+        })
+    }
+    // Filter data by tanggal
+    function filterByDate(idKandang) {
+        let dateNow = new Date();
+        $('#dateFilter').daterangepicker({
+            opens: 'left', // Tampilan kalender saat datepicker dibuka (left/right)
+            autoUpdateInput: false, // Otomatis memperbarui input setelah memilih tanggal
+            locale: {
+                format: 'YYYY-MM-DD', // Format tanggal yang diinginkan
+                separator: ' to ', // Pemisah untuk rentang tanggal
+            }
+        });
+
+        // Menangani perubahan tanggal
+        $('#dateFilter').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' to ' + picker.endDate.format('YYYY-MM-DD'));
+
+            // Tangkap tanggal awal dan akhir
+            var startDate = picker.startDate.format('YYYY-MM-DD');
+            var endDate = picker.endDate.format('YYYY-MM-DD');
+            // Tampilkan data 
+            new Date(startDate)
+            new Date(endDate)
+
+            // check jika from date kosong
+            if (!startDate) {
+                return Swal.fire("Please fill the from date")
+            }
+            // check jika to date kosong
+            if (!endDate) {
+                return Swal.fire("Please fill the end date");
+            }
+
+            let data = {
+                id_kandang: idKandang,
+                from: startDate,
+                to: endDate
+            }
+            $.ajax({
+                type: "POST",
+                url: `/sensors/date`,
+                contentType: "application/json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // asign value
+                    let sensors = response.data
+                    let data = ''
+                    // adding data kandang data
+                    for (let i = 0; i < sensors.length; i++) {
+                        let {
+                            datetime,
+                            suhu,
+                            kelembapan,
+                            amonia,
+                            pakan,
+                            minum,
+                            bobot,
+                            jumlah_kematian
+                        } = sensors[i]
+                        console.log(sensors[i])
+
+                        data += `
+                    <tr>
+                    <td>${i+1}</td>
+                    <td>${datetime}</td>
+                    <td>${suhu.toFixed(3)}</td>
+                    <td>${kelembapan.toFixed(3)}</td>
+                    <td>${amonia.toFixed(3)}</td>
+                    <td>${pakan}</td>
+                    <td>${minum}</td>
+                    <td>${bobot}</td>
+                    <td>${jumlah_kematian}</td>
+                    <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
+                    </tr>
+                    `
+                    }
+
+                    // construct table
+                    let table = `
+                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                    <thead>
+                        <tr>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Name: activate to sort column ascending">No
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Temperature (&deg;Celcius)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Humidity (%Rh)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amonia (Ppm)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Feed (G)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Watering (L)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Weight amount (Kg)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Daily mortality (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                   Classification
+                                </th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        ${data}
+                    </tbody>
+                </table>
+                `
+                    $('#tableData').html(table)
+                    initDataTable('table')
+                }
+            })
+        });
+
+        // Menangani reset tanggal
+        $('#dateFilter').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
     }
 
     function initDataTable(id) {

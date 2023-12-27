@@ -590,7 +590,6 @@
                 </table>
                 `
                 $('#tableData').html(table)
-                $('#default').modal('hide')
                 initDataTable('table')
             }
         })
@@ -709,7 +708,6 @@
                 </table>
                 `
                 $('#tableData').html(table)
-                $('#default').modal('hide')
                 initDataTable('table')
             }
         })
@@ -860,7 +858,6 @@
                 </table>
                 `
                     $('#tableData').html(table)
-                    $('#default').modal('hide')
                     initDataTable('table')
                 }
             })

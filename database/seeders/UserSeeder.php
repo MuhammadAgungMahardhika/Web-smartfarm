@@ -28,6 +28,7 @@ class UserSeeder extends Seeder
             'id_role' => 2,
             'name' => 'Pemilik',
             'email' => 'pemilik@gmail.com',
+            'id_telegram' => '6612596001',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),

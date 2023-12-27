@@ -3,9 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\NotificationSent;
+use App\Models\Kandang;
+use App\Models\User;
 use App\Notifications\TelegramNotification;
 use App\Repositories\NotificationRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Log;
 
@@ -30,8 +33,8 @@ class NotificationSentListener
      */
     public function handle(NotificationSent $event)
     {
-        Log::info("Masuk ke notifikasi sen listener");
         $idKandang = $event->idKandang;
+        $userId = $event->userId;
         $message = $event->message;
 
         // give notification
@@ -45,9 +48,13 @@ class NotificationSentListener
             "waktu" =>  Carbon::now()->timezone('Asia/Jakarta')
         ]);
 
-        // kirim notifikasi ke telegram
-        // new TelegramNotification($message);
-        // Notification::route('telegram', "6612596001")
-        //     ->notify(new TelegramNotification($message));
+
+        // Ambil instance model Customer
+        $user = User::find($userId);
+        $chatId = $user->id_telegram;
+        // Kirim notifikasi ke pelanggan
+        if ($chatId != null) {
+            $user->notify(new TelegramNotification($chatId, $message));
+        }
     }
 }

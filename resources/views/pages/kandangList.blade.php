@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Harvest Data</h3>
-                <p class="text-subtitle text-muted">harvest data page</p>
+                <h3 style="color: #cb8e8e">House List</h3>
+                <p class="text-subtitle text-muted">house list page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Harvest data</li>
+                        <li class="breadcrumb-item active" aria-current="page">House List</li>
                     </ol>
                 </nav>
             </div>
@@ -18,68 +18,14 @@
     <section class="section">
         <div class="card">
             <div class="card-header">
-                <div class="row">
-                    {{-- Nama dan Alamat Kandang --}}
-                    <div class="col-12 col-md-4 col-lg-4">
-                        <table class="table table-borderless text-start">
-                            <thead>
-                                <tr>
-                                    <th>House Name</th>
-                                    <td id="namaKandang">
-                                        <fieldset class="form-group">
-                                            <select class="form-select" id="selectKandang" onchange="initKandang()">
-                                                @foreach ($data as $item)
-                                                    <option value="{{ $item->id }}">
-                                                        {{ $item->nama_kandang }}
-                                                    </option>
-                                                @endforeach; ?>
-                                            </select>
-                                        </fieldset>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>House Address</th>
-                                    <td id="alamatKandang">
-                                        {{ $data[0]->alamat_kandang }}
-                                    </td>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    {{-- Filter menu --}}
-                    <div class="col-12 col-md-8 col-lg-8">
-                        <div class="text-start p-2 shadow-sm border-circle" id="filterMenu">
-                            <p>Filter Data {{ $data[0]->nama_kandang }}</p>
-                            <div class="btn-group me-2 mb-2">
-                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                    id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false" onclick="filterByDate('{{ $data[0]->id }}')">
-                                    <i class="fa fa-calendar"></i> Filter Harvest By Date
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dateDropdown">
-                                    <div class="row p-2">
-                                        <div class="col-12 form-group">
-                                            <input type="text" id="dateFilter" class="form-control">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button id="reloadButton" class="btn btn-outline-secondary btn-sm  me-2 mb-2"
-                                onclick="showTableData('{{ $data[0]->id }}')">
-                                <i class="fa fa-sync"></i>
-                                Reload Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <div class="card-title text-center">House List</div>
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
                 {{-- add button --}}
                 <div class="text-start mb-4" id="addButton">
                     <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
-                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
+                        data-bs-target="#default" onclick="addModal()">
                         <i class="fa fa-plus"></i>
                     </a>
                 </div>
@@ -130,8 +76,7 @@
                                         </a>
                                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="deleteModal('{{ $panen->id }}')"><i
-                                                class="fa fa-trash"></i></a>
+                                            onclick="deleteModal('{{ $panen->id }}')"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -414,49 +359,85 @@
     }
 
     // menambahkan data panen
-    function addModal(idKandang) {
+    function addModal() {
         $.ajax({
             type: "GET",
-            url: `/kandang/${idKandang}`,
+            url: `/users/free/`,
             success: function(response) {
-                let kandang = response.data
-                $('#modalTitle').html("Add Harvest Data")
+                console.log(response)
+                let pemilik = response.data.pemilik
+                let peternak = response.data.peternak
+
+
+                // option pemilik
+                let optionPemilik = ``
+                if (pemilik.length > 0) {
+                    pemilik.forEach(item => {
+
+                        optionPemilik +=
+                            `<option>Select Owner</option><option value="${item.id}">${item.name} (${item.email})</option>`
+                    })
+                }
+
+                // option peternak 
+                let optionPeternak = ``
+                if (peternak.length > 0) {
+                    peternak.forEach(item => {
+                        optionPeternak +=
+                            `<option>Select Farmer</option><option value="${item.id}">${item.name} (${item.email})</option>`
+                    });
+                }
+                $('#modalTitle').html("Add New House")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body"> 
                             <div class="row">
-                                <input type="hidden" id="idKandang" value="${kandang.id}" class="form-control">
+                            
                                 <div class="col-md-4">
                                     <label for="namaKandang">House name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
+                                    <input type="text" id="namaKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Start date</label>
+                                    <label for="alamatKandang">House Address</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalMulai" class="form-control">
+                                    <input type="text" id="alamatKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Harvest date</label>
+                                    <label for="luasKandang">House Area (M2)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalPanen" class="form-control">
+                                    <input type="number" id="luasKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Harvest amount (Head)</label>
+                                    <label for="populasiAwal">Initial Population</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahPanen" class="form-control">
+                                    <input type="number" id="populasiAwal" class="form-control">
+                                </div>
+                               
+                                <div class="col-md-4">
+                                    <label for="idPemilik">Owner</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <fieldset class="form-group">
+                                            <select class="form-select" id="idPemilik">
+                                              ${optionPemilik}
+                                            </select>
+                                        </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotAyam">Weight amount(Kg)</label>
+                                    <label for="peternak">Farmer</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="bobotAyam" class="form-control">
+                                    <fieldset class="form-group">
+                                            <select class="form-select" id="idPeternak">
+                                              ${optionPeternak}
+                                            </select>
+                                        </fieldset>
                                 </div>
-                                
                             </div>
                         </div>
                     </form>
@@ -465,9 +446,11 @@
                 $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
-                console.log(err.responseText)
+                console.log(err)
             }
         })
+
+
     }
 
     // mengubah data panen
@@ -588,48 +571,73 @@
     // -------------------------------API KE DATABASE---------------------------------------------------------------------
 
     function save() {
-        let idKandang = $('#idKandang').val()
-        let tanggalMulai = $('#tanggalMulai').val()
-        let tanggalPanen = $('#tanggalPanen').val()
-        let jumlahPanen = $('#jumlahPanen').val()
-        let bobotAyam = $('#bobotAyam').val()
+        let namaKandang = $('#namaKandang').val()
+        let alamatKandang = $('#alamatKandang').val()
+        let luasKandang = $('#luasKandang').val()
+        let populasiAwal = $('#populasiAwal').val()
+        let idPemilik = $('#idPemilik').val()
+        let idPeternak = $('#idPeternak').val()
 
+        console.log(namaKandang.length)
+        console.log(alamatKandang)
+        console.log(luasKandang)
+        console.log(populasiAwal)
+        console.log(idPemilik)
+        console.log(idPeternak)
         // validasi
-
+        if (!namaKandang) {
+            return Swal.fire("Please fill the house name")
+        }
+        if (!alamatKandang) {
+            return Swal.fire("Please fill the house address")
+        }
+        if (!luasKandang) {
+            return Swal.fire("Please fill the house area")
+        }
+        if (!populasiAwal) {
+            return Swal.fire("Please fill the Initial population")
+        }
+        if (!idPemilik) {
+            return Swal.fire("Owner required!")
+        }
+        if (!idPeternak) {
+            return Swal.fire("Farmer required!")
+        }
         // asign value if validated
         let data = {
-            id_kandang: idKandang,
-            tanggal_mulai: tanggalMulai,
-            tanggal_panen: tanggalPanen,
-            jumlah_panen: jumlahPanen,
-            bobot_total: bobotAyam
+            nama_kandang: namaKandang,
+            alamat_kandang: alamatKandang,
+            luas_kandang: luasKandang,
+            populasi_awal: populasiAwal,
+            id_user: idPemilik,
+            id_peternak: idPeternak
         }
 
-        $.ajax({
-            type: "POST",
-            url: `/panen`,
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: JSON.stringify(data),
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Data added",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#default').modal('hide')
-                    showTableData(response.panen.id_kandang)
-                })
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
+        // $.ajax({
+        //     type: "POST",
+        //     url: `/panen`,
+        //     contentType: "application/json",
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     data: JSON.stringify(data),
+        //     success: function(response) {
+        //         Swal.fire({
+        //             position: "top-end",
+        //             icon: "success",
+        //             title: "Data added",
+        //             showConfirmButton: false,
+        //             timer: 1500
+        //         }).then(() => {
+        //             $('#default').modal('hide')
+        //             showTableData(response.panen.id_kandang)
+        //         })
+        //     },
+        //     error: function(err) {
+        //         console.log(err.responseText)
+        //     }
 
-        })
+        // })
 
     }
 

@@ -1,4 +1,8 @@
 <x-guest-layout>
+    <div class="form-check form-switch fs-6">
+        <input class="form-check-input  me-0" type="hidden" id="toggle-dark">
+        <label class="form-check-label"></label>
+    </div>
     <div id="auth-left">
         <a href="index.html"><img src="{{ asset('/images/logo/smartfarm.png') }}" alt="Logo"></a>
         <h1 class="auth-title">Log in.</h1>

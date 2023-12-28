@@ -46,7 +46,7 @@
 <body>
     <div class="container">
         <h1>Error 404 - Not Found</h1>
-        <p>Maaf, halaman yang Anda cari tidak dapat ditemukan. Sepertinya Anda tidak memiliki kandang untuk di-manage.</p>
+        <p>Sorry, the page you are looking for cannot be found. It seems you don't have a <strong>House</strong> to manage.</p>
         <a class="btn btn-primary" href="/daftarMenu">Back to menu</a>
         <img src="/images/menu/error-noKandang2.png" alt="Boiler Farm Chicken" style="max-width: 1000px;">
     </div>

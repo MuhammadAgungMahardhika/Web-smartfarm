@@ -22,6 +22,7 @@ class SensorRepository
       $sensor->suhu = $data->suhu;
       $sensor->kelembapan = $data->kelembapan;
       $sensor->amonia = $data->amonia;
+      $sensor->is_outlier = $data->is_outlier;
       $sensor->save();
 
       return $sensor;

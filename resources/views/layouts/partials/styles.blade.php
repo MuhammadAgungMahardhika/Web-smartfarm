@@ -8,6 +8,9 @@
 {{-- Datatable CSS --}}
 <link rel="stylesheet" href="{{ asset('/js/extensions/datatables.net-bs5/css/dataTables.bootstrap5.css') }}">
 
+<!-- DateRangepicker CSS -->
+<link rel="stylesheet" href="{{ asset('/js/extensions/daterangepicker/daterangepicker.css') }}">
+
 <!-- Styles -->
 {{-- <link rel="stylesheet" href="{{ mix('css/bootstrap.css') }}">
 <link rel="stylesheet" href="{{ mix('css/app.css') }}">

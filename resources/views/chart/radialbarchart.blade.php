@@ -37,7 +37,31 @@
 
 {{-- Script Kelembapan dan Suhu dan Amonia --}}
 <script>
+    let suhuChart, kelembapanChart, amoniaChart
     document.addEventListener("DOMContentLoaded", () => {
+        const timeDuration = 5000;
+        let timeOutId
+
+        function startOfflineTimeOut() {
+            timeOutId = setTimeout(() => {
+                setStatus(false)
+                updateData()
+            }, timeDuration);
+        }
+
+        function resetOfflineTimeout() {
+            clearTimeout(timeOutId)
+            setStatus(true)
+            startOfflineTimeOut()
+        }
+
+        function setStatus(status) {
+            if (status == false) {
+                $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
+            } else if (status == true) {
+                $('#status').html(`<span class="badge bg-success">Online</span>`)
+            }
+        }
         // suhu
         let optionSuhuChart = {
             colors: ['#75a3d9'],
@@ -75,11 +99,11 @@
                     },
                 }
             },
-            series: [30],
-            labels: ['Suhu']
+            series: [0],
+            labels: ['Temperature']
         }
 
-        let suhuChart = new ApexCharts(document.querySelector("#suhuChart"), optionSuhuChart);
+        suhuChart = new ApexCharts(document.querySelector("#suhuChart"), optionSuhuChart);
         suhuChart.render();
         // kelembapan
         let optionKelembapanChart = {
@@ -102,11 +126,11 @@
                             show: true,
                             formatter: function(val, opt) {
                                 if (opt.angle === -90) {
-                                    return '0°C'; // Label for start value
+                                    return '0'; // Label for start value
                                 } else if (opt.angle === 90) {
-                                    return '100°C'; // Label for end value
+                                    return '100'; // Label for end value
                                 } else {
-                                    return `${val}%rh`; // Display temperature value with °C
+                                    return `${val}%RH`; // Display temperature value with °C
                                 }
                             },
                         }
@@ -118,11 +142,11 @@
                     },
                 }
             },
-            series: [30],
-            labels: ['Kelembapan']
+            series: [0],
+            labels: ['Humidity']
         }
 
-        let kelembapanChart = new ApexCharts(document.querySelector("#kelembapanChart"), optionKelembapanChart);
+        kelembapanChart = new ApexCharts(document.querySelector("#kelembapanChart"), optionKelembapanChart);
         kelembapanChart.render();
 
         let optionsAmonia = {
@@ -145,9 +169,9 @@
                             show: true,
                             formatter: function(val, opt) {
                                 if (opt.angle === -90) {
-                                    return '0°C'; // Label for start value
+                                    return '0'; // Label for start value
                                 } else if (opt.angle === 90) {
-                                    return '100°C'; // Label for end value
+                                    return '100'; // Label for end value
                                 } else {
                                     return `${val}PPM`; // Display the value with 
                                 }
@@ -161,101 +185,98 @@
                     },
                 }
             },
-            series: [30],
+            series: [0],
             labels: ['Amonia']
         }
 
-        let amoniaChart = new ApexCharts(document.querySelector("#amoniaChart"), optionsAmonia);
+        amoniaChart = new ApexCharts(document.querySelector("#amoniaChart"), optionsAmonia);
         amoniaChart.render();
 
-        // Function to update chart data in real-time
-        function updateData() {
-            let idKandang = $('#selectKandang').val()
-            // get data from database suhu kelembapan amoniak
-            $.ajax({
-                type: "GET",
-                // cache: false,
-                url: `/sensor-suhu-kelembapan-amoniak/kandang/${idKandang}`,
-                success: function(response) {
-                    if (response.data.sensor != null) {
-                        let sensor = response.data.sensor
-                        // masukkan nilai suhu
-                        console.log("suhu =" + sensor.suhu)
-                        console.log("kelembapan =" + sensor.kelembapan)
-                        console.log("amonia =" + sensor.amonia)
+        var pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+            cluster: 'ap1'
+        });
 
-                        let suhuData = sensor.suhu;
-                        if (suhuData != null && !isNaN(suhuData)) {
-                            suhuChart.updateSeries([suhuData], true, {
-                                duration: 200
-                            });
+        var channel = pusher.subscribe('sensor-data');
+        channel.bind('pusher:subscription_succeeded', function() {
+            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
+                idKandang = data.idKandang;
+                suhu = parseFloat(data.suhu).toFixed(3);
+                kelembapan = parseFloat(data.kelembapan).toFixed(3);
+                amonia = parseFloat(data.amonia).toFixed(3);
+                console.log(data)
+                let selectedKandang = $('#selectKandang').val()
 
-                            $('#suhuData').html(suhuData);
-                        } else {
-                            suhuChart.updateSeries([0], true, {
-                                duration: 200
-                            });
-                            $('#suhuData').html(0);
-                        }
-
-                        // masukkan nilai kelembapan
-                        let kelembapanData = sensor.kelembapan;
-                        if (kelembapanData != null && !isNaN(kelembapanData)) {
-
-                            kelembapanChart.updateSeries([kelembapanData], true, {
-                                duration: 200
-                            });
-                            $('#kelembapanData').html(kelembapanData);
-                        } else {
-                            kelembapanChart.updateSeries([0], true, {
-                                duration: 200
-                            });
-                            $('#kelembapanData').html(0);
-                        }
-
-                        // masukkan nilai amonia
-                        let amoniaData = sensor.amonia;
-                        if (amoniaData != null && !isNaN(amoniaData)) {
-
-                            amoniaChart.updateSeries([amoniaData], true, {
-                                duration: 200
-                            });
-                            $('#amoniaData').html(amoniaData);
-                        } else {
-                            amoniaChart.updateSeries([0], true, {
-                                duration: 200
-                            });
-                            $('#amoniaData').html(0);
-                        }
-                    } else {
-                        console.log("semua kosong")
-                        // jika semua data kosong
-                        kelembapanChart.updateSeries([0], true, {
-                            duration: 200
-                        });
-                        $('#kelembapanData').html(0);
-
-                        suhuChart.updateSeries([0], true, {
-                            duration: 200
-                        });
-                        $('#suhuData').html(0);
-
-                        amoniaChart.updateSeries([0], true, {
-                            duration: 200
-                        });
-                        $('#amoniaData').html(0);
-                    }
-                },
-                error: function(err) {
-                    console.log(err.responseText);
+                if (idKandang == selectedKandang) {
+                    updateData(suhu, kelembapan, amonia)
                 }
+                resetOfflineTimeout()
             });
-
-        }
-
-        // Update data every 1 seconds (1000 milliseconds)
-        setInterval(updateData, 1000);
-
-
+        });
+        startOfflineTimeOut()
     })
+
+    // Function to update chart data in real-time
+    function updateData(suhuData = null, kelembapanData = null, amoniaData = null) {
+        if (suhuData != null || kelembapanData != null || amoniaData != null) {
+
+            console.log("suhu =" + suhuData)
+            console.log("kelembapan =" + kelembapanData)
+            console.log("amonia =" + amoniaData)
+
+            if (suhuData != null && !isNaN(suhuData)) {
+                suhuChart.updateSeries([suhuData], true, {
+                    duration: 200
+                });
+                $('#suhuData').html(suhuData);
+            } else {
+                suhuChart.updateSeries([0], true, {
+                    duration: 200
+                });
+                $('#suhuData').html(0);
+            }
+
+            if (kelembapanData != null && !isNaN(kelembapanData)) {
+
+                kelembapanChart.updateSeries([kelembapanData], true, {
+                    duration: 200
+                });
+                $('#kelembapanData').html(kelembapanData);
+            } else {
+                kelembapanChart.updateSeries([0], true, {
+                    duration: 200
+                });
+                $('#kelembapanData').html(0);
+            }
+
+            if (amoniaData != null && !isNaN(amoniaData)) {
+                amoniaChart.updateSeries([amoniaData], true, {
+                    duration: 200
+                });
+                $('#amoniaData').html(amoniaData);
+            } else {
+                amoniaChart.updateSeries([0], true, {
+                    duration: 200
+                });
+                $('#amoniaData').html(0);
+            }
+        } else {
+            $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
+            // jika semua data kosong
+            kelembapanChart.updateSeries([0], true, {
+                duration: 200
+            });
+            $('#kelembapanData').html(0);
+
+            suhuChart.updateSeries([0], true, {
+                duration: 200
+            });
+            $('#suhuData').html(0);
+
+            amoniaChart.updateSeries([0], true, {
+                duration: 200
+            });
+            $('#amoniaData').html(0);
+        }
+    }
 </script>

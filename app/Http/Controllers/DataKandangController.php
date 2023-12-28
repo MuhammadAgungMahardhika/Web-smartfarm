@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
 use App\Models\Kandang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +22,7 @@ use Illuminate\Validation\ValidationException;
 class DataKandangController extends Controller
 {
 
+	protected $user;
 	protected $kandangRepository;
 	protected $dataKandangRepository;
 	protected $dataKematianRepository;
@@ -29,12 +32,14 @@ class DataKandangController extends Controller
 	 * Create a new controller instance.
 	 */
 	public function __construct(
+		User $user,
 		DataKandang $dataKandang,
 		KandangRepository $kandangRepository,
 		DataKandangRepository $dataKandangRepository,
 		DataKematianRepository $dataKematianRepository,
 		NotificationRepository $notificationRepository
 	) {
+		$this->user = $user;
 		$this->model = $dataKandang;
 		$this->kandangRepository = $kandangRepository;
 		$this->dataKandangRepository = $dataKandangRepository;
@@ -55,12 +60,69 @@ class DataKandangController extends Controller
 
 	public function getDataKandangByIdKandang($id)
 	{
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'), DB::raw('GROUP_CONCAT(data_kematian.jam SEPARATOR ",") AS jam_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $id)
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+	// Filter by Date
+	public function getDataKandangByDate(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$from = $request->from;
+		$to = $request->to;
+
 		$items =  DB::table('data_kandang')
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
 			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
-			->where('data_kandang.id_kandang', '=', $id)
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where(function ($query) use ($from, $to) {
+				$query->whereRaw('data_kandang.date >= ? AND data_kandang.date <= ?', [$from, $to]);
+			})
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+
+	// Filter By Classification
+	public function getDataKandangByClassification(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$classification = $request->classification;
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where('data_kandang.classification', '=', $classification)
+			->orderBy('data_kandang.created_at', 'ASC')
+			->get();
+		return response(['data' => $items, 'status' => 200]);
+	}
+
+	// Filter By Day
+	public function getDataKandangByDay(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$day = $request->day;
+
+		$items =  DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
+			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->where('data_kandang.id_kandang', '=', $idKandang)
+			->where('data_kandang.hari_ke', '=', $day)
 			->orderBy('data_kandang.created_at', 'ASC')
 			->get();
 		return response(['data' => $items, 'status' => 200]);
@@ -87,7 +149,6 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
-			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -95,7 +156,8 @@ class DataKandangController extends Controller
 		try {
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
-			$klasifikasi = $request->classification;
+			$dataKematian = $request->data_kematian;
+			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
 			$dataKandang = $this->dataKandangRepository->createDataKandang(
 				(object) [
 					"id_kandang" => $idKandang,
@@ -106,13 +168,14 @@ class DataKandangController extends Controller
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,
 					"date" => $request->date,
+					"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 					"created_by" => Auth::user()->id,
 				]
 			);
-
-			$dataKematian = $request->data_kematian;
+			$countJumlahKematian = 0;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
+					$countJumlahKematian +=  $dataKematian[$i]['jumlah_kematian'];
 					$jamKematian = $dataKematian[$i]['jam'];
 					$jumlahKematian = $dataKematian[$i]['jumlah_kematian'];
 
@@ -121,6 +184,7 @@ class DataKandangController extends Controller
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $jumlahKematian,
 							"jam" => $jamKematian,
+							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 							"created_by" => Auth::user()->id
 						]
 					);
@@ -131,14 +195,12 @@ class DataKandangController extends Controller
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
-			// give notification
+			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
 			if ($klasifikasi == "abnormal") {
-				$this->notificationRepository->createNotification((object)[
-					"id_kandang" => $idKandang,
-					"pesan" => "Ditemukan status tidak normal pada kandang",
-					"status" => 1,
-					"waktu" =>  Carbon::now()->timezone('Asia/Jakarta')
-				]);
+				$kandang = Kandang::findOrFail($idKandang)->first();
+				$namaKandang = $kandang->nama_kandang;
+				$userId = $kandang->id_user; //pemilik kandang
+				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
 			DB::commit();
@@ -167,7 +229,6 @@ class DataKandangController extends Controller
 			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
-			'classification' => 'required',
 			'date' => 'required'
 		]);
 
@@ -175,6 +236,8 @@ class DataKandangController extends Controller
 		try {
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
+			$dataKematian = $request->data_kematian;
+			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
 			$dataKandang = $this->dataKandangRepository->editDataKandang(
 				$id,
 				(object) [
@@ -184,8 +247,9 @@ class DataKandangController extends Controller
 					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
-					"classification" => $request->classification,
+					"classification" => $klasifikasi,
 					"date" => $request->date,
+					"updated_at" => Carbon::now()->timezone('Asia/Jakarta'),
 					"updated_by" => Auth::user()->id,
 				]
 			);
@@ -193,14 +257,16 @@ class DataKandangController extends Controller
 			// delete data kematian
 			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
-			$dataKematian = $request->data_kematian;
+			$countJumlahKematian = 0;
 			if (count($dataKematian) > 0) {
 				for ($i = 0; $i < count($dataKematian); $i++) {
+					$countJumlahKematian += $dataKematian[$i]['jumlah_kematian'];
 					$this->dataKematianRepository->createDataKematian(
 						(object)[
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
 							"jam" => $dataKematian[$i]['jam'],
+							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
 							"created_by" => Auth::user()->id
 						]
 					);
@@ -211,6 +277,14 @@ class DataKandangController extends Controller
 			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
+
+			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
+			if ($klasifikasi == "abnormal") {
+				$kandang = Kandang::findOrFail($idKandang)->first();
+				$namaKandang = $kandang->nama_kandang;
+				$userId = $kandang->id_user; //pemilik kandang
+				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
+			}
 
 			DB::commit();
 			return response()->json([

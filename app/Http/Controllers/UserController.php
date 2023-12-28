@@ -8,6 +8,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Laravel\Jetstream\Jetstream;
 use Illuminate\Support\Str;
@@ -33,6 +34,25 @@ class UserController extends Controller
         } else {
             $items = User::with('roles')->orderBy('id', 'ASC')->get();
         }
+        return response(['data' => $items, 'status' => 200]);
+    }
+    public function userFree()
+    {
+
+        $pemilik = DB::table('users')->leftJoin('kandang', 'kandang.id_user', '=', 'users.id')
+            ->where('users.id_role', '=', 2)
+            ->where('kandang.id_user', '=', null)
+            ->select('users.*')
+            ->get();
+        $peternak = DB::table('users')->leftJoin('kandang', 'kandang.id_peternak', '=', 'users.id')
+            ->where('users.id_role', '=', 3)
+            ->where('kandang.id_peternak', '=', null)
+            ->select('users.*')
+            ->get();
+        $items = [
+            'pemilik' => $pemilik,
+            'peternak' => $peternak
+        ];
         return response(['data' => $items, 'status' => 200]);
     }
 

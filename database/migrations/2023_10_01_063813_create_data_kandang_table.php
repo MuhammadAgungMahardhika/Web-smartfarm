@@ -27,6 +27,8 @@ return new class extends Migration
             $table->integer('created_by')->nullable();
             $table->timestamp('updated_at')->nullable();
             $table->integer('updated_by')->nullable();
+            // Menambahkan constraint unique pada kombinasi kolom id_kandang dan date
+            $table->unique(['id_kandang', 'date']);
         });
     }
 

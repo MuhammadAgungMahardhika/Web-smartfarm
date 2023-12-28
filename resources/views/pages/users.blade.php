@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">List Users</h3>
-                <p class="text-subtitle text-muted">Halaman Users</p>
+                <h3 style="color: #cb8e8e">User List</h3>
+                <p class="text-subtitle text-muted">User list page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">List Users</li>
+                        <li class="breadcrumb-item active" aria-current="page">User List</li>
                     </ol>
                 </nav>
             </div>
@@ -18,7 +18,7 @@
     <section class="section">
         <div class="card">
             <div class="card-header text-center">
-                <div class="card-title">Daftar User</div>
+                <div class="card-title">User List</div>
 
             </div>
 
@@ -38,7 +38,8 @@
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Role
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama
+                                    aria-label="City: activate to sort column ascending" style="width: 239.078px;">
+                                    Username
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
@@ -122,7 +123,7 @@
                                                 aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Role
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Nama 
+                                                aria-label="City: activate to sort column ascending" style="width: 239.078px;">Username 
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
@@ -153,36 +154,11 @@
         let jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
-                [25, 50, 75, 100, 200, -1],
-                [25, 50, 75, 100, 200, "All"],
+                [10, 25, 50, 75, 100, 200, -1],
+                [10, 25, 50, 75, 100, 200, "All"],
             ],
             pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
         });
-
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
     }
 
     function reset() {
@@ -202,7 +178,7 @@
                         `<option value="${role.id_role}">${role.nama_role}</option>`
                 });
 
-                $('#modalTitle').html("Menambahkan User ")
+                $('#modalTitle').html("Add User ")
                 $('#modalBody').html(`
         <form class="form form-horizontal">
                 <div class="form-body"> 
@@ -216,10 +192,10 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="name">Nama Pengguna</label>
+                            <label for="name">Username</label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="text" id="name" class="form-control" placeholder="nama pengguna" autocomplete="off">
+                            <input type="text" id="name" class="form-control" placeholder="username" autocomplete="off">
                         </div>
                         <div class="col-md-4">
                             <label for="email">Email</label>
@@ -240,10 +216,10 @@
                             <input type="password" id="password" class="form-control" placeholder="password" autocomplete="off">
                         </div>
                         <div class="col-md-4">
-                            <label for="konfirmasiPassword">Konfirmasi password</label>
+                            <label for="konfirmasiPassword">Password confirmation</label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="password" id="konfirmasiPassword" class="form-control" placeholder="Konfirmasi password" autocomplete="off">
+                            <input type="password" id="konfirmasiPassword" class="form-control" placeholder="password confirmation" autocomplete="off">
                         </div>
                         @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                         <div class="mt-4">
@@ -311,7 +287,7 @@
                         `<option ${id_role == r.id_role ? 'selected' : ''} value="${r.id_role }">${r.nama_role}</option>`
                 });
 
-                $('#modalTitle').html("Mengubah User")
+                $('#modalTitle').html("Edit User")
                 $('#modalBody').html(`
         <form class="form form-horizontal">
                 <div class="form-body">
@@ -325,7 +301,7 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="name">Nama Pengguna</label>
+                            <label for="name">Username</label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="text" id="name" value="${name}" class="form-control">
@@ -357,8 +333,8 @@
     }
 
     function deleteModal(id) {
-        $('#modalTitle').html("Hapus User")
-        $('#modalBody').html(`Apakah anda yakin ingin menghapus user ini?`)
+        $('#modalTitle').html("Delete User")
+        $('#modalBody').html(`Are you sure to delete this user`)
         $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
     }
 
@@ -392,7 +368,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nama tidak boleh kosong",
+                title: "Username cannot be empty",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -404,7 +380,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Alamat Email tidak valid",
+                title: "Email is not valid",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -415,7 +391,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nomor telfon tidak boleh kosong",
+                title: "Phone number cannot be empty",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -425,7 +401,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nomor telfon kurang dari 10 digit",
+                title: "Phone number cannot less than 10 digits",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -436,7 +412,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Passwod atau konfirmasi password tidak boleh kosong",
+                title: "Password or password confirmation cannot be empty",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -446,7 +422,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Konfirmasi password tidak sama dengan password, mohon check kembali",
+                title: "You password confirmation is not same as your password",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -472,7 +448,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menambahkan user baru",
+                    title: "User added",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -498,7 +474,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nama tidak boleh kosong",
+                title: "Name cannot be empty",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -510,7 +486,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Alamat Email tidak valid",
+                title: "Your email is not valid",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -521,7 +497,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nomor telfon tidak boleh kosong",
+                title: "Phone number cannot be empty",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -531,7 +507,7 @@
             return Swal.fire({
                 position: "top-end",
                 icon: "error",
-                title: "Nomor telfon kurang dari 10 digit",
+                title: "Your phone number is less than 10 digits",
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -556,7 +532,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil mengubah data",
+                    title: "Data edited",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
@@ -583,7 +559,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil menghapus data",
+                    title: "Data deleted",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {

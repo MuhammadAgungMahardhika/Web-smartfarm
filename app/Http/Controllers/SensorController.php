@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Models\AmoniakSensor;
+use App\Events\SensorDataUpdated;
 use App\Models\Sensors;
-use App\Models\SuhuKelembapanSensor;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
-use App\Repositories\AmoniakRepository;
 use App\Repositories\SensorRepository;
-use App\Repositories\SuhuKelembapanRepository;
-use Carbon\Carbon;
-use Illuminate\Database\QueryException;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SensorController extends Controller
 {
@@ -35,19 +28,7 @@ class SensorController extends Controller
 
 	public function storeSensorFromOutside($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
 	{
-
-		// Suhu dan Kelembapan
-		if ($suhu != null || $kelembapan != null || $amonia != null) {
-			$this->sensorRepository->createSensor((object)[
-				"id_kandang" => $idKandang,
-				"datetime" => Carbon::now()->timezone('Asia/Jakarta'),
-				"suhu" => $suhu,
-				"kelembapan" => $kelembapan,
-				"amonia" => $amonia,
-			]);
-		}
-
-
+		event(new SensorDataUpdated($idKandang, $suhu, $kelembapan, $amonia));
 		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
 	}
 
@@ -64,14 +45,146 @@ class SensorController extends Controller
 	}
 	public function getSensorByKandangId($idKandang)
 	{
-		$sensor = $this->modelSensor
-			->where('id_kandang', '=', $idKandang)
-			->join('kandang', 'kandang.id', '=', 'sensors.id_kandang')
-			->orderBy('datetime', 'DESC')
+		$sensor = DB::table('sensors')
+			->where('sensors.id_kandang', '=', $idKandang)
+			->where('kandang.id_user', Auth::user()->id)
+			->leftJoin('kandang', function ($join) {
+				$join->on('kandang.id', '=', 'sensors.id_kandang');
+			})
+			->leftJoin('data_kandang', function ($join) {
+				$join->on('data_kandang.id_kandang', '=', 'kandang.id')
+					->on(DB::raw('DATE(data_kandang.date)'), '=', DB::raw('DATE(sensors.datetime)'));
+			})
+			->leftJoin('data_kematian', function ($join) {
+				$join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
+			})
+			->select(
+				'sensors.*',
+				'kandang.nama_kandang',
+				'kandang.alamat_kandang',
+				DB::raw('COALESCE(data_kandang.pakan, 0) as pakan'),
+				DB::raw('COALESCE(data_kandang.minum, 0) as minum'),
+				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
+				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
+			)
+			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->orderBy('sensors.datetime', 'desc')
 			->get();
-		$items = [
-			'sensor' => $sensor
-		];
-		return response(['data' => $items, 'status' => 200]);
+
+		return response(['data' => $sensor, 'status' => 200]);
+	}
+
+	// filter by date
+	public function getSensorByDate(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$from = $request->from;
+		$to = $request->to;
+
+		$sensor = DB::table('sensors')
+			->whereRaw('DATE(sensors.datetime)  >= ? AND DATE(sensors.datetime) <= ?', [$from, $to])
+			->where('sensors.id_kandang', '=', $idKandang)
+			->where('kandang.id_user', Auth::user()->id)
+			->leftJoin('kandang', function ($join) {
+				$join->on('kandang.id', '=', 'sensors.id_kandang');
+			})
+			->leftJoin('data_kandang', function ($join) {
+				$join->on('data_kandang.id_kandang', '=', 'kandang.id')
+					->on(DB::raw('DATE(data_kandang.date)'), '=', DB::raw('DATE(sensors.datetime)'));
+			})
+			->leftJoin('data_kematian', function ($join) {
+				$join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
+			})
+			->select(
+				'sensors.*',
+				'kandang.nama_kandang',
+				'kandang.alamat_kandang',
+				DB::raw('COALESCE(data_kandang.pakan, 0) as pakan'),
+				DB::raw('COALESCE(data_kandang.minum, 0) as minum'),
+				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
+				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
+			)
+			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->orderBy('sensors.datetime', 'desc')
+			->get();
+
+		return response(['data' => $sensor, 'status' => 200]);
+	}
+
+	// filter by day
+	public function getSensorByDay(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$day = $request->day;
+
+		$sensor = DB::table('sensors')
+			->where('data_kandang.hari_ke', '=', $day)
+			->where('sensors.id_kandang', '=', $idKandang)
+			->where('kandang.id_user', Auth::user()->id)
+			->leftJoin('kandang', function ($join) {
+				$join->on('kandang.id', '=', 'sensors.id_kandang');
+			})
+			->leftJoin('data_kandang', function ($join) {
+				$join->on('data_kandang.id_kandang', '=', 'kandang.id')
+					->on(DB::raw('DATE(data_kandang.date)'), '=', DB::raw('DATE(sensors.datetime)'));
+			})
+			->leftJoin('data_kematian', function ($join) {
+				$join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
+			})
+			->select(
+				'sensors.*',
+				'kandang.nama_kandang',
+				'kandang.alamat_kandang',
+				DB::raw('COALESCE(data_kandang.pakan, 0) as pakan'),
+				DB::raw('COALESCE(data_kandang.minum, 0) as minum'),
+				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
+				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
+			)
+			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->orderBy('sensors.datetime', 'desc')
+			->get();
+
+		return response(['data' => $sensor, 'status' => 200]);
+	}
+	// filter by classification
+	public function getSensorByClassification(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$classification = $request->classification;
+
+		if ($classification == "normal") {
+			$operator = '=';
+		} else {
+			$operator = '>';
+		}
+
+		$sensor = DB::table('sensors')
+			->having('jumlah_kematian', $operator, '0')
+			->where('sensors.id_kandang', '=', $idKandang)
+			->where('kandang.id_user', Auth::user()->id)
+			->leftJoin('kandang', function ($join) {
+				$join->on('kandang.id', '=', 'sensors.id_kandang');
+			})
+			->leftJoin('data_kandang', function ($join) {
+				$join->on('data_kandang.id_kandang', '=', 'kandang.id')
+					->on(DB::raw('DATE(data_kandang.date)'), '=', DB::raw('DATE(sensors.datetime)'));
+			})
+			->leftJoin('data_kematian', function ($join) {
+				$join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
+			})
+			->select(
+				'sensors.*',
+				'kandang.nama_kandang',
+				'kandang.alamat_kandang',
+				DB::raw('COALESCE(data_kandang.pakan, 0) as pakan'),
+				DB::raw('COALESCE(data_kandang.minum, 0) as minum'),
+				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
+				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
+			)
+			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->orderBy('sensors.datetime', 'desc')
+			->get();
+
+		return response(['data' => $sensor, 'status' => 200]);
 	}
 }

@@ -30,9 +30,6 @@ class Sensors extends Model
 
 	protected $casts = [
 		'id_kandang' => 'int',
-		'suhu' => 'int',
-		'kelembapan' => 'int',
-		'amonia' => 'int',
 		'datetime' => 'datetime:Y-m-d H:i:s'
 	];
 
@@ -41,6 +38,7 @@ class Sensors extends Model
 		'suhu',
 		'kelembapan',
 		'amonia',
+		'is_outlier',
 		'datetime'
 	];
 

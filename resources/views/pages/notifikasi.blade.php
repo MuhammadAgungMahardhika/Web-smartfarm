@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">Notifikasi</h3>
-                <p class="text-subtitle text-muted">Halaman Notifikasi</p>
+                <h3 style="color: #cb8e8e">Notification</h3>
+                <p class="text-subtitle text-muted">Notification page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Notifikasi</li>
+                        <li class="breadcrumb-item active" aria-current="page">Notification</li>
                     </ol>
                 </nav>
             </div>
@@ -23,7 +23,7 @@
                         <table class="table table-borderless text-start">
                             <thead>
                                 <tr>
-                                    <th>Nama Kandang</th>
+                                    <th>House Name</th>
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
@@ -37,7 +37,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Alamat Kandang</th>
+                                    <th>House Address</th>
                                     <td id="alamatKandang">
                                         {{ $data[0]->alamat_kandang }}
                                     </td>
@@ -60,7 +60,7 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
-                                    Pesan
+                                    Message
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">
@@ -68,7 +68,7 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                    Waktu
+                                    Datetime
                                 </th>
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
@@ -85,17 +85,17 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $notification->pesan }}</td>
                                     <td class="{{ $notification->status == 1 ? 'text-primary' : 'text-success' }}">
-                                        <i>{{ $notification->status == 1 ? 'belum dibaca' : 'sudah dibaca' }}</i>
+                                        <i>{{ $notification->status == 1 ? 'unread' : 'read' }}</i>
                                     </td>
                                     <td>{{ $notification->waktu }}</td>
                                     <td class="text-center">
                                         @if ($notification->status == 1)
-                                            <a title="tandain telah dibaca" class="btn btn-outline-primary btn-sm me-1"
+                                            <a title="marking as read" class="btn btn-outline-primary btn-sm me-1"
                                                 onclick="updateItem('{{ $notification->id }}','2','{{ $data[0]->id }}')">
                                                 <i class="fa fa-envelope"></i>
                                             </a>
                                         @else
-                                            <a title="tandain belum dibaca" class="btn btn-outline-primary btn-sm me-1"
+                                            <a title="marking as unread" class="btn btn-outline-primary btn-sm me-1"
                                                 onclick="updateItem('{{ $notification->id }}','1','{{ $data[0]->id }}')">
                                                 <i class="fa fa-envelope-open"></i>
                                             </a>
@@ -153,17 +153,17 @@
 
                     if (status == 1) {
                         statusInfo =
-                            ` <a title="tandain telah dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${2}','${kandangId}')"><i class="fa fa-envelope"></i> </a>`
+                            ` <a title="Marking as read" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${2}','${kandangId}')"><i class="fa fa-envelope"></i> </a>`
                     } else if (status == 2) {
                         statusInfo =
-                            `<a title="tandain belum dibaca" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${1}','${kandangId}')"><i class="fa fa-envelope-open"></i></a>`
+                            `<a title="Marking as unread" class="btn btn-outline-primary btn-sm me-1" onclick="updateItem('${id}','${1}','${kandangId}')"><i class="fa fa-envelope-open"></i></a>`
                     }
 
                     data += `
                     <tr>
                     <td>${i+1}</td>
                     <td>${pesan}</td>
-                    <td class="${ status == 1? 'text-primary' : 'text-success'  }">${status == 1 ? "<i>belum dibaca</i>" : "<i>sudah dibaca</i>"}</td>
+                    <td class="${ status == 1? 'text-primary' : 'text-success'  }">${status == 1 ? "<i>unread</i>" : "<i>read</i>"}</td>
                     <td>${waktu}</td>
                     <td class="text-center">
                        ${statusInfo}
@@ -180,14 +180,14 @@
                                                 aria-label="Name: activate to sort column ascending" style="width: 136.047px;">No
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Pesan
+                                                aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Message
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Phone: activate to sort column ascending" style="width: 223.344px;">Status
                             </th>
                             <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                                 aria-label="Status: activate to sort column ascending" style="width: 117.891px;">
-                                                Waktu
+                                                Datetime
                             </th>
                             <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                                 colspan="1" aria-label="Status: activate to sort column ascending"
@@ -214,36 +214,12 @@
         let jquery_datatable = $(`#${id}`).DataTable({
             responsive: true,
             aLengthMenu: [
-                [25, 50, 75, 100, 200, -1],
-                [25, 50, 75, 100, 200, "All"],
+                [10, 25, 50, 75, 100, 200, -1],
+                [10, 25, 50, 75, 100, 200, "All"],
             ],
             pageLength: 10,
-            language: {
-                lengthMenu: "Dapatkan _MENU_ data",
-                search: "Cari:",
-                emptyTable: "Tidak ada data ditemukan",
-                zeroRecords: "Tidak ada data yang dicari",
-                infoFiltered: "(Di filter dari _MAX_ total data)",
-                infoEmpty: "Menunjukan 0 sampai 0 dari 0 data",
-                info: "Menunjukan _START_ sampai _END_ dari _TOTAL_ data",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya",
-                },
-            },
-        });
 
-        const setTableColor = () => {
-            document
-                .querySelectorAll(".dataTables_paginate .pagination")
-                .forEach((dt) => {
-                    dt.classList.add("pagination-primary");
-                });
-        };
-        setTableColor();
-        jquery_datatable.on("draw", setTableColor);
+        });
     }
 
 
@@ -263,7 +239,7 @@
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
-                    title: "Berhasil mengubah data",
+                    title: "Data edited",
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {

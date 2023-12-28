@@ -31,7 +31,6 @@ class PanenController extends Controller
 		if ($id != null) {
 			$items = Panen::with('kandang')->find($id);
 		} else {
-
 			$items = $this->model->get();
 		}
 		return response(['data' => $items, 'status' => 200]);
@@ -41,10 +40,23 @@ class PanenController extends Controller
 		$items = DB::table('panen')->where('id_kandang', '=', $id)->get();
 		return response(['data' => $items, 'status' => 200]);
 	}
+	public function getPanenByDate(Request $request)
+	{
+		$idKandang = $request->id_kandang;
+		$from = date('Y-m-d', strtotime($request->from));
+		$to = date('Y-m-d', strtotime($request->to));
+		$items = DB::table('panen')
+			->where('id_kandang', $idKandang)
+			->where(function ($query) use ($from, $to) {
+				$query->whereRaw('tanggal_panen >= ? AND tanggal_panen <= ?', [$from, $to]);
+			})
+			->get();
+
+		return response(['data' => $items, 'status' => 200]);
+	}
 
 	public function store(Request $request)
 	{
-
 		try {
 			$request->validate([
 				'id_kandang' => 'required',

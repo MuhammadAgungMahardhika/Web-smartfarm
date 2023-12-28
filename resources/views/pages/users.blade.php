@@ -18,7 +18,7 @@
     <section class="section">
         <div class="card">
             <div class="card-header text-center">
-                <div class="card-title">Daftar User</div>
+                <div class="card-title">User List</div>
 
             </div>
 

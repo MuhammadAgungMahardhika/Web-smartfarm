@@ -8,6 +8,7 @@
     {{-- Menu untuk admin --}}
     <?php if(Auth::user()->id_role == '1'): ?>
     <x-maz-sidebar-item name="User list" :link="route('userList')" icon="bi bi-person"></x-maz-sidebar-item>
+    <x-maz-sidebar-item name="House list" :link="route('houseList')" icon="bi bi-house"></x-maz-sidebar-item>
     <?php endif; ?>
     {{-- Menu untuk pemilik --}}
     <?php if(Auth::user()->id_role == '2'): ?>

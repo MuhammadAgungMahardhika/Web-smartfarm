@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/user', [UserController::class, 'store']);
     Route::put('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'delete']);
+    // ambil user / peternak yang tidak memiliki kandang
+    Route::get('/users/free', [UserController::class, 'userFree']);
 
     // role
     Route::get('/roles', [RolesController::class, 'index']);
@@ -111,6 +113,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // Check role = 1, apakah admin yang login
     Route::middleware(['role:1'])->group(function () {
         Route::get('/userList', [PageController::class, "user"])->name('userList');
+        Route::get('/houseList', [PageController::class, "kandang"])->name('houseList');
     });
 
     // check apakah pemilik atau peternak memiliki kandang

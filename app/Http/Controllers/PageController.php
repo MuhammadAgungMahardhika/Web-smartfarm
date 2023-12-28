@@ -27,6 +27,14 @@ class PageController extends Controller
         ];
         return view('pages/dashboard', $send);
     }
+    public function Kandang()
+    {
+        $data =  Kandang::with('user')->get();
+        $send = [
+            'data' => $data
+        ];
+        return view('pages/kandangList', $send);
+    }
     public function monitoringKandang()
     {
         $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();

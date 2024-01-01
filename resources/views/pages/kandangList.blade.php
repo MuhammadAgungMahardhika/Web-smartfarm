@@ -39,20 +39,37 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
-                                    Start date
+                                    House Name
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    Harvest date
+                                    House Address
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending">
+                                    House Area (M<sup>2</sup>)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Harvest amount (Head)
+                                    Initial Population (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
+                                    Remaining Population (Head)
                                 </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amount of Death (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Owner
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Farmer
+                                </th>
+
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">Action
                                 </th>
@@ -62,21 +79,28 @@
                             @php
                                 $no = 1;
                             @endphp
-                            @foreach ($data[0]['panens'] as $panen)
+                            @foreach ($data as $kandang)
                                 <tr>
                                     <td>{{ $no++ }}</td>
-                                    <td>{{ $panen->tanggal_mulai }}</td>
-                                    <td>{{ $panen->tanggal_panen }}</td>
-                                    <td>{{ $panen->jumlah_panen }}</td>
-                                    <td>{{ $panen->bobot_total }}</td>
+                                    <td>{{ $kandang->nama_kandang }}</td>
+                                    <td>{{ $kandang->alamat_kandang }}</td>
+                                    <td>{{ $kandang->luas_kandang }}</td>
+                                    <td>{{ $kandang->populasi_awal }}</td>
+                                    <td>{{ $kandang->populasi_saat_ini }}</td>
+                                    <td>{{ $kandang->total_kematian }}</td>
+                                    <td>{{ $kandang->nama_pemilik }}<br>{{ $kandang->email_pemilik != null ? '(' . $kandang->email_pemilik . ')' : '' }}
+                                    </td>
+                                    <td>{{ $kandang->nama_peternak }}<br>{{ $kandang->email_peternak != null ? '(' . $kandang->email_peternak . ')' : '' }}
+                                    </td>
                                     <td style="min-width: 180px">
                                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i>
+                                            onclick="editModal('{{ $kandang->id }}')"><i class="fa fa-edit"></i>
                                         </a>
                                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
                                             data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="deleteModal('{{ $panen->id }}')"><i class="fa fa-trash"></i></a>
+                                            onclick="deleteModal('{{ $kandang->id }}')"><i
+                                                class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -107,7 +131,7 @@
                         <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
                                     id="dateDropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false" onclick="filterByDate('${idKandang}')">
-                                    <i class="fa fa-calendar"></i> Filter Harvest By Date
+                                    <i class="fa fa-calendar"></i> Filter House By Date
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dateDropdown">
                             <div class="row p-2">
@@ -137,29 +161,42 @@
     }
 
 
-    function showTableData(kandangId) {
+    function showTableData() {
         $.ajax({
             type: "GET",
-            url: `/panen/kandang/${kandangId}`,
+            url: `/kandang/`,
             success: function(response) {
-                let panenData = response.data
+                let kandangData = response.data
                 let data = ''
-                // adding panen data
-                for (let i = 0; i < panenData.length; i++) {
+                console.log(kandangData)
+                // adding kandang data
+                for (let i = 0; i < kandangData.length; i++) {
                     let {
                         id,
-                        tanggal_mulai,
-                        tanggal_panen,
-                        jumlah_panen,
-                        bobot_total
-                    } = panenData[i]
+                        nama_kandang,
+                        alamat_kandang,
+                        luas_kandang,
+                        populasi_awal,
+                        populasi_saat_ini,
+                        total_kematian,
+                        id_pemilik,
+                        nama_pemilik,
+                        email_pemilik,
+                        id_peternak,
+                        nama_peternak,
+                        email_peternak
+                    } = response.data[i];
                     data += `
                     <tr>
                     <td>${i+1}</td>
-                    <td>${tanggal_mulai}</td>
-                    <td>${tanggal_panen}</td>
-                    <td>${jumlah_panen}</td>
-                    <td>${bobot_total}</td>
+                    <td>${nama_kandang}</td>
+                    <td>${alamat_kandang}</td>
+                    <td>${luas_kandang}</td>
+                    <td>${populasi_awal}</td>
+                    <td>${populasi_saat_ini}</td>
+                    <td>${total_kematian}</td>
+                    <td>${nama_pemilik}<br>${email_pemilik != null ? '('+email_pemilik+')' : '' }</td>
+                    <td>${nama_peternak}<br>${email_peternak != null ? '('+email_peternak+')' : '' }</td>
                     <td style="min-width: 180px">
                         <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
                         <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
@@ -172,26 +209,43 @@
                 let table = `
                 <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
                     <thead>
-                            <tr>
+                        <tr>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Name: activate to sort column ascending">No
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
-                                    Start date
+                                    House Name
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    Harvest date
+                                    House Address
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="City: activate to sort column ascending">
+                                    House Area (M<sup>2</sup>)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Harvest amount (Head)
+                                    Initial Population (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Weight amount(Kg)
+                                    Remaining Population (Head)
                                 </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Amount of Death (Head)
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Owner
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Status: activate to sort column ascending">
+                                    Farmer
+                                </th>
+
                                 <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">Action
                                 </th>
@@ -220,7 +274,7 @@
     }
 
     function filterByDate(idKandang) {
-        $('#modalTitle').html("Filter Harvest By Date")
+        $('#modalTitle').html("Filter House By Date")
         $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body"> 
@@ -277,7 +331,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: `/panen/date`,
+                url: `/kandang/date`,
                 contentType: "application/json",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -285,28 +339,28 @@
                 data: JSON.stringify(data),
                 success: function(response) {
 
-                    let panenData = response.data
+                    let kandangData = response.data
 
                     let data = ''
-                    // adding panen data
-                    for (let i = 0; i < panenData.length; i++) {
+                    // adding kandang data
+                    for (let i = 0; i < kandangData.length; i++) {
                         let {
                             id,
                             tanggal_mulai,
-                            tanggal_panen,
-                            jumlah_panen,
+                            tanggal_kandang,
+                            jumlah_kandang,
                             bobot_total
-                        } = panenData[i]
+                        } = kandangData[i]
                         data += `
                     <tr>
                     <td>${i+1}</td>
                     <td>${tanggal_mulai}</td>
-                    <td>${tanggal_panen}</td>
-                    <td>${jumlah_panen}</td>
+                    <td>${tanggal_kandang}</td>
+                    <td>${jumlah_kandang}</td>
                     <td>${bobot_total}</td>
                     <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
+                        <a title="edit" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                        <a title="delete" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
                     </td>
                     </tr>
                     `
@@ -326,11 +380,11 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    Harvest date
+                                    House date
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
-                                    Harvest amount (Head)
+                                    House amount (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -358,7 +412,7 @@
         });
     }
 
-    // menambahkan data panen
+    // menambahkan data kandang
     function addModal() {
         $.ajax({
             type: "GET",
@@ -368,23 +422,22 @@
                 let pemilik = response.data.pemilik
                 let peternak = response.data.peternak
 
-
                 // option pemilik
-                let optionPemilik = ``
+                let optionPemilik = '<option value="null">Select Owner</option>'
                 if (pemilik.length > 0) {
-                    pemilik.forEach(item => {
 
+                    pemilik.forEach(item => {
                         optionPemilik +=
-                            `<option>Select Owner</option><option value="${item.id}">${item.name} (${item.email})</option>`
+                            `<option value="${item.id}">${item.name} (${item.email})</option>`
                     })
                 }
 
                 // option peternak 
-                let optionPeternak = ``
+                let optionPeternak = '<option value="null">Select Farmer</option>'
                 if (peternak.length > 0) {
                     peternak.forEach(item => {
                         optionPeternak +=
-                            `<option>Select Farmer</option><option value="${item.id}">${item.name} (${item.email})</option>`
+                            `<option value="${item.id}">${item.name} (${item.email})</option>`
                     });
                 }
                 $('#modalTitle').html("Add New House")
@@ -406,18 +459,11 @@
                                     <input type="text" id="alamatKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="luasKandang">House Area (M2)</label>
+                                    <label for="luasKandang">House Area (M<sup>2</sup>)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="luasKandang" class="form-control">
+                                    <input type="number" id="luasKandang" class="form-control" >
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="populasiAwal">Initial Population</label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="populasiAwal" class="form-control">
-                                </div>
-                               
                                 <div class="col-md-4">
                                     <label for="idPemilik">Owner</label>
                                 </div>
@@ -426,10 +472,10 @@
                                             <select class="form-select" id="idPemilik">
                                               ${optionPemilik}
                                             </select>
-                                        </fieldset>
+                                    </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="peternak">Farmer</label>
+                                    <label for="idPeternak">Farmer</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <fieldset class="form-group">
@@ -437,6 +483,12 @@
                                               ${optionPeternak}
                                             </select>
                                         </fieldset>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="populasiAwal">Initial Population</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="populasiAwal" class="form-control" >
                                 </div>
                             </div>
                         </div>
@@ -453,58 +505,124 @@
 
     }
 
-    // mengubah data panen
+    // mengubah data kandang
     function editModal(id) {
         $.ajax({
             type: "GET",
-            url: `/panen/${id}`,
+            url: `/kandang/${id}`,
             success: function(response) {
                 let {
-                    id_kandang,
-                    kandang,
-                    tanggal_mulai,
-                    tanggal_panen,
-                    jumlah_panen,
-                    bobot_total
+                    id,
+                    nama_kandang,
+                    alamat_kandang,
+                    luas_kandang,
+                    populasi_awal,
+                    populasi_saat_ini,
+                    total_kematian,
+                    id_pemilik,
+                    nama_pemilik,
+                    email_pemilik,
+                    id_peternak,
+                    nama_peternak,
+                    email_peternak
                 } = response.data;
+                let pemilikAndPeternak = getPemilikAndPeternak()
+                let pemilik = pemilikAndPeternak.pemilik
+                let peternak = pemilikAndPeternak.peternak
+                console.log(pemilik)
+                console.log(peternak)
 
-                $('#modalTitle').html("Edit Harvest Data")
+                // option pemilik
+                let optionPemilik = '<option value="null">Select Owner</option>'
+                if (pemilik.length > 0) {
+                    pemilik.forEach(item => {
+                        if (id_pemilik == item.id) {
+                            optionPemilik +=
+                                `<option value="${id_pemilik}" selected>${nama_pemilik} (${email_pemilik})</option>`
+                        } else {
+                            optionPemilik +=
+                                `<option value="${item.id}">${item.name} (${item.email})</option>`
+
+                        }
+                    })
+                }
+
+                // option peternak 
+                let optionPeternak = '<option value="null">Select Farmer</option>'
+                if (peternak.length > 0) {
+                    peternak.forEach(item => {
+                        if (id_peternak == item.id) {
+                            optionPeternak +=
+                                `<option value="${id_peternak}" selected>${nama_peternak} (${email_peternak})</option>`
+                        } else {
+                            optionPeternak +=
+                                `<option value="${item.id}">${item.name} (${item.email})</option>`
+                        }
+                    });
+                }
+                $('#modalTitle').html("Edit House Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
                             <div class="row">
-                                <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
+                                <input type="hidden" id="idKandang" value="${id}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">House name</label>
+                                    <label for="namaKandang">House Name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
+                                    <input type="text" id="namaKandang" value="${nama_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Start date</label>
+                                    <label for="alamatKandang">House Address</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalMulai" value="${tanggal_mulai}" class="form-control">
+                                    <input type="text" id="alamatKandang" value="${alamat_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Harvest date</label>
+                                    <label for="luasKandang">House Area (M<sup>2</sup>)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" id="tanggalPanen" value="${tanggal_panen}" class="form-control">
+                                    <input type="number" id="luasKandang" value="${luas_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Harvest amount (Head)</label>
+                                    <label for="idPemilik">Owner</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="jumlahPanen" value="${jumlah_panen}" class="form-control">
+                                    <fieldset class="form-group">
+                                            <select class="form-select" id="idPemilik">
+                                              ${optionPemilik}
+                                            </select>
+                                    </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotTotal">Weight amount(Kg)</label>
+                                    <label for="idPeternak">Farmer</label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" id="bobotTotal" value="${bobot_total}" class="form-control">
+                                    <fieldset class="form-group">
+                                            <select class="form-select" id="idPeternak">
+                                              ${optionPeternak}
+                                            </select>
+                                    </fieldset>
                                 </div>
-                                
+                                <div class="col-md-4">
+                                    <label for="populasiAwal">Initial Population (Head)</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="populasiAwal" value="${populasi_awal}" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="populasiSaatIni">Remaining Population (Head)</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="populasiSaatIni" value="${populasi_saat_ini}" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="totalKematian">Amount of Death (Head)</label>
+                                </div>
+                                <div class="col-md-8 form-group">
+                                    <input type="number" id="totalKematian" value="${total_kematian}" class="form-control" readonly>
+                                </div>
+                               
                             </div>
                         </div>
                     </form>
@@ -518,42 +636,75 @@
         })
     }
 
-    // menghapus data panen
+    function getPemilikAndPeternak() {
+        let result
+        $.ajax({
+            type: "GET",
+            url: `/users/free`,
+            async: false,
+            success: function(response) {
+                result = response.data
+            },
+            error: function(err) {
+
+            }
+        })
+        return result
+    }
+
+    // menghapus data kandang
     function deleteModal(id) {
         $.ajax({
             type: "GET",
-            url: `/panen/${id}`,
+            url: `/kandang/${id}`,
             success: function(response) {
                 let {
-                    kandang,
-                    tanggal_mulai,
-                    tanggal_panen,
-                    bobot_total,
-                    jumlah_panen
-                } = response.data
+                    id,
+                    nama_kandang,
+                    alamat_kandang,
+                    luas_kandang,
+                    populasi_awal,
+                    populasi_saat_ini,
+                    total_kematian,
+                    id_pemilik,
+                    nama_pemilik,
+                    email_pemilik,
+                    id_peternak,
+                    nama_peternak,
+                    email_peternak
+                } = response.data;
 
-                $('#modalTitle').html("Delete Harvest Data")
+                $('#modalTitle').html("Delete House Data")
                 $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
                                 <tr>
-                                    <th class="text-center" colspan="2">Harvest Data</th>
+                                    <th class="text-center" colspan="2">House Data</th>
                                 </tr>
                                 <tr>
-                                    <td>House name</td> <td>${kandang.nama_kandang}</td>
+                                    <td>House name</td> <td>${nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>Start date</td> <td>${tanggal_mulai}</td>
+                                    <td>House Address</td> <td>${alamat_kandang}</td>
                                 </tr> 
                                 <tr>
-                                <td>Harvest date</td><td>${tanggal_panen}</td>
+                                    <td>House Area (M<sup>2</sup>)</td><td>${luas_kandang}</td>
                                 </tr>
                                 <tr>
-                                <td>Harvest amount (Head)</td>  <td>${jumlah_panen}</td>
+                                    <td>Initial Population (Head)</td><td>${populasi_awal}</td>
                                 </tr>  
                                 <tr>
-                                <td>Weight amount(Kg)</td>  <td>${bobot_total}</td>
+                                    <td>Remaining Population (Head)</td>  <td>${populasi_saat_ini}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Amount of Death (Head)</td>  <td>${total_kematian}</td>
+                                </tr> 
+                                <tr>
+                                    <td>Owner</td>  <td>${nama_pemilik} (${email_pemilik})</td>
+                                </tr> 
+                                <tr>
+                                    <td>Farmer</td>  <td>${nama_peternak} (${email_peternak})</td>
                                 </tr> 
                             </tbody>
                         </table>
@@ -573,17 +724,13 @@
     function save() {
         let namaKandang = $('#namaKandang').val()
         let alamatKandang = $('#alamatKandang').val()
-        let luasKandang = $('#luasKandang').val()
-        let populasiAwal = $('#populasiAwal').val()
+        let luasKandang = parseInt($('#luasKandang').val())
+        let populasiAwal = parseInt($('#populasiAwal').val())
         let idPemilik = $('#idPemilik').val()
         let idPeternak = $('#idPeternak').val()
 
-        console.log(namaKandang.length)
-        console.log(alamatKandang)
-        console.log(luasKandang)
-        console.log(populasiAwal)
+        console.log(typeof idPemilik)
         console.log(idPemilik)
-        console.log(idPeternak)
         // validasi
         if (!namaKandang) {
             return Swal.fire("Please fill the house name")
@@ -594,13 +741,19 @@
         if (!luasKandang) {
             return Swal.fire("Please fill the house area")
         }
+        if (luasKandang < 0) {
+            return Swal.fire("House Area cannot be less than 0")
+        }
         if (!populasiAwal) {
             return Swal.fire("Please fill the Initial population")
         }
-        if (!idPemilik) {
+        if (populasiAwal < 0) {
+            return Swal.fire("Initial Population cannot be less than 0")
+        }
+        if (!idPemilik || idPemilik == "null") {
             return Swal.fire("Owner required!")
         }
-        if (!idPeternak) {
+        if (!idPeternak || idPeternak == "null") {
             return Swal.fire("Farmer required!")
         }
         // asign value if validated
@@ -613,38 +766,38 @@
             id_peternak: idPeternak
         }
 
-        // $.ajax({
-        //     type: "POST",
-        //     url: `/panen`,
-        //     contentType: "application/json",
-        //     headers: {
-        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     },
-        //     data: JSON.stringify(data),
-        //     success: function(response) {
-        //         Swal.fire({
-        //             position: "top-end",
-        //             icon: "success",
-        //             title: "Data added",
-        //             showConfirmButton: false,
-        //             timer: 1500
-        //         }).then(() => {
-        //             $('#default').modal('hide')
-        //             showTableData(response.panen.id_kandang)
-        //         })
-        //     },
-        //     error: function(err) {
-        //         console.log(err.responseText)
-        //     }
+        $.ajax({
+            type: "POST",
+            url: `/kandang`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Data added",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#default').modal('hide')
+                    showTableData(response.kandang.id_kandang)
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
 
-        // })
+        })
 
     }
 
     function deleteItem(id) {
         $.ajax({
             type: "DELETE",
-            url: `/panen/${id}`,
+            url: `/kandang/${id}`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -658,7 +811,7 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    showTableData(response.panen.id_kandang)
+                    showTableData(response.kandang.id_kandang)
                 })
             },
             error: function(err) {
@@ -669,22 +822,60 @@
     }
 
     function update(id) {
-        let idKandang = $('#idKandang').val()
-        let tanggalMulai = $('#tanggalMulai').val()
-        let tanggalPanen = $('#tanggalPanen').val()
-        let jumlahPanen = $('#jumlahPanen').val()
-        let bobotTotal = $('#bobotTotal').val()
+        let namaKandang = $('#namaKandang').val()
+        let alamatKandang = $('#alamatKandang').val()
+        let luasKandang = parseInt($('#luasKandang').val())
+        let populasiAwal = parseInt($('#populasiAwal').val())
+        let totalKematian = parseInt($('#totalKematian').val())
+        let idPemilik = $('#idPemilik').val()
+        let idPeternak = $('#idPeternak').val()
+
+        let populasiSaatIni = populasiAwal - totalKematian
+
+        // validasi
+        if (!namaKandang) {
+            return Swal.fire("Please fill the house name")
+        }
+        if (!alamatKandang) {
+            return Swal.fire("Please fill the house address")
+        }
+        if (!luasKandang) {
+            return Swal.fire("Please fill the house area")
+        }
+        if (luasKandang < 0) {
+            return Swal.fire("House Area cannot be less than 0")
+        }
+        if (!populasiAwal) {
+            return Swal.fire("Please fill the Initial population")
+        }
+        if (populasiAwal < 0) {
+            return Swal.fire("Initial Population cannot be less than 0")
+        }
+        if (populasiSaatIni < 0) {
+            return Swal.fire("The initial population must not be less than  amount of deaths.")
+        }
+        if (!idPemilik || idPemilik == "null") {
+            return Swal.fire("Owner required!")
+        }
+        if (!idPeternak || idPeternak == "null") {
+            return Swal.fire("Farmer required!")
+        }
 
         let data = {
-            id_kandang: idKandang,
-            tanggal_mulai: tanggalMulai,
-            tanggal_panen: tanggalPanen,
-            jumlah_panen: jumlahPanen,
-            bobot_total: bobotTotal
+            nama_kandang: namaKandang,
+            alamat_kandang: alamatKandang,
+            luas_kandang: luasKandang,
+            populasi_awal: populasiAwal,
+            populasi_saat_ini: populasiSaatIni,
+            id_user: idPemilik,
+            id_peternak: idPeternak,
         }
+        console.log(data)
+
+
         $.ajax({
             type: "PUT",
-            url: `/panen/${id}`,
+            url: `/kandang/${id}`,
             data: JSON.stringify(data),
             contentType: "application/json",
             headers: {

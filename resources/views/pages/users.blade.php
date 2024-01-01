@@ -210,6 +210,13 @@
                             <input type="number" id="phoneNumber" class="form-control" placeholder="Phone number">
                         </div>
                         <div class="col-md-4">
+                            <label for="idTelegram">Telegram ID <br><span class="text-primary text-sm">(Optional)</span></label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="idTelegram" class="form-control" placeholder="Telegram ID">
+                        </div>
+                       
+                        <div class="col-md-4">
                             <label for="password">Password</label>
                         </div>
                         <div class="col-md-8 form-group">
@@ -272,6 +279,7 @@
                     roles,
                     name,
                     email,
+                    id_telegram,
                     phone_number
                 } = response.data
 
@@ -318,6 +326,13 @@
                         <div class="col-md-8 form-group">
                             <input type="number" id="phoneNumber" value="${phone_number}" class="form-control">
                         </div>
+                        <div class="col-md-4">
+                            <label for="idTelegram">Telegram ID <sup class="text-primary">(Optional)</sup></label>
+                        </div>
+                        <div class="col-md-8 form-group">
+                            <input type="text" id="idTelegram" value="${id_telegram == null? '' : id_telegram}" class="form-control">
+                        </div>
+                      
                     </div>
                 </div>
             </form>
@@ -359,6 +374,7 @@
         let idRole = $('#role').val()
         let name = $('#name').val()
         let email = $('#email').val()
+        let idTelegram = $('#idTelegram').val()
         let phoneNumber = $('#phoneNumber').val()
         let password = $('#password').val()
         let konfirmasiPassword = $('#konfirmasiPassword').val()
@@ -432,6 +448,7 @@
             id_role: idRole,
             name: name,
             email: email,
+            id_telegram: idTelegram,
             phone_number: phoneNumber,
             password: password,
         }
@@ -468,6 +485,7 @@
         let idRole = $('#role').val()
         let name = $('#name').val()
         let email = $('#email').val()
+        let idTelegram = $('#idTelegram').val()
         let phoneNumber = $('#phoneNumber').val()
         // validasi nama
         if (!name) {
@@ -517,6 +535,7 @@
             id_role: idRole,
             name: name,
             email: email,
+            id_telegram: idTelegram,
             phone_number: phoneNumber
         }
 

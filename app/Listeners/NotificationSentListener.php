@@ -54,7 +54,11 @@ class NotificationSentListener
         $chatId = $user->id_telegram;
         // Kirim notifikasi ke pelanggan
         if ($chatId != null) {
-            $user->notify(new TelegramNotification($chatId, $message));
+            try {
+                $user->notify(new TelegramNotification($chatId, $message));
+            } catch (\Throwable $th) {
+                Log::error('Gagal mengirimkan notifikasi telegram: ' . $th);
+            }
         }
     }
 }

@@ -29,17 +29,26 @@ class PageController extends Controller
     }
     public function Kandang()
     {
-        $data =  Kandang::with('user')->get();
+        $data = DB::table('kandang')
+            ->leftJoin('data_kandang', 'kandang.id', 'data_kandang.id_kandang')
+            ->leftJoin('data_kematian', 'data_kandang.id', 'data_kematian.id_data_kandang')
+            ->leftjoin('users as user', 'kandang.id_user', '=', 'user.id')
+            ->leftjoin('users as peternak', 'kandang.id_peternak', '=', 'peternak.id')
+            ->select('kandang.id', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.luas_kandang', 'kandang.populasi_awal', 'kandang.populasi_saat_ini', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'), 'user.id as id_pemilik', 'user.name as nama_pemilik', 'user.email as email_pemilik', 'peternak.id as id_peternak', 'peternak.name as nama_peternak', 'peternak.email as email_peternak')
+            ->groupBy('kandang.id', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.luas_kandang', 'kandang.populasi_awal', 'kandang.populasi_saat_ini', 'user.id', 'user.name', 'user.email', 'peternak.id', 'peternak.name', 'peternak.email')
+            ->get();
         $send = [
             'data' => $data
         ];
+
         return view('pages/kandangList', $send);
     }
     public function monitoringKandang()
     {
         $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
         $data = DB::table('sensors')
-            ->where('kandang.id_user', Auth::user()->id)
+            ->where('kandang.id_user', '=', Auth::user()->id)
+            ->where('kandang.id', '=', $kandang[0]->id)
             ->leftJoin('kandang', function ($join) {
                 $join->on('kandang.id', '=', 'sensors.id_kandang');
             })

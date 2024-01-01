@@ -18,10 +18,13 @@ class KandangRepository
   {
     try {
       $kandang = new Kandang();
-      $kandang->id_user = $data->id_user;
       $kandang->nama_kandang = $data->nama_kandang;
-      $kandang->populasi_awal = $data->populasi_awal;
       $kandang->alamat_kandang = $data->alamat_kandang;
+      $kandang->luas_kandang = $data->luas_kandang;
+      $kandang->populasi_awal = $data->populasi_awal;
+      $kandang->populasi_saat_ini = $data->populasi_saat_ini;
+      $kandang->id_user = $data->id_user;
+      $kandang->id_peternak = $data->id_peternak;
       $kandang->created_by = $data->created_by;
       $kandang->save();
 
@@ -37,11 +40,15 @@ class KandangRepository
   {
     try {
       $kandang = Kandang::findOrFail($id);
-      $kandang->id_user = $data->id_user;
       $kandang->nama_kandang = $data->nama_kandang;
-      $kandang->populasi_awal = $data->populasi_awal;
       $kandang->alamat_kandang = $data->alamat_kandang;
+      $kandang->luas_kandang = $data->luas_kandang;
+      $kandang->populasi_awal = $data->populasi_awal;
+      $kandang->populasi_saat_ini = $data->populasi_saat_ini;
+      $kandang->id_user = $data->id_user;
+      $kandang->id_peternak = $data->id_peternak;
       $kandang->updated_by = $data->updated_by;
+      $kandang->updated_at = $data->updated_at;
       $kandang->save();
 
       return $kandang;

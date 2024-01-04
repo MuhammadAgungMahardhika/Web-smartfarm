@@ -120,7 +120,18 @@
                                     <div class="col">
                                         <div class="card shadow-sm">
                                             <div class="card-body ">
+                                                <fieldset class="form-group">
+                                                    <select class="form-select" id="selectKandang"
+                                                        onchange="initKandang()">
+                                                        @foreach ($data as $item)
+                                                            <option value="{{ $item->id }}">
+                                                                {{ $item->nama_kandang }}
+                                                            </option>
+                                                        @endforeach; ?>
+                                                    </select>
+                                                </fieldset>
                                                 {{-- chart --}}
+
                                                 @include('chart.radialbarchart')
                                             </div>
                                         </div>

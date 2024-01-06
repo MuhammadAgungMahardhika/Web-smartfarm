@@ -23,8 +23,9 @@
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col">
-                                        <fieldset class="form-group">
+                                    <div class="col-4">
+                                        <div class="input-group mb-3">
+                                            <label class="input-group-text" for="selectKandang">Select kandang</label>
                                             <select class="form-select" id="selectKandang" onchange="updateData()">
                                                 @foreach ($data as $item)
                                                     <option value="{{ $item->id }}">
@@ -32,9 +33,23 @@
                                                     </option>
                                                 @endforeach; ?>
                                             </select>
-                                        </fieldset>
+                                        </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-4">
+                                        <div id="chartType">
+                                            <div class="input-group mb-3">
+                                                <label class="input-group-text" for="selectChart">Chart
+                                                    Type</label>
+                                                <select class="form-select" id="selectChart">
+                                                    <option selected="">Choose...</option>
+                                                    <option value="1">Radial</option>
+                                                    <option value="2">Line</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
                                         <div id="status">
                                             <span class="badge bg-secondary">Offline</span>
                                         </div>
@@ -120,19 +135,8 @@
                                     <div class="col">
                                         <div class="card shadow-sm">
                                             <div class="card-body ">
-                                                <fieldset class="form-group">
-                                                    <select class="form-select" id="selectKandang"
-                                                        onchange="initKandang()">
-                                                        @foreach ($data as $item)
-                                                            <option value="{{ $item->id }}">
-                                                                {{ $item->nama_kandang }}
-                                                            </option>
-                                                        @endforeach; ?>
-                                                    </select>
-                                                </fieldset>
                                                 {{-- chart --}}
-
-                                                @include('chart.radialbarchart')
+                                                @include('chart.chart')
                                             </div>
                                         </div>
                                     </div>

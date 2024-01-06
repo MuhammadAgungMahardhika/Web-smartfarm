@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">House Monitoring</h3>
-                <p class="text-subtitle text-muted">House monitoring page</p>
+                <h3 style="color: #cb8e8e">Outlier Data</h3>
+                <p class="text-subtitle text-muted">Outlier data page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">House Monitoring</li>
+                        <li class="breadcrumb-item active" aria-current="page">Outlier Data</li>
                     </ol>
                 </nav>
             </div>
@@ -353,7 +353,7 @@
     }
 
     function showTableData(kandangId) {
-        let isOutlier = false
+        let isOutlier = true
         $.ajax({
             type: "GET",
             url: `/sensors/kandang/${kandangId}/${isOutlier}`,
@@ -460,7 +460,7 @@
         let data = {
             id_kandang: idKandang,
             day: day,
-            is_outlier: false
+            is_outlier: true
         }
         $.ajax({
             type: "POST",
@@ -571,7 +571,7 @@
         let data = {
             id_kandang: idKandang,
             classification: classification,
-            is_outlier: false
+            is_outlier: true
         }
         $.ajax({
             type: "POST",
@@ -713,7 +713,7 @@
                 id_kandang: idKandang,
                 from: startDate,
                 to: endDate,
-                is_outlier: false
+                is_outlier: true
             }
             $.ajax({
                 type: "POST",

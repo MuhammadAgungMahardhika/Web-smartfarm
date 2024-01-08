@@ -380,7 +380,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
-                    <td>${hari_ke}</td>
+                    <td>${hari_ke == null ? "" : hari_ke }</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -493,7 +493,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
-                    <td>${hari_ke}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -604,7 +604,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
-                    <td>${hari_ke}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -746,7 +746,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
-                    <td>${hari_ke}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>

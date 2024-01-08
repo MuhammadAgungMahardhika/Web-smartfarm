@@ -3,13 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\SensorDataUpdated;
-use App\Models\Sensors;
 use App\Repositories\SensorRepository;
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class SensorDataUpdatedListener
 {
@@ -48,12 +43,12 @@ class SensorDataUpdatedListener
             $stdDevKelembapan = $this->sensorRepository->getStdDev('kelembapan');
             $stdDevAmonia = $this->sensorRepository->getStdDev('amonia');
 
-            dump([$meanSuhu, $meanKelembapan, $meanAmonia]);
+            // dump([$meanSuhu, $meanKelembapan, $meanAmonia]);
             // Deteksi outlier dan terapkan winsorizing
             $suhuWinsorizing = $this->detectAndWinsorize($suhu, $meanSuhu, $stdDevSuhu);
             $kelembapanWinsorizing = $this->detectAndWinsorize($kelembapan, $meanKelembapan, $stdDevKelembapan);
             $amoniaWinsorizing = $this->detectAndWinsorize($amonia, $meanAmonia, $stdDevAmonia);
-            dump([$suhu, $kelembapan, $amonia, $suhuWinsorizing, $kelembapanWinsorizing, $amoniaWinsorizing]);
+            // dump([$suhu, $kelembapan, $amonia, $suhuWinsorizing, $kelembapanWinsorizing, $amoniaWinsorizing]);
             $isOutlier = false;
             // check apakah ada transformasi nilai, jika ada berarti ada berarti outlier
             if ($suhu != $suhuWinsorizing || $kelembapan != $kelembapanWinsorizing || $amonia != $amoniaWinsorizing) {

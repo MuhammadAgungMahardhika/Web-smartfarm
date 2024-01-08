@@ -43,6 +43,18 @@ class SensorController extends Controller
 		];
 		return response(['data' => $items, 'status' => 200]);
 	}
+	public function getSensors($idKandang)
+	{
+		$sensor = $this->modelSensor
+			->where('id_kandang', '=', $idKandang)
+			->orderBy('datetime', 'DESC')
+			->take(10)
+			->get();
+		$items = [
+			'sensor' => $sensor
+		];
+		return response(['data' => $items, 'status' => 200]);
+	}
 	public function getSensorByKandangId($idKandang, $isOutlier)
 	{
 		$isOutlier = $isOutlier == "true" ? true : false;

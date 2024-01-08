@@ -21,8 +21,10 @@ class PageController extends Controller
     }
     public function Dashboard()
     {
+        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
         $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
         $send = [
+            'kandang' => $kandang,
             'data' => $data
         ];
         return view('pages/dashboard', $send);

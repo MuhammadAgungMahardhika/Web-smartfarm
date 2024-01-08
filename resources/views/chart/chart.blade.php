@@ -36,43 +36,36 @@
 
 {{-- Script Kelembapan dan Suhu dan Amonia --}}
 <script>
-    let suhuChart, kelembapanChart, amoniaChart
-    const timeDuration = 5000;
-    let timeOutId
-    startOfflineTimeOut()
+    checkChartType()
 
-    function startOfflineTimeOut() {
-        timeOutId = setTimeout(() => {
-            setStatus(false)
-            updateData()
-        }, timeDuration);
-    }
-
-    function resetOfflineTimeout() {
-        clearTimeout(timeOutId)
-        setStatus(true)
-        startOfflineTimeOut()
-    }
-
-    function setStatus(status) {
-        if (status == false) {
-            $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
-        } else if (status == true) {
-            $('#status').html(`<span class="badge bg-success">Online</span>`)
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        // check chart type
+    function checkChartType() {
         let checkChart = localStorage.getItem("chart")
         if (checkChart === null) {
-            localStorage.setItem("chart", "radial")
+            setChartType("radial")
         }
+        let selectChart = document.getElementById('selectChart')
+        if (checkChart == "radial") {
+            selectChart.innerHTML = `<option value="radial" selected>Radial</option>
+                                    <option value="line">Line</option>`
+        } else if (checkChart == "line") {
+            selectChart.innerHTML = `<option value="radial">Radial</option>
+                                    <option value="line" selected>Line</option>`
+        }
+    }
 
-        if (checkChart === "radial") {
-            console.log("radial chart")
-            // -------------------------------Radial Chart
+    function setChartType(type) {
+        localStorage.setItem("chart", type)
+        window.location.reload()
+    }
+
+    // check chart
+    let checkChart = document.getElementById('selectChart').value
+    console.log("chartnya = " + checkChart)
+    if (checkChart == "radial") {
+        // render chart radial chart
+        console.log("radial chart")
+        let suhuChart, kelembapanChart, amoniaChart
+        document.addEventListener("DOMContentLoaded", () => {
             // suhu
             let optionSuhuChart = {
                 colors: ['#75a3d9'],
@@ -212,86 +205,237 @@
                 // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
                 channel.bind('App\\Events\\SensorDataUpdated', function(data) {
                     idKandang = data.idKandang;
-                    suhu = parseFloat(data.suhu).toFixed(3);
-                    kelembapan = parseFloat(data.kelembapan).toFixed(3);
-                    amonia = parseFloat(data.amonia).toFixed(3);
-                    console.log(data)
                     let selectedKandang = $('#selectKandang').val()
-
                     if (idKandang == selectedKandang) {
+                        suhu = parseFloat(data.suhu).toFixed(3);
+                        kelembapan = parseFloat(data.kelembapan).toFixed(3);
+                        amonia = parseFloat(data.amonia).toFixed(3);
+                        console.log(data)
                         updateData(suhu, kelembapan, amonia)
+                        resetOfflineTimeout()
                     }
-                    resetOfflineTimeout()
                 });
             });
 
+            // Timer status
+            let timeDuration = 5000;
+            let timeOutId
+            startOfflineTimeOut()
 
-        } else if (checkChart === "line") {
-            console.log("line chart")
-        }
-
-    })
-    // Function to update chart data in real-time
-    function updateData(suhuData = null, kelembapanData = null, amoniaData = null) {
-        if (suhuData != null || kelembapanData != null || amoniaData != null) {
-
-            console.log("suhu =" + suhuData)
-            console.log("kelembapan =" + kelembapanData)
-            console.log("amonia =" + amoniaData)
-
-            if (suhuData != null && !isNaN(suhuData)) {
-                suhuChart.updateSeries([suhuData], true, {
-                    duration: 200
-                });
-                $('#suhuData').html(suhuData);
-            } else {
-                suhuChart.updateSeries([0], true, {
-                    duration: 200
-                });
-                $('#suhuData').html(0);
+            function startOfflineTimeOut() {
+                timeOutId = setTimeout(() => {
+                    setStatus(false)
+                    updateData()
+                }, timeDuration);
             }
 
-            if (kelembapanData != null && !isNaN(kelembapanData)) {
+            function resetOfflineTimeout() {
+                clearTimeout(timeOutId)
+                setStatus(true)
+                startOfflineTimeOut()
+            }
 
-                kelembapanChart.updateSeries([kelembapanData], true, {
-                    duration: 200
-                });
-                $('#kelembapanData').html(kelembapanData);
+            function setStatus(status) {
+                if (status == false) {
+                    $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
+                } else if (status == true) {
+                    $('#status').html(`<span class="badge bg-success">Online</span>`)
+                }
+            }
+
+        })
+
+        // Function to update radial chart data in real-time
+        function updateData(suhuData = null, kelembapanData = null, amoniaData = null) {
+            if (suhuData != null || kelembapanData != null || amoniaData != null) {
+
+                console.log("suhu =" + suhuData)
+                console.log("kelembapan =" + kelembapanData)
+                console.log("amonia =" + amoniaData)
+
+                if (suhuData != null && !isNaN(suhuData)) {
+                    suhuChart.updateSeries([suhuData], true, {
+                        duration: 200
+                    });
+                    $('#suhuData').html(suhuData);
+                } else {
+                    suhuChart.updateSeries([0], true, {
+                        duration: 200
+                    });
+                    $('#suhuData').html(0);
+                }
+
+                if (kelembapanData != null && !isNaN(kelembapanData)) {
+                    kelembapanChart.updateSeries([kelembapanData], true, {
+                        duration: 200
+                    });
+                    $('#kelembapanData').html(kelembapanData);
+                } else {
+                    kelembapanChart.updateSeries([0], true, {
+                        duration: 200
+                    });
+                    $('#kelembapanData').html(0);
+                }
+
+                if (amoniaData != null && !isNaN(amoniaData)) {
+                    amoniaChart.updateSeries([amoniaData], true, {
+                        duration: 200
+                    });
+                    $('#amoniaData').html(amoniaData);
+                } else {
+                    amoniaChart.updateSeries([0], true, {
+                        duration: 200
+                    });
+                    $('#amoniaData').html(0);
+                }
             } else {
+                $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
+                // jika semua data kosong
                 kelembapanChart.updateSeries([0], true, {
                     duration: 200
                 });
                 $('#kelembapanData').html(0);
-            }
 
-            if (amoniaData != null && !isNaN(amoniaData)) {
-                amoniaChart.updateSeries([amoniaData], true, {
+                suhuChart.updateSeries([0], true, {
                     duration: 200
                 });
-                $('#amoniaData').html(amoniaData);
-            } else {
+                $('#suhuData').html(0);
+
                 amoniaChart.updateSeries([0], true, {
                     duration: 200
                 });
                 $('#amoniaData').html(0);
             }
-        } else {
-            $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
-            // jika semua data kosong
-            kelembapanChart.updateSeries([0], true, {
-                duration: 200
-            });
-            $('#kelembapanData').html(0);
 
-            suhuChart.updateSeries([0], true, {
-                duration: 200
-            });
-            $('#suhuData').html(0);
-
-            amoniaChart.updateSeries([0], true, {
-                duration: 200
-            });
-            $('#amoniaData').html(0);
         }
+    } else if (checkChart == "line") {
+        let lineChart;
+        let dataSuhu = [];
+        let dataKelembapan = [];
+        let dataAmonia = [];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let options = {
+                colors: ['#75a3d9', '#d975b7', '#77d975'],
+                series: [{
+                    name: "Temperature",
+                    data: dataSuhu
+                }, {
+                    name: "Humidity",
+                    data: dataKelembapan
+                }, {
+                    name: "Amonia",
+                    data: dataAmonia
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    animations: {
+                        enabled: true,
+                        easing: 'linear',
+                        dynamicAnimation: {
+                            speed: 1000
+                        }
+                    },
+                    zoom: {
+                        enabled: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight',
+
+                },
+                title: {
+                    text: 'Real-time Data',
+                    align: 'left'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        format: 'yyyy/MM/dd HH:mm:ss'
+                    },
+                    tooltip: {
+                        enabled: true,
+                        formatter: function(val, opts) {
+                            return opts.w.globals.labels[opts.dataPointIndex]
+                        }
+                    }
+                }
+            };
+
+            lineChart = new ApexCharts(document.querySelector("#rowChart"), options);
+            lineChart.render();
+
+            // Setiap 1 detik panggil fungsi updateData
+            let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+                cluster: 'ap1'
+            });
+
+            let channel = pusher.subscribe('sensor-data');
+            channel.bind('pusher:subscription_succeeded', function() {
+                // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+                channel.bind('App\\Events\\SensorDataUpdated', function(data) {
+                    idKandang = data.idKandang;
+                    let newDate = new Date().getTime()
+                    dataSuhu.push({
+                        x: newDate,
+                        y: parseFloat(data.suhu).toFixed(3)
+                    })
+                    dataKelembapan.push({
+                        x: newDate,
+                        y: parseFloat(data.amonia).toFixed(3)
+                    })
+                    dataAmonia.push({
+                        x: newDate,
+                        y: parseFloat(data.kelembapan).toFixed(3)
+                    })
+                    let selectedKandang = $('#selectKandang').val()
+                    if (idKandang == selectedKandang) {
+                        updateData()
+                    }
+
+                });
+            });
+        });
+
+        // Fungsi untuk mengupdate data grafik
+        function updateData() {
+            // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
+            let idKandang = $('#selectKandang').val()
+            // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
+            const maxDataPoints = 10;
+
+            if (dataSuhu.length > maxDataPoints) {
+                dataSuhu.shift();
+                dataKelembapan.shift();
+                dataAmonia.shift();
+            }
+
+            // Update data pada grafik
+            lineChart.updateSeries([{
+                    name: 'Temperature',
+                    data: dataSuhu
+                },
+                {
+                    name: 'Humidity',
+                    data: dataKelembapan
+                },
+                {
+                    name: 'Amonia',
+                    data: dataAmonia
+                }
+            ]);
+        }
+
+
     }
 </script>

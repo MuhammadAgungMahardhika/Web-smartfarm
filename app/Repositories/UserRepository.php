@@ -21,6 +21,7 @@ class UserRepository
             $user->id_role = $data->id_role;
             $user->name = $data->name;
             $user->email = $data->email;
+            $user->id_telegram = $data->id_telegram;
             $user->phone_number = $data->phone_number;
             $user->password = bcrypt($data->password);
             $user->email_verified_at = $data->email_verified_at;
@@ -42,6 +43,7 @@ class UserRepository
             $user->id_role = $data->id_role;
             $user->name = $data->name;
             $user->email = $data->email;
+            $user->id_telegram = $data->id_telegram;
             $user->phone_number = $data->phone_number;
             $user->updated_by = $data->updated_by;
             $user->save();

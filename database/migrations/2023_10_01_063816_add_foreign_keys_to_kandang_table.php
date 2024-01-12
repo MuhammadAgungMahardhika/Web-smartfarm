@@ -14,8 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::table('kandang', function (Blueprint $table) {
-            $table->foreign(['id_user'], 'id_user')->references(['id'])->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->foreign(['id_peternak'], 'id_peternak')->references(['id'])->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign(['id_user'], 'id_user')
+                ->references(['id'])
+                ->on('users')
+                ->onUpdate('CASCADE')
+                ->onDelete('SET NULL');
+            $table->foreign(['id_peternak'], 'id_peternak')
+                ->references(['id'])
+                ->on('users')
+                ->onUpdate('CASCADE')
+                ->onDelete('SET NULL');
         });
     }
 

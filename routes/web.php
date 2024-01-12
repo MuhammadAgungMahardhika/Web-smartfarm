@@ -65,7 +65,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // mendapatkan sensor dari database
     Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
-    Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
+    Route::get('/sensors-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensors']);
+    Route::get('/sensors/kandang/{idKandang}/{isOutlier}', [SensorController::class, 'getSensorByKandangId']);
     // filter sensor
     Route::post('/sensors/date', [SensorController::class, 'getSensorByDate']);
     Route::post('/sensors/day', [SensorController::class, 'getSensorByDay']);
@@ -126,6 +127,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
             // Halaman monitoring kandang
             Route::get('/houseMonitoring', [PageController::class, "monitoringKandang"])->name('houseMonitoring');
+            // Halaman Outlier
+            Route::get('/outlierData', [PageController::class, "outlier"])->name('outlierData');
             // Halaman data kandang
             Route::get('/houseData', [PageController::class, "dataKandang"])->name('houseData');
             // Halaman forecast

@@ -42,6 +42,17 @@
                                 </a>
                             </div>
                         </div>
+                        <div class="col-12 col-md-3 col-lg-4">
+                            <div class="card shadow-sm daftarMenu">
+                                <a href="/houseList">
+                                    <div class="card-body">
+                                        <img src="/images/menu/house-list.png" class="card-img-top img-fluid"
+                                            alt="singleminded">
+                                        <h5 class="card-title mt-4">House List</h5>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
                     @endif
 
                     {{-- Daftar menu untuk Pemilik --}}

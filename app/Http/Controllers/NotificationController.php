@@ -37,7 +37,7 @@ class NotificationController extends Controller
 
     public function getNotificationByKandangId($id)
     {
-        $items = DB::table('notification')->where('id_kandang', '=', $id)->get();
+        $items = DB::table('notification')->where('id_kandang', '=', $id)->orderBy('waktu', 'desc')->get();
         return response(['data' => $items, 'status' => 200]);
     }
 

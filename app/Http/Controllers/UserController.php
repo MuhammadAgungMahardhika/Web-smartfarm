@@ -39,14 +39,12 @@ class UserController extends Controller
     public function userFree()
     {
 
-        $pemilik = DB::table('users')->leftJoin('kandang', 'kandang.id_user', '=', 'users.id')
+        $pemilik = DB::table('users')
             ->where('users.id_role', '=', 2)
-            ->where('kandang.id_user', '=', null)
             ->select('users.*')
             ->get();
-        $peternak = DB::table('users')->leftJoin('kandang', 'kandang.id_peternak', '=', 'users.id')
+        $peternak = DB::table('users')
             ->where('users.id_role', '=', 3)
-            ->where('kandang.id_peternak', '=', null)
             ->select('users.*')
             ->get();
         $items = [
@@ -73,6 +71,7 @@ class UserController extends Controller
                     "id_role" => $request->id_role,
                     "name" => $request->name,
                     "email" => $request->email,
+                    "id_telegram" => $request->id_telegram,
                     "phone_number" => $request->phone_number,
                     "password" => $request->password,
                     "email_verified_at" => now(),
@@ -109,6 +108,7 @@ class UserController extends Controller
                 "id_role" => $request->id_role,
                 "name" => $request->name,
                 "email" => $request->email,
+                "id_telegram" => $request->id_telegram,
                 "phone_number" => $request->phone_number,
                 "updated_by" => Auth::user()->id
             ]);

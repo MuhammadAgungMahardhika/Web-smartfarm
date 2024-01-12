@@ -138,6 +138,10 @@
                                     Datetime
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
+                                    colspan="1" aria-label="Phone: activate to sort column ascending">
+                                    Day
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">
                                     Temperature (&deg;Celcius)
                                 </th>
@@ -178,6 +182,7 @@
                                 <tr>
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $item->datetime }}</td>
+                                    <td>{{ $item->hari_ke }}</td>
                                     <td>{{ number_format($item->suhu, 3) }}</td>
                                     <td>{{ number_format($item->kelembapan, 3) }}</td>
                                     <td>{{ number_format($item->amonia, 3) }}</td>
@@ -348,9 +353,10 @@
     }
 
     function showTableData(kandangId) {
+        let isOutlier = false
         $.ajax({
             type: "GET",
-            url: `/sensors/kandang/${kandangId}`,
+            url: `/sensors/kandang/${kandangId}/${isOutlier}`,
             success: function(response) {
                 // asign value
                 let sensors = response.data
@@ -359,6 +365,7 @@
                 for (let i = 0; i < sensors.length; i++) {
                     let {
                         datetime,
+                        hari_ke,
                         suhu,
                         kelembapan,
                         amonia,
@@ -373,6 +380,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
+                    <td>${hari_ke == null ? "" : hari_ke }</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -396,6 +404,10 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
                                     Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Day
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -447,7 +459,8 @@
         let day = $('#dayFilter').val()
         let data = {
             id_kandang: idKandang,
-            day: day
+            day: day,
+            is_outlier: false
         }
         $.ajax({
             type: "POST",
@@ -465,6 +478,7 @@
                 for (let i = 0; i < sensors.length; i++) {
                     let {
                         datetime,
+                        hari_ke,
                         suhu,
                         kelembapan,
                         amonia,
@@ -479,6 +493,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -502,6 +517,10 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
                                     Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Day
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -551,7 +570,8 @@
     function filterByClassification(idKandang, classification) {
         let data = {
             id_kandang: idKandang,
-            classification: classification
+            classification: classification,
+            is_outlier: false
         }
         $.ajax({
             type: "POST",
@@ -569,6 +589,7 @@
                 for (let i = 0; i < sensors.length; i++) {
                     let {
                         datetime,
+                        hari_ke,
                         suhu,
                         kelembapan,
                         amonia,
@@ -583,6 +604,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -606,6 +628,10 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
                                     Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Day
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -686,7 +712,8 @@
             let data = {
                 id_kandang: idKandang,
                 from: startDate,
-                to: endDate
+                to: endDate,
+                is_outlier: false
             }
             $.ajax({
                 type: "POST",
@@ -704,6 +731,7 @@
                     for (let i = 0; i < sensors.length; i++) {
                         let {
                             datetime,
+                            hari_ke,
                             suhu,
                             kelembapan,
                             amonia,
@@ -718,6 +746,7 @@
                     <tr>
                     <td>${i+1}</td>
                     <td>${datetime}</td>
+                    <td>${hari_ke == null ? "" : hari_ke}</td>
                     <td>${suhu.toFixed(3)}</td>
                     <td>${kelembapan.toFixed(3)}</td>
                     <td>${amonia.toFixed(3)}</td>
@@ -741,6 +770,10 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
                                     Datetime
+                                </th>
+                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                    aria-label="Phone: activate to sort column ascending">
+                                    Day
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">

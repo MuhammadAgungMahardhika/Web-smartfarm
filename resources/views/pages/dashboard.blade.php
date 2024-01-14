@@ -25,7 +25,7 @@
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="input-group mb-3">
-                                            <label class="input-group-text" for="selectKandang">Choose Kandang</label>
+                                            <label class="input-group-text" for="selectKandang">Choose Cage</label>
                                             <select class="form-select" id="selectKandang"
                                                 onchange="setKandang(this.value)">
 
@@ -92,7 +92,7 @@
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
                                                         <strong id="kelembapanData" class="h2">0</strong>
-                                                        <strong class="h5">% RH</strong>
+                                                        <strong class="h5">% Rh</strong>
                                                     </div>
                                                     <div class="col text-center" id="kelembapanStatus">
                                                         <span class="badge bg-secondary">Offline</span>
@@ -109,13 +109,13 @@
                                                     <path fill="white"
                                                         d="M27.231 23.618L20 13.675V4h2V2H10v2h2v9.675l-7.231 9.943A4.018 4.018 0 0 0 8.019 30H23.98a4.018 4.018 0 0 0 3.25-6.382ZM14 14.325V4h4v10.325L20.673 18h-9.346ZM23.981 28H8.02a2.02 2.02 0 0 1-1.633-3.206L9.873 20h12.254l3.487 4.794A2.02 2.02 0 0 1 23.981 28Z" />
                                                 </svg>
-                                                <span class="text-white" style="font-size: 20px">Amonia</span>
+                                                <span class="text-white" style="font-size: 20px">Ammonia</span>
                                             </div>
                                             <div class="card-body ">
                                                 <div class="row mt-4">
                                                     <div class="col text-center border-end border-secondary">
                                                         <strong id="amoniaData" class="h2">0</strong>
-                                                        <strong class="h5"> PPM</strong>
+                                                        <strong class="h5"> ppm </strong>
                                                     </div>
                                                     <div class="col text-center" id="amoniaStatus">
                                                         <span class="badge bg-secondary">Offline</span>

@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">House List</h3>
-                <p class="text-subtitle text-muted">house list page</p>
+                <h3 style="color: #cb8e8e">Cage List</h3>
+                <p class="text-subtitle text-muted">Chicken cage list page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">House List</li>
+                        <li class="breadcrumb-item active" aria-current="page">Cage List</li>
                     </ol>
                 </nav>
             </div>
@@ -18,7 +18,7 @@
     <section class="section">
         <div class="card">
             <div class="card-header">
-                <div class="card-title text-center">House List</div>
+                <div class="card-title text-center">Cage List</div>
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
@@ -39,15 +39,15 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
-                                    House Name
+                                    Cage Name
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    House Address
+                                    Cage Address
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    House Area (M<sup>2</sup>)
+                                    Cage Area (M<sup>2</sup>)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -215,15 +215,15 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Phone: activate to sort column ascending">
-                                    House Name
+                                    Cage Name
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    House Address
+                                    Cage Address
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="City: activate to sort column ascending">
-                                    House Area (M<sup>2</sup>)
+                                    Cage Area (M<sup>2</sup>)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -447,19 +447,19 @@
                             <div class="row">
                             
                                 <div class="col-md-4">
-                                    <label for="namaKandang">House name</label>
+                                    <label for="namaKandang">Cage name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="alamatKandang">House Address</label>
+                                    <label for="alamatKandang">Cage Address</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="alamatKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="luasKandang">House Area (M<sup>2</sup>)</label>
+                                    <label for="luasKandang">Cage Area (M<sup>2</sup>)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="luasKandang" class="form-control" >
@@ -567,19 +567,19 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">House Name</label>
+                                    <label for="namaKandang">Cage Name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${nama_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="alamatKandang">House Address</label>
+                                    <label for="alamatKandang">Cage Address</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="alamatKandang" value="${alamat_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="luasKandang">House Area (M<sup>2</sup>)</label>
+                                    <label for="luasKandang">Cage Area (M<sup>2</sup>)</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="luasKandang" value="${luas_kandang}" class="form-control">
@@ -683,13 +683,13 @@
                                     <th class="text-center" colspan="2">House Data</th>
                                 </tr>
                                 <tr>
-                                    <td>House name</td> <td>${nama_kandang}</td>
+                                    <td>Cage name</td> <td>${nama_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>House Address</td> <td>${alamat_kandang}</td>
+                                    <td>Cage Address</td> <td>${alamat_kandang}</td>
                                 </tr> 
                                 <tr>
-                                    <td>House Area (M<sup>2</sup>)</td><td>${luas_kandang}</td>
+                                    <td>Cage Area (M<sup>2</sup>)</td><td>${luas_kandang}</td>
                                 </tr>
                                 <tr>
                                     <td>Initial Population (Head)</td><td>${populasi_awal}</td>
@@ -733,13 +733,13 @@
         console.log(idPemilik)
         // validasi
         if (!namaKandang) {
-            return Swal.fire("Please fill the house name")
+            return Swal.fire("Please fill the Cage name")
         }
         if (!alamatKandang) {
-            return Swal.fire("Please fill the house address")
+            return Swal.fire("Please fill the Cage address")
         }
         if (!luasKandang) {
-            return Swal.fire("Please fill the house area")
+            return Swal.fire("Please fill the Cage area")
         }
         if (luasKandang < 0) {
             return Swal.fire("House Area cannot be less than 0")
@@ -834,13 +834,13 @@
 
         // validasi
         if (!namaKandang) {
-            return Swal.fire("Please fill the house name")
+            return Swal.fire("Please fill the Cage name")
         }
         if (!alamatKandang) {
-            return Swal.fire("Please fill the house address")
+            return Swal.fire("Please fill the Cage address")
         }
         if (!luasKandang) {
-            return Swal.fire("Please fill the house area")
+            return Swal.fire("Please fill the Cage area")
         }
         if (luasKandang < 0) {
             return Swal.fire("House Area cannot be less than 0")

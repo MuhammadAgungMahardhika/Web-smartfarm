@@ -23,7 +23,7 @@
                         <table class="table table-borderless text-start">
                             <thead>
                                 <tr>
-                                    <th>House Name</th>
+                                    <th>Cage Name</th>
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
@@ -37,7 +37,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>House Address</th>
+                                    <th>Cage Address</th>
                                     <td id="alamatKandang">
                                         {{ $kandang[0]->alamat_kandang }}
                                     </td>
@@ -151,7 +151,7 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">
-                                    Amonia (Ppm)
+                                    Amonia (ppm)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">

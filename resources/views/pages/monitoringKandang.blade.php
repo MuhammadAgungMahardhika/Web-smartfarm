@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3 style="color: #cb8e8e">House Monitoring</h3>
-                <p class="text-subtitle text-muted">House monitoring page</p>
+                <h3 style="color: #cb8e8e">Cage Monitoring</h3>
+                <p class="text-subtitle text-muted">Cage monitoring page</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">House Monitoring</li>
+                        <li class="breadcrumb-item active" aria-current="page">Cage Monitoring</li>
                     </ol>
                 </nav>
             </div>
@@ -23,7 +23,7 @@
                         <table class="table table-borderless text-start">
                             <thead>
                                 <tr>
-                                    <th>House Name</th>
+                                    <th>Cage Name</th>
                                     <td id="namaKandang">
                                         <fieldset class="form-group">
                                             <select class="form-select" id="selectKandang" onchange="initKandang()">
@@ -37,7 +37,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>House Address</th>
+                                    <th>Cage Address</th>
                                     <td id="alamatKandang">
                                         {{ $kandang[0]->alamat_kandang }}
                                     </td>
@@ -151,7 +151,7 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">
-                                    Amonia (Ppm)
+                                    Amonia (ppm)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">

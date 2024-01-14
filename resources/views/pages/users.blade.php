@@ -223,10 +223,10 @@
                             <input type="password" id="password" class="form-control" placeholder="password" autocomplete="off">
                         </div>
                         <div class="col-md-4">
-                            <label for="konfirmasiPassword">Password confirmation</label>
+                            <label for="konfirmasiPassword">Confirmation Password</label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="password" id="konfirmasiPassword" class="form-control" placeholder="password confirmation" autocomplete="off">
+                            <input type="password" id="konfirmasiPassword" class="form-control" placeholder="Confirmation password" autocomplete="off">
                         </div>
                         @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                         <div class="mt-4">

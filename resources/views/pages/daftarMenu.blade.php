@@ -48,7 +48,7 @@
                                     <div class="card-body">
                                         <img src="/images/menu/house-list.png" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">House List</h5>
+                                        <h5 class="card-title mt-4">Cage List</h5>
                                     </div>
                                 </a>
                             </div>
@@ -74,7 +74,7 @@
                                     <div class="card-body">
                                         <img src="/images/menu/klasifikasi.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">House Monitoring</h5>
+                                        <h5 class="card-title mt-4">Cage Monitoring</h5>
                                     </div>
                                 </a>
                             </div>
@@ -86,7 +86,7 @@
                                     <div class="card-body">
                                         <img src="/images/menu/monitoringKandang2.jpg" class="card-img-top img-fluid"
                                             alt="singleminded">
-                                        <h5 class="card-title mt-4">House Data</h5>
+                                        <h5 class="card-title mt-4">Cage Data</h5>
                                     </div>
                                 </a>
                             </div>

@@ -113,7 +113,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // Check role = 1, apakah admin yang login
     Route::middleware(['role:1'])->group(function () {
         Route::get('/userList', [PageController::class, "user"])->name('userList');
-        Route::get('/houseList', [PageController::class, "kandang"])->name('houseList');
+        Route::get('/cageList', [PageController::class, "kandang"])->name('cageList');
     });
 
     // check apakah pemilik atau peternak memiliki kandang
@@ -131,11 +131,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
                 Route::get('/amonia', [PageController::class, "amoniaOutlier"])->name('amonia');
             });
             // Halaman monitoring kandang
-            Route::get('/houseMonitoring', [PageController::class, "monitoringKandang"])->name('houseMonitoring');
+            Route::get('/cageMonitoring', [PageController::class, "monitoringKandang"])->name('cageMonitoring');
             // Halaman Outlier
             Route::get('/outlierData', [PageController::class, "outlier"])->name('outlierData');
             // Halaman data kandang
-            Route::get('/houseData', [PageController::class, "dataKandang"])->name('houseData');
+            Route::get('/cageData', [PageController::class, "dataKandang"])->name('cageData');
             // Halaman forecast
             Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
             // Halaman Hasil Panen

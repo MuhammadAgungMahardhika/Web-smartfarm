@@ -8,24 +8,25 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SensorDataUpdated implements ShouldBroadcast
+class SuhuOutlierUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $idKandang, $suhu, $kelembapan, $amonia, $suhuOutlier, $kelembapanOutlier, $amoniaOutlier;
+
+    public $idKandang, $mean, $stdDev, $lowerLimit, $upperLimit, $suhuOutlier, $suhuWinsorzing;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($idKandang, $suhu, $kelembapan, $amonia, $suhuOutlier = null, $kelembapanOutlier = null, $amoniaOutlier = null)
+    public function __construct($idKandang, $mean, $stdDev, $lowerLimit, $upperLimit, $suhuOutlier, $suhuWinsorzing)
     {
         $this->idKandang = $idKandang;
-        $this->suhu = $suhu;
-        $this->kelembapan = $kelembapan;
-        $this->amonia = $amonia;
+        $this->mean = $mean;
+        $this->stdDev = $stdDev;
+        $this->lowerLimit = $lowerLimit;
+        $this->upperLimit = $upperLimit;
         $this->suhuOutlier = $suhuOutlier;
-        $this->kelembapanOutlier = $kelembapanOutlier;
-        $this->amoniaOutlier = $amoniaOutlier;
+        $this->suhuWinsorzing = $suhuWinsorzing;
     }
 
     /**
@@ -35,6 +36,6 @@ class SensorDataUpdated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('sensor-data');
+        return new Channel('suhu-outlier');
     }
 }

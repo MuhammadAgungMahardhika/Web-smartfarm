@@ -19,7 +19,9 @@ return new class extends Migration
             $table->double('suhu', 15, 3);
             $table->double('kelembapan', 15, 3);
             $table->double('amonia', 15, 3);
-            $table->boolean('is_outlier')->default(false);
+            $table->double('suhu_outlier', 15, 3)->nullable();
+            $table->double('kelembapan_outlier', 15, 3)->nullable();
+            $table->double('amonia_outlier', 15, 3)->nullable();
             $table->timestamp('datetime')->useCurrent();
         });
     }

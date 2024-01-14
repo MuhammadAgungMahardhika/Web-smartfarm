@@ -23,7 +23,9 @@ class SensorRepository
       $sensor->suhu = $data->suhu;
       $sensor->kelembapan = $data->kelembapan;
       $sensor->amonia = $data->amonia;
-      $sensor->is_outlier = $data->is_outlier;
+      $sensor->suhu_outlier = $data->suhu_outlier;
+      $sensor->kelembapan_outlier = $data->kelembapan_outlier;
+      $sensor->amonia_outlier = $data->amonia_outlier;
       $sensor->save();
 
       return $sensor;
@@ -43,8 +45,10 @@ class SensorRepository
       $sensor->suhu = $data->suhu;
       $sensor->kelembapan = $data->kelembapan;
       $sensor->amonia = $data->amonia;
+      $sensor->suhu_outlier = $data->suhu_outlier;
+      $sensor->kelembapan_outlier = $data->kelembapan_outlier;
+      $sensor->amonia_outlier = $data->amonia_outlier;
       $sensor->save();
-
       return $sensor;
     } catch (Exception $th) {
       Log::error('Error update sensor data.');
@@ -67,15 +71,77 @@ class SensorRepository
     }
   }
 
-  public function getMean($column)
+  public function getSuhuMean($idKandang)
   {
-    // Dapatkan rata-rata dari kolom pada tabel sensor
-    return Sensors::whereNotNull($column)->where('sensors.is_outlier', '=', false)->avg($column);
+    $default = 27;
+    $mean = Sensors::whereNotNull('sensors.suhu')
+      ->where('sensors.id_kandang', '=', $idKandang)
+      ->where('sensors.suhu_outlier', '=', null)
+      ->avg('sensors.suhu');
+    if ($mean) {
+      return $mean;
+    } else {
+      return $default;
+    }
+  }
+  public function getKelembapanMean($idKandang)
+  {
+    $default = 50;
+    $mean = Sensors::whereNotNull('sensors.suhu')
+      ->where('sensors.id_kandang', '=', $idKandang)
+      ->where('sensors.kelembapan_outlier', '=', null)
+      ->avg('sensors.kelembapan');
+    if ($mean) {
+      return $mean;
+    } else {
+      return $default;
+    }
+  }
+  public function getAmoniaMean($idKandang)
+  {
+    $default = 20;
+    $mean = Sensors::whereNotNull('sensors.suhu')
+      ->where('sensors.id_kandang', '=', $idKandang)
+      ->where('sensors.amonia_outlier', '=', null)
+      ->avg('sensors.amonia');
+    if ($mean) {
+      return $mean;
+    } else {
+      return $default;
+    }
   }
 
-  function getStdDev($column)
+  function getSuhuStdDev($idKandang)
   {
-    // Hitung standar deviasi dari kolom pada tabel sensors
-    return DB::table('sensors')->select(DB::raw("STDDEV($column) as std_dev_$column"))->where('sensors.is_outlier', '=', false)->first()->{"std_dev_$column"};
+    $default = 3;
+    $suhuStdDev =  DB::table('sensors')
+      ->select(DB::raw("STD(suhu) as std_dev"))
+      ->where('id_kandang', '=', $idKandang)
+      ->havingRaw('COUNT(suhu) > 15')
+      ->first();
+
+    return $suhuStdDev != null ? $suhuStdDev->std_dev : $default;
+  }
+  function getKelembapanStdDev($idKandang)
+  {
+    $default = 7;
+    $kelembapanStdDev =  DB::table('sensors')
+      ->select(DB::raw("STD(kelembapan) as std_dev"))
+      ->where('id_kandang', '=', $idKandang)
+      ->havingRaw('COUNT(kelembapan) > 15')
+      ->first();
+
+    return $kelembapanStdDev != null ? $kelembapanStdDev->std_dev : $default;
+  }
+  function getAmoniaStdDev($idKandang)
+  {
+    $default = 5;
+    $amoniaStdDev =  DB::table('sensors')
+      ->select(DB::raw("STD(amonia) as std_dev"))
+      ->where('id_kandang', '=', $idKandang)
+      ->havingRaw('COUNT(amonia) > 15')
+      ->first();
+
+    return $amoniaStdDev != null ? $amoniaStdDev->std_dev : $default;
   }
 }

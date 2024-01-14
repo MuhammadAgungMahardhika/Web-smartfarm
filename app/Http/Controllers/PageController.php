@@ -29,6 +29,36 @@ class PageController extends Controller
         ];
         return view('pages/dashboard', $send);
     }
+    public function temperatureOutlier()
+    {
+        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
+        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $send = [
+            'kandang' => $kandang,
+            'data' => $data
+        ];
+        return view('pages/temperatureOutlier', $send);
+    }
+    public function humidityOutlier()
+    {
+        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
+        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $send = [
+            'kandang' => $kandang,
+            'data' => $data
+        ];
+        return view('pages/humidityOutlier', $send);
+    }
+    public function amoniaOutlier()
+    {
+        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
+        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $send = [
+            'kandang' => $kandang,
+            'data' => $data
+        ];
+        return view('pages/amoniaOutlier', $send);
+    }
     public function Kandang()
     {
         $data = DB::table('kandang')
@@ -51,7 +81,7 @@ class PageController extends Controller
         $data = DB::table('sensors')
             ->where('kandang.id_user', '=', Auth::user()->id)
             ->where('kandang.id', '=', $kandang[0]->id)
-            ->where('sensors.is_outlier', '=', false)
+
             ->leftJoin('kandang', function ($join) {
                 $join->on('kandang.id', '=', 'sensors.id_kandang');
             })
@@ -72,7 +102,7 @@ class PageController extends Controller
                 DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
                 DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
             )
-            ->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier', 'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+            ->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
             ->orderBy('sensors.datetime', 'desc')
             ->get();
 
@@ -89,7 +119,6 @@ class PageController extends Controller
         $data = DB::table('sensors')
             ->where('kandang.id_user', '=', Auth::user()->id)
             ->where('kandang.id', '=', $kandang[0]->id)
-            ->where('sensors.is_outlier', '=', true)
             ->leftJoin('kandang', function ($join) {
                 $join->on('kandang.id', '=', 'sensors.id_kandang');
             })
@@ -110,7 +139,7 @@ class PageController extends Controller
                 DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
                 DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
             )
-            ->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier', 'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+            ->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
             ->orderBy('sensors.datetime', 'desc')
             ->get();
 

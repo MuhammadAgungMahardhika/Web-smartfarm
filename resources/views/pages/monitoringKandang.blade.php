@@ -353,10 +353,9 @@
     }
 
     function showTableData(kandangId) {
-        let isOutlier = false
         $.ajax({
             type: "GET",
-            url: `/sensors/kandang/${kandangId}/${isOutlier}`,
+            url: `/sensors/kandang/${kandangId}`,
             success: function(response) {
                 // asign value
                 let sensors = response.data
@@ -460,7 +459,7 @@
         let data = {
             id_kandang: idKandang,
             day: day,
-            is_outlier: false
+
         }
         $.ajax({
             type: "POST",
@@ -570,8 +569,8 @@
     function filterByClassification(idKandang, classification) {
         let data = {
             id_kandang: idKandang,
-            classification: classification,
-            is_outlier: false
+            classification: classification
+
         }
         $.ajax({
             type: "POST",
@@ -712,8 +711,7 @@
             let data = {
                 id_kandang: idKandang,
                 from: startDate,
-                to: endDate,
-                is_outlier: false
+                to: endDate
             }
             $.ajax({
                 type: "POST",

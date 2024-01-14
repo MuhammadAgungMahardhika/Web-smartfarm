@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AmoniaOutlierUpdated;
+use App\Events\KelembapanOutlierUpdated;
 use App\Events\SensorDataUpdated;
+use App\Events\SuhuOutlierUpdated;
 use App\Models\Sensors;
 use App\Repositories\SensorRepository;
 use Illuminate\Http\Request;
@@ -28,8 +31,87 @@ class SensorController extends Controller
 
 	public function storeSensorFromOutside($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
 	{
-		event(new SensorDataUpdated($idKandang, $suhu, $kelembapan, $amonia));
-		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia]);
+		$suhuOutlier  = null;
+		$kelembapanOutlier = null;
+		$amoniaOutlier = null;
+		// Dapatkan nilai rata-rata 
+		$meanSuhu = $this->sensorRepository->getSuhuMean($idKandang);
+		$meanKelembapan = $this->sensorRepository->getKelembapanMean($idKandang);
+		$meanAmonia = $this->sensorRepository->getAmoniaMean($idKandang);
+		dump(["mean suhu :" . $meanSuhu, "mean kelembapan :" . $meanKelembapan, "mean amonia :" . $meanAmonia]);
+
+		// dapatkan nilai standar deviasi 
+		$stdDevSuhu = $this->sensorRepository->getSuhuStdDev($idKandang);
+		$stdDevKelembapan = $this->sensorRepository->getKelembapanStdDev($idKandang);
+		$stdDevAmonia = $this->sensorRepository->getAmoniaStdDev($idKandang);
+		dump(["stddev suhu :" . $stdDevSuhu, "stddev kelembapan :" . $stdDevKelembapan, "std dev amonia :" . $stdDevAmonia]);
+
+		// Deteksi outlier
+		$isSuhuOutlier = $this->detectOutlier($suhu, $meanSuhu, $stdDevSuhu);
+		$isKelembapanOutlier = $this->detectOutlier($kelembapan, $meanKelembapan, $stdDevKelembapan);
+		$isAmoniaOutlier = $this->detectOutlier($amonia, $meanAmonia, $stdDevAmonia);
+
+		// jika suhu outlier maka transform datanya
+		if ($isSuhuOutlier) {
+			$suhuOutlier = $suhu;
+			$suhu = $this->winsorize($suhu, $meanSuhu, $stdDevSuhu);
+
+			echo 'masuk sini';
+			$lowerLimit = $meanSuhu - 3 * $stdDevSuhu;
+			$upperLimit = $meanSuhu + 3 * $stdDevSuhu;
+			event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
+		}
+		// jika kelembapan outlier maka transform datanya
+		if ($isKelembapanOutlier) {
+			$kelembapanOutlier = $kelembapan;
+			$kelembapan = $this->winsorize($kelembapan, $meanKelembapan, $stdDevKelembapan);
+
+			$lowerKelembapan = $meanKelembapan - 3 * $stdDevKelembapan;
+			$upperKelembapan = $meanKelembapan + 3 * $stdDevKelembapan;
+			event(new KelembapanOutlierUpdated($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan));
+		}
+		// jika amonia outlier maka transform datanya
+		if ($isAmoniaOutlier) {
+			$amoniaOutlier = $amonia;
+			$amonia = $this->winsorize($amonia, $meanAmonia, $stdDevAmonia);
+
+			$lowerAmonia = $meanAmonia - 3 * $stdDevAmonia;
+			$upperAmonia = $meanAmonia + 3 * $stdDevAmonia;
+			event(new AmoniaOutlierUpdated($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia));
+		}
+
+		// broadcast 
+		event(new SensorDataUpdated($idKandang, $suhu, $kelembapan, $amonia, $suhuOutlier, $kelembapanOutlier, $amoniaOutlier));
+		return response(['suhu' => $suhu, 'kelembapan' => $kelembapan, 'amonia' => $amonia, "suhu_outlier" => $suhuOutlier, "kelembapan_outlier" => $kelembapanOutlier, "amonia_outier" => $amoniaOutlier]);
+	}
+
+	protected function detectOutlier($value, $mean, $stdDev)
+	{
+		// Menentukan batas bawah dan batas atas ( 3 sigma)
+		$lowerLimit = $mean - 3 * $stdDev;
+		$upperLimit = $mean + 3 * $stdDev;
+
+		dump(["lower limit", $lowerLimit, "upper limit", $upperLimit]);
+		// Deteksi outlier dan terapkan winsorizing
+		if ($value < $lowerLimit) {
+			return true;
+		} elseif ($value > $upperLimit) {
+			return true;
+		}
+		return false;
+	}
+	protected function winsorize($value, $mean, $stdDev)
+	{
+		// Menentukan batas bawah dan batas atas ( 3 sigma)
+		$lowerLimit = $mean - 3 * $stdDev;
+		$upperLimit = $mean + 3 * $stdDev;
+
+		// Deteksi outlier dan terapkan winsorizing
+		if ($value < $lowerLimit) {
+			return $lowerLimit;
+		} elseif ($value > $upperLimit) {
+			return $upperLimit;
+		}
 	}
 
 	public function getSensor($idKandang)
@@ -55,12 +137,11 @@ class SensorController extends Controller
 		];
 		return response(['data' => $items, 'status' => 200]);
 	}
-	public function getSensorByKandangId($idKandang, $isOutlier)
+	public function getSensorByKandangId($idKandang)
 	{
-		$isOutlier = $isOutlier == "true" ? true : false;
+
 		$sensor = DB::table('sensors')
 			->where('sensors.id_kandang', '=', $idKandang)
-			->where('sensors.is_outlier', '=', $isOutlier)
 			->where('kandang.id_user', Auth::user()->id)
 			->leftJoin('kandang', function ($join) {
 				$join->on('kandang.id', '=', 'sensors.id_kandang');
@@ -82,7 +163,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -95,12 +176,10 @@ class SensorController extends Controller
 		$idKandang = $request->id_kandang;
 		$from = $request->from;
 		$to = $request->to;
-		$isOutlier = $request->is_outlier;
 
 		$sensor = DB::table('sensors')
 			->whereRaw('DATE(sensors.datetime)  >= ? AND DATE(sensors.datetime) <= ?', [$from, $to])
 			->where('sensors.id_kandang', '=', $idKandang)
-			->where('sensors.is_outlier', '=', $isOutlier)
 			->where('kandang.id_user', Auth::user()->id)
 			->leftJoin('kandang', function ($join) {
 				$join->on('kandang.id', '=', 'sensors.id_kandang');
@@ -122,7 +201,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -134,11 +213,9 @@ class SensorController extends Controller
 	{
 		$idKandang = $request->id_kandang;
 		$day = $request->day;
-		$isOutlier = $request->is_outlier;
 		$sensor = DB::table('sensors')
 			->where('data_kandang.hari_ke', '=', $day)
 			->where('sensors.id_kandang', '=', $idKandang)
-			->where('sensors.is_outlier', '=', $isOutlier)
 			->where('kandang.id_user', Auth::user()->id)
 			->leftJoin('kandang', function ($join) {
 				$join->on('kandang.id', '=', 'sensors.id_kandang');
@@ -160,7 +237,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke',  'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke',  'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -171,7 +248,6 @@ class SensorController extends Controller
 	{
 		$idKandang = $request->id_kandang;
 		$classification = $request->classification;
-		$isOutlier = $request->is_outlier;
 
 		if ($classification == "normal") {
 			$operator = '=';
@@ -182,7 +258,6 @@ class SensorController extends Controller
 		$sensor = DB::table('sensors')
 			->having('jumlah_kematian', $operator, '0')
 			->where('sensors.id_kandang', '=', $idKandang)
-			->where('sensors.is_outlier', '=', $isOutlier)
 			->where('kandang.id_user', Auth::user()->id)
 			->leftJoin('kandang', function ($join) {
 				$join->on('kandang.id', '=', 'sensors.id_kandang');
@@ -204,7 +279,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang', 'sensors.is_outlier',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 

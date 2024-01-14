@@ -67,7 +67,7 @@
 
                         <li>
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit(); localStorage.clear();">
                                 <i class="icon-mid bi bi-box-arrow-left me-2"></i>
                                 {{ __('Logout') }}
                             </a>

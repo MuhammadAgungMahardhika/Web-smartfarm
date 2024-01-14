@@ -66,12 +66,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // mendapatkan sensor dari database
     Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
     Route::get('/sensors-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensors']);
-    Route::get('/sensors/kandang/{idKandang}/{isOutlier}', [SensorController::class, 'getSensorByKandangId']);
+    Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
     // filter sensor
     Route::post('/sensors/date', [SensorController::class, 'getSensorByDate']);
     Route::post('/sensors/day', [SensorController::class, 'getSensorByDay']);
     Route::post('/sensors/classification', [SensorController::class, 'getSensorByClassification']);
-
 
 
     // data kandang
@@ -125,6 +124,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
         Route::middleware(['role:2'])->group(function () {
             // Halaman dashboard
             Route::get('/dashboard', [PageController::class, "dashboard"])->name('dashboard');
+            // Halaman outlier 
+            Route::group(['prefix' => 'outlier', 'as' => 'outlier.'], function () {
+                Route::get('/temperature', [PageController::class, "temperatureOutlier"])->name('temperature');
+                Route::get('/humidity', [PageController::class, "humidityOutlier"])->name('humidity');
+                Route::get('/amonia', [PageController::class, "amoniaOutlier"])->name('amonia');
+            });
             // Halaman monitoring kandang
             Route::get('/houseMonitoring', [PageController::class, "monitoringKandang"])->name('houseMonitoring');
             // Halaman Outlier

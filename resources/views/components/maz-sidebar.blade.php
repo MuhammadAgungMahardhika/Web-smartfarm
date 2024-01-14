@@ -47,7 +47,7 @@
         </div>
         <div class="sidebar-menu">
             <div class="text-center">
-                <img src="images/logo/smartfarm2.png" alt="" width="150"><br>
+                <img src="{{ asset('images/logo/smartfarm2.png') }}" alt="" width="150"><br>
                 <p class="text-white " style="font-size: 16px">Smart Farm Broiler Monitoring</p>
             </div>
             <ul class="menu">

@@ -58,6 +58,53 @@
         window.location.reload()
     }
 
+    function setCardsStatusToOffline() {
+        setSuhuCardValue(0, 2)
+        setKelembapanCardValue(0, 2)
+        setAmoniaCardValue(0, 2)
+    }
+
+    function setSuhuCardValue(value, status) {
+        $('#suhuData').html(value)
+        if (status == 1) {
+            $("#suhuStatus").html(`<span class="badge bg-danger">Invalid</span>`)
+        } else if (status == 2) {
+            $("#suhuStatus").html(`<span class="badge bg-secondary">Offline</span>`)
+        } else if (status == 3) {
+            $("#suhuStatus").html(`<span class="badge bg-success">Normal</span>`)
+
+        } else if (status == 4) {
+            $("#suhuStatus").html(`<span class="badge bg-warning">Transformed</span>`)
+        }
+    }
+
+    function setKelembapanCardValue(value, status) {
+        $('#kelembapanData').html(value)
+        if (status == 1) {
+            $("#kelembapanStatus").html(`<span class="badge bg-danger">Invalid</span>`)
+        } else if (status == 2) {
+            $("#kelembapanStatus").html(`<span class="badge bg-secondary">Offline</span>`)
+        } else if (status == 3) {
+            $("#kelembapanStatus").html(`<span class="badge bg-success">Normal</span>`)
+
+        } else if (status == 4) {
+            $("#kelembapanStatus").html(`<span class="badge bg-warning">Transformed</span>`)
+        }
+    }
+
+    function setAmoniaCardValue(value, status) {
+        $('#amoniaData').html(value);
+        if (status == 1) {
+            $("#amoniaStatus").html(`<span class="badge bg-danger">Invalid</span>`)
+        } else if (status == 2) {
+            $("#amoniaStatus").html(`<span class="badge bg-secondary">Offline</span>`)
+        } else if (status == 3) {
+            $("#amoniaStatus").html(`<span class="badge bg-success">Normal</span>`)
+
+        } else if (status == 4) {
+            $("#amoniaStatus").html(`<span class="badge bg-warning">Transformed</span>`)
+        }
+    }
     // check chart
     let checkChart = document.getElementById('selectChart').value
     console.log("chartnya = " + checkChart)
@@ -207,11 +254,20 @@
                     idKandang = data.idKandang;
                     let selectedKandang = $('#selectKandang').val()
                     if (idKandang == selectedKandang) {
-                        suhu = parseFloat(data.suhu).toFixed(3);
-                        kelembapan = parseFloat(data.kelembapan).toFixed(3);
-                        amonia = parseFloat(data.amonia).toFixed(3);
-                        console.log(data)
-                        updateData(suhu, kelembapan, amonia)
+                        let suhu = parseFloat(data.suhu).toFixed(3);
+                        let suhuOutlier = data.suhuOutlier ? data.suhuOutlier : null
+                        let kelembapan = parseFloat(data.kelembapan).toFixed(3);
+                        let kelembapanOutlier = data.kelembapanOutlier ? data
+                            .kelembapanOutlier : null
+                        let amonia = parseFloat(data.amonia).toFixed(3);
+                        let amoniaOutlier = data.amoniaOutlier ? data.amoniaOutlier : null
+
+                        let dataOutlier = {
+                            suhuOutlier: suhuOutlier,
+                            kelembapanOutlier: kelembapanOutlier,
+                            amoniaOutlier: amoniaOutlier,
+                        }
+                        updateData(suhu, kelembapan, amonia, dataOutlier)
                         resetOfflineTimeout()
                     }
                 });
@@ -224,87 +280,91 @@
 
             function startOfflineTimeOut() {
                 timeOutId = setTimeout(() => {
-                    setStatus(false)
+                    setCardsStatusToOffline()
                     updateData()
                 }, timeDuration);
             }
 
             function resetOfflineTimeout() {
                 clearTimeout(timeOutId)
-                setStatus(true)
                 startOfflineTimeOut()
             }
 
-            function setStatus(status) {
-                if (status == false) {
-                    $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
-                } else if (status == true) {
-                    $('#status').html(`<span class="badge bg-success">Online</span>`)
-                }
-            }
+
 
         })
 
         // Function to update radial chart data in real-time
-        function updateData(suhuData = null, kelembapanData = null, amoniaData = null) {
+        function updateData(suhuData = null, kelembapanData = null, amoniaData = null, dataOutlier = null) {
+            console.log(dataOutlier)
             if (suhuData != null || kelembapanData != null || amoniaData != null) {
-
                 console.log("suhu =" + suhuData)
                 console.log("kelembapan =" + kelembapanData)
                 console.log("amonia =" + amoniaData)
+                console.log("suhu outlier : " + dataOutlier.suhuOutlier)
+                console.log("kelembapan outlier : " + dataOutlier.kelembapanOutlier)
+                console.log("amonia outlier : " + dataOutlier.amoniaOutlier)
 
                 if (suhuData != null && !isNaN(suhuData)) {
                     suhuChart.updateSeries([suhuData], true, {
                         duration: 200
                     });
-                    $('#suhuData').html(suhuData);
+
+                    // check jika data sebelumnya outlier ganti status
+                    let suhuOutlier = dataOutlier.suhuOutlier
+                    suhuOutlier != null ?
+                        setSuhuCardValue(suhuData, 4) :
+                        setSuhuCardValue(suhuData, 3)
+
                 } else {
                     suhuChart.updateSeries([0], true, {
                         duration: 200
                     });
-                    $('#suhuData').html(0);
+                    setSuhuCardValue(0, 1)
                 }
 
                 if (kelembapanData != null && !isNaN(kelembapanData)) {
                     kelembapanChart.updateSeries([kelembapanData], true, {
                         duration: 200
                     });
-                    $('#kelembapanData').html(kelembapanData);
+
+                    let kelembapanOutlier = dataOutlier.kelembapanOutlier
+                    kelembapanOutlier != null ?
+                        setKelembapanCardValue(kelembapanData, 4) :
+                        setKelembapanCardValue(kelembapanData, 3)
                 } else {
                     kelembapanChart.updateSeries([0], true, {
                         duration: 200
                     });
-                    $('#kelembapanData').html(0);
+                    setKelembapanCardValue(0, 1)
                 }
 
                 if (amoniaData != null && !isNaN(amoniaData)) {
                     amoniaChart.updateSeries([amoniaData], true, {
                         duration: 200
                     });
-                    $('#amoniaData').html(amoniaData);
+                    let amoniaOutlier = dataOutlier.amoniaOutlier
+                    amoniaOutlier != null ?
+                        setAmoniaCardValue(amoniaData, 4) :
+                        setAmoniaCardValue(amoniaData, 3)
                 } else {
                     amoniaChart.updateSeries([0], true, {
                         duration: 200
                     });
-                    $('#amoniaData').html(0);
+                    setAmoniaCardValue(0, 1)
                 }
             } else {
-                $("#status").html(`<span class="badge bg-secondary">Offline</span>`)
                 // jika semua data kosong
                 kelembapanChart.updateSeries([0], true, {
                     duration: 200
                 });
-                $('#kelembapanData').html(0);
-
                 suhuChart.updateSeries([0], true, {
                     duration: 200
                 });
-                $('#suhuData').html(0);
-
                 amoniaChart.updateSeries([0], true, {
                     duration: 200
                 });
-                $('#amoniaData').html(0);
+                setCardsStatusToOffline()
             }
 
         }
@@ -361,7 +421,8 @@
                 xaxis: {
                     type: 'datetime',
                     labels: {
-                        format: 'yyyy/MM/dd HH:mm:ss'
+                        format: 'yyyy/MM/dd HH:mm:ss',
+                        datetimeUTC: false,
                     },
                     tooltip: {
                         enabled: true,
@@ -369,7 +430,8 @@
                             return opts.w.globals.labels[opts.dataPointIndex]
                         }
                     }
-                }
+                },
+                timezone: 'Asia/Jakarta'
             };
 
             lineChart = new ApexCharts(document.querySelector("#rowChart"), options);
@@ -385,22 +447,32 @@
                 // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
                 channel.bind('App\\Events\\SensorDataUpdated', function(data) {
                     idKandang = data.idKandang;
-                    let newDate = new Date().getTime()
-                    dataSuhu.push({
-                        x: newDate,
-                        y: parseFloat(data.suhu).toFixed(3)
-                    })
-                    dataKelembapan.push({
-                        x: newDate,
-                        y: parseFloat(data.amonia).toFixed(3)
-                    })
-                    dataAmonia.push({
-                        x: newDate,
-                        y: parseFloat(data.kelembapan).toFixed(3)
-                    })
+                    console.log(data)
                     let selectedKandang = $('#selectKandang').val()
                     if (idKandang == selectedKandang) {
-                        updateData()
+                        let newDate = new Date().toLocaleString("en-US", {
+                            timeZone: "Asia/Jakarta"
+                        });
+                        console.log(newDate)
+                        dataSuhu.push({
+                            x: newDate,
+                            y: parseFloat(data.suhu).toFixed(3)
+                        })
+                        dataKelembapan.push({
+                            x: newDate,
+                            y: parseFloat(data.kelembapan).toFixed(3)
+                        })
+                        dataAmonia.push({
+                            x: newDate,
+                            y: parseFloat(data.amonia).toFixed(3)
+                        })
+                        let dataOutlier = {
+                            suhuOutlier: data.suhuOutlier,
+                            kelembapanOutlier: data.kelembapanOutlier,
+                            amoniaOutlier: data.amoniaOutlier
+                        }
+
+                        updateLineData(dataOutlier)
                     }
 
                 });
@@ -408,7 +480,11 @@
         });
 
         // Fungsi untuk mengupdate data grafik
-        function updateData() {
+        function updateLineData(dataOutlier) {
+            let suhuOutlier = dataOutlier.suhuOutlier ? dataOutlier.suhuOutlier : null
+            let kelembapanOutlier = dataOutlier.kelembapanOutlier ? dataOutlier.kelembapanOutlier : null
+            let amoniaOutlier = dataOutlier.amoniaOutlier ? dataOutlier.amoniaOutlier : null
+
             // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
             let idKandang = $('#selectKandang').val()
             // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
@@ -419,6 +495,28 @@
                 dataKelembapan.shift();
                 dataAmonia.shift();
             }
+
+            let lastSuhuIndex = dataSuhu.length - 1
+            let lastKelembapanIndex = dataKelembapan.length - 1
+            let lastAmoniaIndex = dataAmonia.length - 1
+
+            let lastSuhu = dataSuhu[lastSuhuIndex].y
+            let lastKelembapan = dataKelembapan[lastKelembapanIndex].y
+            let lastAmonia = dataAmonia[lastAmoniaIndex].y
+
+            console.log("suhu = " + lastSuhu)
+            console.log("kelembapan = " + lastKelembapan)
+            console.log("amonia = " + lastAmonia)
+            console.log("suhu outlier :" + suhuOutlier)
+            console.log("kelembapan outlier :" + kelembapanOutlier)
+            console.log("amonia outlier :" + amoniaOutlier)
+
+            // update data 
+            suhuOutlier != null ? setSuhuCardValue(lastSuhu, 4) : setSuhuCardValue(lastSuhu, 3)
+            kelembapanOutlier != null ? setKelembapanCardValue(lastKelembapan, 4) : setKelembapanCardValue(
+                lastKelembapan, 3)
+            amoniaOutlier != null ? setAmoniaCardValue(lastAmonia, 4) : setAmoniaCardValue(
+                lastAmonia, 3)
 
             // Update data pada grafik
             lineChart.updateSeries([{

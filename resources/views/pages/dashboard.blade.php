@@ -43,11 +43,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div id="status">
                                             <span class="badge bg-secondary">Offline</span>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="card-body">
@@ -70,8 +70,8 @@
                                                         <strong class="h2" id="suhuData">0</strong>
                                                         <strong class="h5">&deg; C</strong>
                                                     </div>
-                                                    <div class="col text-center">
-                                                        <a class="btn btn-success" id="suhuStatus">Normal</a>
+                                                    <div class="col text-center" id="suhuStatus">
+                                                        <span class="badge bg-secondary">Offline</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -94,8 +94,8 @@
                                                         <strong id="kelembapanData" class="h2">0</strong>
                                                         <strong class="h5">% RH</strong>
                                                     </div>
-                                                    <div class="col text-center">
-                                                        <a class="btn btn-success" id="kelembapanStatus">Normal</a>
+                                                    <div class="col text-center" id="kelembapanStatus">
+                                                        <span class="badge bg-secondary">Offline</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -117,8 +117,8 @@
                                                         <strong id="amoniaData" class="h2">0</strong>
                                                         <strong class="h5"> PPM</strong>
                                                     </div>
-                                                    <div class="col text-center">
-                                                        <a class="btn btn-success" id="amoniaStatus">Normal</a>
+                                                    <div class="col text-center" id="amoniaStatus">
+                                                        <span class="badge bg-secondary">Offline</span>
                                                     </div>
                                                 </div>
                                             </div>

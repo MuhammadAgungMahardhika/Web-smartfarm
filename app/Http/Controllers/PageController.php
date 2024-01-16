@@ -93,7 +93,12 @@ class PageController extends Controller
                 $join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
             })
             ->select(
-                'sensors.*',
+                'sensors.id',
+                'sensors.id_kandang',
+                'sensors.suhu',
+                'sensors.kelembapan',
+                'sensors.amonia',
+                'sensors.datetime',
                 'kandang.nama_kandang',
                 'kandang.alamat_kandang',
                 'data_kandang.hari_ke',

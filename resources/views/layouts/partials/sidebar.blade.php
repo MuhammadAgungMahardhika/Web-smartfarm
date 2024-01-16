@@ -16,7 +16,7 @@
         <x-maz-sidebar-sub-item name="Humidity" :link="route('outlier.humidity')"></x-maz-sidebar-sub-item>
         <x-maz-sidebar-sub-item name="Amonia" :link="route('outlier.amonia')"></x-maz-sidebar-sub-item>
     </x-maz-sidebar-item>
-    <x-maz-sidebar-item name="Outlier Data" :link="route('outlierData')" icon="bi bi-display"></x-maz-sidebar-item>
+    {{-- <x-maz-sidebar-item name="Outlier Data" :link="route('outlierData')" icon="bi bi-display"></x-maz-sidebar-item> --}}
     <x-maz-sidebar-item name="Cage Data" :link="route('cageData')" icon="bi bi-files"></x-maz-sidebar-item>
     {{-- <x-maz-sidebar-item name="Forecast" :link="route('forecast')" icon="bi bi-cloud-hail"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Klasifikasi Monitoring" :link="route('klasifikasiMonitoring')" icon="bi bi-collection"></x-maz-sidebar-item> --}}

@@ -13,21 +13,21 @@ use Illuminate\Queue\SerializesModels;
 class KelembapanOutlierUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan;
+    public $idKandang, $mean, $stdDev, $lowerLimit, $upperLimit, $kelembapanOutlier, $kelembapanWinsorzing;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan)
+    public function __construct($idKandang, $mean, $stdDev, $lowerLimit, $upperLimit, $kelembapanOutlier, $kelembapanWinsorzing)
     {
         $this->idKandang = $idKandang;
-        $this->meanKelembapan = $meanKelembapan;
-        $this->stdDevKelembapan = $stdDevKelembapan;
-        $this->lowerKelembapan = $lowerKelembapan;
-        $this->upperKelembapan = $upperKelembapan;
+        $this->mean = $mean;
+        $this->stdDev = $stdDev;
+        $this->lowerLimit = $lowerLimit;
+        $this->upperLimit = $upperLimit;
         $this->kelembapanOutlier = $kelembapanOutlier;
-        $this->kelembapan = $kelembapan;
+        $this->kelembapanWinsorzing = $kelembapanWinsorzing;
     }
 
     /**

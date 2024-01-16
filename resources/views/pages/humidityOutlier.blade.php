@@ -58,15 +58,15 @@
                                                     <div class="col-12 col-md-6 col-lg-6 p-4">
                                                         <table>
                                                             <thead>
-                                                                <th>Info Outlier</th>
+                                                                <th>Info </th>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody id="kelembapanOutlierTable">
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecords"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -82,7 +82,7 @@
                                                                         Standart deviation
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="standartDeviation">0</span>
+                                                                        : <span id="standartDeviation"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -90,23 +90,24 @@
                                                                         Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="Minumum">0</span>
+                                                                        : <span id="minimum"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Maximum
+                                                                        Maksimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maximum">0</span>
+                                                                        : <span id="maksimum"></span>
                                                                     </td>
                                                                 </tr>
+
                                                                 <tr>
                                                                     <td>
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -114,15 +115,15 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Total outlier / today
+                                                                        Total outlier
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalOutlier">0</span>
+                                                                        : <span id="totalOutlier"></span>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -136,10 +137,10 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecordsW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -148,7 +149,7 @@
                                                                         Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="Minumum">0</span>
+                                                                        : <span id="minimumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -156,7 +157,7 @@
                                                                         Maximum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maximum">0</span>
+                                                                        : <span id="maximumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -164,7 +165,7 @@
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimitW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -172,7 +173,7 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimitW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -226,9 +227,89 @@
 </script>
 {{-- Script Kelembapan Sigma --}}
 <script>
-    let kelembapanSigma;
+    let kelembapanSigmaChart, kelembapanWinsorzingChart;
     let dataKelembapanSigma = []
+    let dataKelembapanWinsorzing = []
 
+    // variable kelembapan winsorzing
+    let minimumW = 0
+    let maksimumW = 0
+    let totalRecordsW = 0
+    // variable kelembapan outlier
+    let minimum = 0
+    let maksimum = 0
+    let totalOutlier = 0
+    let totalRecords = 0
+
+    function setCardsStatusToOffline() {
+        $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
+    }
+
+    function setCardsStatusToOnline() {
+        $('#status').html(`<span class="badge bg-success">Online</span>`)
+    }
+
+    function setKelembapanWinsorzingTable(data) {
+        totalRecordsW++
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let kelembapanWinsorzing = data.kelembapanWinsorzing
+        let kelembapan = parseFloat(kelembapanWinsorzing)
+        let tempMinim, tempMaksim
+        // menentukan nilai minimum
+        minimumW == 0 ? minimumW = kelembapan : '';
+        tempMinim = minimumW;
+        kelembapan < tempMinim ? minimumW = kelembapan : '';
+
+        // menentukan nilai maksimum
+        maksimumW == 0 ? maksimumW = kelembapan : '';
+        tempMaksim = maksimumW;
+        kelembapan > tempMaksim ? maksimumW = kelembapan : '';
+
+        $('#totalRecordsW').html(totalRecordsW)
+        $('#minimumW').html(minimumW)
+        $('#maximumW').html(maksimumW)
+        $('#lowerLimitW').html(lowerLimit)
+        $('#upperLimitW').html(upperLimit)
+    }
+
+    function setKelembapanOutlierTable(data) {
+        totalRecords++
+        let mean = data.mean
+        let stdDev = data.stdDev
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let kelembapanOutlier = data.kelembapanOutlier
+        let kelembapanWinsorzing = data.kelembapanWinsorzing
+        let kelembapan = parseFloat(kelembapanWinsorzing)
+        let tempMinim, tempMaksim
+
+        // menentukan total outlier
+        if (kelembapanOutlier != null) {
+            kelembapan = parseFloat(kelembapanOutlier).toFixed(3)
+            totalOutlier++
+        }
+
+        // menentukan nilai minimum
+        minimum == 0 ? minimum = kelembapan : '';
+        tempMinim = minimum;
+        kelembapan < tempMinim ? minimum = kelembapan : '';
+
+        // menentukan nilai maksimum
+        maksimum == 0 ? maksimum = kelembapan : '';
+        tempMaksim = maksimum;
+        kelembapan > tempMaksim ? maksimum = kelembapan : '';
+
+
+        $('#totalRecords').html(totalRecords)
+        $('#mean').html(mean)
+        $('#standartDeviation').html(stdDev)
+        $('#minimum').html(minimum)
+        $('#maksimum').html(maksimum)
+        $('#lowerLimit').html(lowerLimit)
+        $('#upperLimit').html(upperLimit)
+        $('#totalOutlier').html(totalOutlier)
+    }
 
     document.addEventListener("DOMContentLoaded", function() {
         let options = {
@@ -267,88 +348,14 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
         };
 
-        // kelembapan sigma
-        kelembapanSigma = new ApexCharts(document.querySelector("#kelembapanOutlier"), options);
-        kelembapanSigma.render();
-
-        // Setiap 1 detik panggil fungsi updateData
-        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
-            cluster: 'ap1'
-        });
-
-        let channel = pusher.subscribe('sensor-data');
-        channel.bind('pusher:subscription_succeeded', function() {
-            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
-                idKandang = data.idKandang;
-                console.log(data)
-                let selectedKandang = $('#selectKandang').val()
-                if (idKandang == selectedKandang) {
-                    let newDate = new Date().getTime()
-                    dataKelembapanSigma.push({
-                        x: newDate,
-                        y: parseFloat(data.kelembapan).toFixed(3)
-                    })
-                    updateKelembapanSigma()
-                }
-
-            });
-        });
-    });
-
-    // Fungsi untuk mengupdate data grafik
-    function updateKelembapanSigma() {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
-        const maxDataPoints = 10;
-
-        if (dataKelembapanSigma.length > maxDataPoints) {
-            dataKelembapanSigma.shift();
-        }
-
-        let lastKelembapanIndex = dataKelembapanSigma.length - 1
-        let lastKelembapan = dataKelembapanSigma[lastKelembapanIndex].y
-
-
-        console.log("kelembapan = " + lastKelembapan)
-
-        $('#kelembapanData').html(lastKelembapan)
-
-        // Update data pada grafik
-        kelembapanSigma.updateSeries([{
-            name: 'Humidity',
-            data: dataKelembapanSigma
-        }]);
-    }
-</script>
-{{-- Script Suhu Winsorzing --}}
-<script>
-    let kelembapanWinsorzing;
-    let dataSuhuWinsorzing = []
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        let options = {
+        let optionWinsorzing = {
             colors: ['#75a3d9'],
             series: [{
                 name: "Humidity",
-                data: dataSuhuWinsorzing
+                data: dataKelembapanWinsorzing
             }],
             chart: {
                 height: 350,
@@ -380,73 +387,205 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
+
         };
 
+
         // kelembapan sigma
-        kelembapanWinsorzing = new ApexCharts(document.querySelector("#kelembapanWinsorzing"), options);
-        kelembapanWinsorzing.render();
+        kelembapanSigmaChart = new ApexCharts(document.querySelector("#kelembapanOutlier"), options);
+        kelembapanSigmaChart.render();
+
+        // kelembapan winsorzing
+        kelembapanWinsorzingChart = new ApexCharts(document.querySelector("#kelembapanWinsorzing"),
+            optionWinsorzing);
+        kelembapanWinsorzingChart.render();
 
         // Setiap 1 detik panggil fungsi updateData
         let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
             cluster: 'ap1'
         });
 
-        let channel = pusher.subscribe('sensor-data');
+        let channel = pusher.subscribe('kelembapan-outlier');
         channel.bind('pusher:subscription_succeeded', function() {
             // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
-                idKandang = data.idKandang;
+            channel.bind('App\\Events\\KelembapanOutlierUpdated', function(data) {
                 console.log(data)
+                let idKandang = data.idKandang;
                 let selectedKandang = $('#selectKandang').val()
                 if (idKandang == selectedKandang) {
-                    let newDate = new Date().getTime()
-                    dataSuhuWinsorzing.push({
-                        x: newDate,
-                        y: parseFloat(data.kelembapan).toFixed(3)
-                    })
-                    updateSuhuWinsorzing()
+                    updateDataAndChart(data)
+                    resetOfflineTimeout()
                 }
 
             });
         });
-    });
 
-    // Fungsi untuk mengupdate data grafik
-    function updateSuhuWinsorzing() {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
-        const maxDataPoints = 10;
+        // Timer status
+        let timeDuration = 5000;
+        let timeOutId
+        startOfflineTimeOut()
 
-        if (dataSuhuWinsorzing.length > maxDataPoints) {
-            dataSuhuWinsorzing.shift();
+        function startOfflineTimeOut() {
+            timeOutId = setTimeout(() => {
+                setCardsStatusToOffline()
+            }, timeDuration);
         }
 
-        let lastSuhuIndex = dataSuhuWinsorzing.length - 1
-        let lastSuhu = dataSuhuWinsorzing[lastSuhuIndex].y
+        function resetOfflineTimeout() {
+            setCardsStatusToOnline()
+            clearTimeout(timeOutId)
+            startOfflineTimeOut()
+        }
+    });
 
+    // Fungsi untuk mengupdate data dan grafik
+    function updateDataAndChart(data) {
+        let newDate = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Jakarta"
+        });
+        let upperLimit = data.upperLimit
+        let lowerLimit = data.lowerLimit
+        console.log(lowerLimit)
+        let kelembapanOutlier = data.kelembapanOutlier
+        let kelembapanWinsorzing = data.kelembapanWinsorzing
+        let kelembapan = kelembapanOutlier != null ? parseFloat(kelembapanOutlier) : parseFloat(kelembapanWinsorzing)
 
-        console.log("kelembapan = " + lastSuhu)
+        // simpan nilai sebelum dan yang baru pada kelembapan outlier
+        dataKelembapanSigma.push({
+            x: newDate,
+            y: parseFloat(kelembapan).toFixed(3)
+        })
 
-        $('#kelembapanData').html(lastSuhu)
+        // Update kelembapan outlier 
+        setKelembapanOutlierTable(data)
+        // Batasi jumlah data kelembapan outlier yang ditampilkan menjadi 10 data terakhir
+        const maxDataPoints = 10;
+        if (dataKelembapanSigma.length > maxDataPoints) {
+            dataKelembapanSigma.shift();
+        }
 
-        // Update data pada grafik
-        kelembapanWinsorzing.updateSeries([{
-            name: 'Humidity',
-            data: dataSuhuWinsorzing
-        }]);
+        // Update grafik kelembapan outlier, batas atas dan batas bawah
+        let maxDataValue = Math.max(...dataKelembapanSigma.map(entry => entry.y));
+
+        kelembapanSigmaChart.updateOptions({
+            series: [{
+                data: dataKelembapanSigma
+            }],
+            yaxis: {
+                max: maxDataValue + 20,
+                min: -(maxDataValue + 20),
+            },
+            annotations: {
+                yaxis: [{
+                    y: parseFloat(upperLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Upper Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }, {
+                    y: parseFloat(lowerLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Lower Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }]
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    formatter: function(val) {
+                        return new Date(val).toLocaleString("en-US", {
+                            timeZone: "Asia/Jakarta"
+                        });
+                    },
+                    style: {
+                        fontSize: '10px'
+                    }
+                }
+            }
+        });
+
+        // Update kelembapan winsorzing 
+        if (parseFloat(kelembapanWinsorzing) != kelembapan) {
+            console.log("kelembapan transformed")
+            console.log("kelembapan : " + kelembapan + typeof kelembapan)
+            dataKelembapanWinsorzing.push({
+                x: newDate,
+                y: parseFloat(kelembapanWinsorzing).toFixed(3)
+            })
+            setKelembapanWinsorzingTable(data)
+            // Batasi jumlah data kelembapan winsorzing yang ditampilkan menjadi 10 data terakhir
+            if (dataKelembapanWinsorzing.length > maxDataPoints) {
+                dataKelembapanWinsorzing.shift();
+            }
+            // Update grafik kelembapan winsorzing
+            kelembapanWinsorzingChart.updateOptions({
+                series: [{
+                    data: dataKelembapanWinsorzing
+                }],
+                yaxis: {
+                    max: maxDataValue + 20,
+                    min: -(maxDataValue + 20),
+                },
+                annotations: {
+                    yaxis: [{
+                        y: parseFloat(upperLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Upper Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }, {
+                        y: parseFloat(lowerLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Lower Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }]
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        formatter: function(val) {
+                            return new Date(val).toLocaleString("en-US", {
+                                timeZone: "Asia/Jakarta"
+                            });
+                        },
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                }
+            });
+
+        }
     }
 </script>

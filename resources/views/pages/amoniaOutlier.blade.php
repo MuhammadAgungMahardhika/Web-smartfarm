@@ -58,15 +58,15 @@
                                                     <div class="col-12 col-md-6 col-lg-6 p-4">
                                                         <table>
                                                             <thead>
-                                                                <th>Info Outlier</th>
+                                                                <th>Info </th>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody id="amoniaOutlierTable">
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecords"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -82,7 +82,7 @@
                                                                         Standart deviation
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="standartDeviation">0</span>
+                                                                        : <span id="standartDeviation"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -90,23 +90,24 @@
                                                                         Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="Minumum">0</span>
+                                                                        : <span id="minimum"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Maximum
+                                                                        Maksimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maximum">0</span>
+                                                                        : <span id="maksimum"></span>
                                                                     </td>
                                                                 </tr>
+
                                                                 <tr>
                                                                     <td>
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -114,15 +115,15 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Total outlier / today
+                                                                        Total outlier
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalOutlier">0</span>
+                                                                        : <span id="totalOutlier"></span>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -136,10 +137,10 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecordsW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -148,7 +149,7 @@
                                                                         Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="Minumum">0</span>
+                                                                        : <span id="minimumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -156,7 +157,7 @@
                                                                         Maximum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maximum">0</span>
+                                                                        : <span id="maximumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -164,7 +165,7 @@
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimitW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -172,7 +173,7 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimitW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -226,9 +227,89 @@
 </script>
 {{-- Script Amonia Sigma --}}
 <script>
-    let amoniaSigma;
+    let amoniaSigmaChart, amoniaWinsorzingChart;
     let dataAmoniaSigma = []
+    let dataAmoniaWinsorzing = []
 
+    // variable amonia winsorzing
+    let minimumW = 0
+    let maksimumW = 0
+    let totalRecordsW = 0
+    // variable amonia outlier
+    let minimum = 0
+    let maksimum = 0
+    let totalOutlier = 0
+    let totalRecords = 0
+
+    function setCardsStatusToOffline() {
+        $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
+    }
+
+    function setCardsStatusToOnline() {
+        $('#status').html(`<span class="badge bg-success">Online</span>`)
+    }
+
+    function setAmoniaWinsorzingTable(data) {
+        totalRecordsW++
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let amoniaWinsorzing = data.amoniaWinsorzing
+        let amonia = parseFloat(amoniaWinsorzing)
+        let tempMinim, tempMaksim
+        // menentukan nilai minimum
+        minimumW == 0 ? minimumW = amonia : '';
+        tempMinim = minimumW;
+        amonia < tempMinim ? minimumW = amonia : '';
+
+        // menentukan nilai maksimum
+        maksimumW == 0 ? maksimumW = amonia : '';
+        tempMaksim = maksimumW;
+        amonia > tempMaksim ? maksimumW = amonia : '';
+
+        $('#totalRecordsW').html(totalRecordsW)
+        $('#minimumW').html(minimumW)
+        $('#maximumW').html(maksimumW)
+        $('#lowerLimitW').html(lowerLimit)
+        $('#upperLimitW').html(upperLimit)
+    }
+
+    function setAmoniaOutlierTable(data) {
+        totalRecords++
+        let mean = data.mean
+        let stdDev = data.stdDev
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let amoniaOutlier = data.amoniaOutlier
+        let amoniaWinsorzing = data.amoniaWinsorzing
+        let amonia = parseFloat(amoniaWinsorzing)
+        let tempMinim, tempMaksim
+
+        // menentukan total outlier
+        if (amoniaOutlier != null) {
+            amonia = parseFloat(amoniaOutlier).toFixed(3)
+            totalOutlier++
+        }
+
+        // menentukan nilai minimum
+        minimum == 0 ? minimum = amonia : '';
+        tempMinim = minimum;
+        amonia < tempMinim ? minimum = amonia : '';
+
+        // menentukan nilai maksimum
+        maksimum == 0 ? maksimum = amonia : '';
+        tempMaksim = maksimum;
+        amonia > tempMaksim ? maksimum = amonia : '';
+
+
+        $('#totalRecords').html(totalRecords)
+        $('#mean').html(mean)
+        $('#standartDeviation').html(stdDev)
+        $('#minimum').html(minimum)
+        $('#maksimum').html(maksimum)
+        $('#lowerLimit').html(lowerLimit)
+        $('#upperLimit').html(upperLimit)
+        $('#totalOutlier').html(totalOutlier)
+    }
 
     document.addEventListener("DOMContentLoaded", function() {
         let options = {
@@ -267,84 +348,10 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
         };
 
-        // amonia sigma
-        amoniaSigma = new ApexCharts(document.querySelector("#amoniaOutlier"), options);
-        amoniaSigma.render();
-
-        // Setiap 1 detik panggil fungsi updateData
-        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
-            cluster: 'ap1'
-        });
-
-        let channel = pusher.subscribe('sensor-data');
-        channel.bind('pusher:subscription_succeeded', function() {
-            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
-                idKandang = data.idKandang;
-                console.log(data)
-                let selectedKandang = $('#selectKandang').val()
-                if (idKandang == selectedKandang) {
-                    let newDate = new Date().getTime()
-                    dataAmoniaSigma.push({
-                        x: newDate,
-                        y: parseFloat(data.amonia).toFixed(3)
-                    })
-                    updateAmoniaSigma()
-                }
-
-            });
-        });
-    });
-
-    // Fungsi untuk mengupdate data grafik
-    function updateAmoniaSigma() {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
-        const maxDataPoints = 10;
-
-        if (dataAmoniaSigma.length > maxDataPoints) {
-            dataAmoniaSigma.shift();
-        }
-
-        let lastAmoniaIndex = dataAmoniaSigma.length - 1
-        let lastAmonia = dataAmoniaSigma[lastAmoniaIndex].y
-
-
-        console.log("amonia = " + lastAmonia)
-
-        $('#amoniaData').html(lastAmonia)
-
-        // Update data pada grafik
-        amoniaSigma.updateSeries([{
-            name: 'Amonia',
-            data: dataAmoniaSigma
-        }]);
-    }
-</script>
-{{-- Script Amonia Winsorzing --}}
-<script>
-    let amoniaWinsorzing;
-    let dataAmoniaWinsorzing = []
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        let options = {
+        let optionWinsorzing = {
             colors: ['#75a3d9'],
             series: [{
                 name: "Amonia",
@@ -380,73 +387,213 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
+
         };
 
+
         // amonia sigma
-        amoniaWinsorzing = new ApexCharts(document.querySelector("#amoniaWinsorzing"), options);
-        amoniaWinsorzing.render();
+        amoniaSigmaChart = new ApexCharts(document.querySelector("#amoniaOutlier"), options);
+        amoniaSigmaChart.render();
+
+        // amonia winsorzing
+        amoniaWinsorzingChart = new ApexCharts(document.querySelector("#amoniaWinsorzing"), optionWinsorzing);
+        amoniaWinsorzingChart.render();
 
         // Setiap 1 detik panggil fungsi updateData
         let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
             cluster: 'ap1'
         });
 
-        let channel = pusher.subscribe('sensor-data');
+        let channel = pusher.subscribe('amonia-outlier');
         channel.bind('pusher:subscription_succeeded', function() {
             // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
-                idKandang = data.idKandang;
+            channel.bind('App\\Events\\AmoniaOutlierUpdated', function(data) {
                 console.log(data)
+                let idKandang = data.idKandang;
                 let selectedKandang = $('#selectKandang').val()
                 if (idKandang == selectedKandang) {
-                    let newDate = new Date().getTime()
-                    dataAmoniaWinsorzing.push({
-                        x: newDate,
-                        y: parseFloat(data.amonia).toFixed(3)
-                    })
-                    updateAmoniaWinsorzing()
+                    updateDataAndChart(data)
+                    resetOfflineTimeout()
                 }
 
             });
         });
-    });
 
-    // Fungsi untuk mengupdate data grafik
-    function updateAmoniaWinsorzing() {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
-        const maxDataPoints = 10;
+        // Timer status
+        let timeDuration = 5000;
+        let timeOutId
+        startOfflineTimeOut()
 
-        if (dataAmoniaWinsorzing.length > maxDataPoints) {
-            dataAmoniaWinsorzing.shift();
+        function startOfflineTimeOut() {
+            timeOutId = setTimeout(() => {
+                setCardsStatusToOffline()
+            }, timeDuration);
         }
 
-        let lastAmoniaIndex = dataAmoniaWinsorzing.length - 1
-        let lastAmonia = dataAmoniaWinsorzing[lastAmoniaIndex].y
+        function resetOfflineTimeout() {
+            setCardsStatusToOnline()
+            clearTimeout(timeOutId)
+            startOfflineTimeOut()
+        }
+    });
 
+    // Fungsi untuk mengupdate data dan grafik
+    function updateDataAndChart(data) {
+        let newDate = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Jakarta"
+        });
+        let upperLimit = data.upperLimit
+        let lowerLimit = data.lowerLimit
+        console.log(lowerLimit)
+        let amoniaOutlier = data.amoniaOutlier
+        let amoniaWinsorzing = data.amoniaWinsorzing
+        let amonia = amoniaOutlier != null ? parseFloat(amoniaOutlier) : parseFloat(amoniaWinsorzing)
 
-        console.log("amonia = " + lastAmonia)
+        // simpan nilai sebelum dan yang baru pada amonia outlier
+        dataAmoniaSigma.push({
+            x: newDate,
+            y: parseFloat(amonia).toFixed(3)
+        })
 
-        $('#amoniaData').html(lastAmonia)
+        // Update amonia outlier 
+        setAmoniaOutlierTable(data)
+        // Batasi jumlah data amonia outlier yang ditampilkan menjadi 10 data terakhir
+        const maxDataPoints = 10;
+        if (dataAmoniaSigma.length > maxDataPoints) {
+            dataAmoniaSigma.shift();
+        }
 
-        // Update data pada grafik
-        amoniaWinsorzing.updateSeries([{
-            name: 'Amonia',
-            data: dataAmoniaWinsorzing
-        }]);
+        // Update grafik amonia outlier, batas atas dan batas bawah
+        let maxDataValue = Math.max(...dataAmoniaSigma.map(entry => entry.y));
+        // let max, min
+        // if (maxDataValue >= 0) {
+        //     max = maxDataValue + 20
+        //     min = max * -1
+        // } else {
+        //     max = maxDataValue - 20
+        //     min = max * -1
+        // }
+
+        console.log("max value : " + maxDataValue + typeof maxDataValue)
+        amoniaSigmaChart.updateOptions({
+            series: [{
+                data: dataAmoniaSigma
+            }],
+            yaxis: {
+                max: maxDataValue + 20,
+                min: -(maxDataValue + 20),
+            },
+            annotations: {
+                yaxis: [{
+                    y: parseFloat(upperLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Upper Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }, {
+                    y: parseFloat(lowerLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Lower Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }]
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    formatter: function(val) {
+                        return new Date(val).toLocaleString("en-US", {
+                            timeZone: "Asia/Jakarta"
+                        });
+                    },
+                    style: {
+                        fontSize: '10px'
+                    }
+                }
+            }
+        });
+
+        // Update amonia winsorzing 
+        if (parseFloat(amoniaWinsorzing) != amonia) {
+            console.log("amonia transformed")
+            console.log("amonia : " + amonia + typeof amonia)
+            dataAmoniaWinsorzing.push({
+                x: newDate,
+                y: parseFloat(amoniaWinsorzing).toFixed(3)
+            })
+            setAmoniaWinsorzingTable(data)
+            // Batasi jumlah data amonia winsorzing yang ditampilkan menjadi 10 data terakhir
+            if (dataAmoniaWinsorzing.length > maxDataPoints) {
+                dataAmoniaWinsorzing.shift();
+            }
+            // Update grafik amonia winsorzing
+            amoniaWinsorzingChart.updateOptions({
+                series: [{
+                    data: dataAmoniaWinsorzing
+                }],
+                yaxis: {
+                    max: maxDataValue + 20,
+                    min: -(maxDataValue + 20),
+                },
+                annotations: {
+                    yaxis: [{
+                        y: parseFloat(upperLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Upper Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }, {
+                        y: parseFloat(lowerLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Lower Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }]
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        formatter: function(val) {
+                            return new Date(val).toLocaleString("en-US", {
+                                timeZone: "Asia/Jakarta"
+                            });
+                        },
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                }
+            });
+
+        }
     }
 </script>

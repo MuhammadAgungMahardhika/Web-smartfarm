@@ -58,15 +58,15 @@
                                                     <div class="col-12 col-md-6 col-lg-6 p-4">
                                                         <table>
                                                             <thead>
-                                                                <th>Info Outlier</th>
+                                                                <th>Info </th>
                                                             </thead>
                                                             <tbody id="suhuOutlierTable">
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecords"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -82,15 +82,15 @@
                                                                         Standart deviation
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="standartDeviation">0</span>
+                                                                        : <span id="standartDeviation"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Minumum
+                                                                        Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="minimum">0</span>
+                                                                        : <span id="minimum"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -98,7 +98,7 @@
                                                                         Maksimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maksimum">0</span>
+                                                                        : <span id="maksimum"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -107,7 +107,7 @@
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -115,15 +115,15 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimit"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>
-                                                                        Total outlier / today
+                                                                        Total outlier
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalOutlier">0</span>
+                                                                        : <span id="totalOutlier"></span>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -137,10 +137,10 @@
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
-                                                                        Total revival
+                                                                        Total records
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="totalRevival">0</span>
+                                                                        : <span id="totalRecordsW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -149,7 +149,7 @@
                                                                         Minimum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="Minumum">0</span>
+                                                                        : <span id="minimumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -157,7 +157,7 @@
                                                                         Maximum
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="maximum">0</span>
+                                                                        : <span id="maximumW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -165,7 +165,7 @@
                                                                         Lower limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="lowerLimit">0</span>
+                                                                        : <span id="lowerLimitW"></span>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -173,7 +173,7 @@
                                                                         Upper limit
                                                                     </td>
                                                                     <td>
-                                                                        : <span id="upperLimit">0</span>
+                                                                        : <span id="upperLimitW"></span>
                                                                     </td>
                                                                 </tr>
 
@@ -227,20 +227,88 @@
 </script>
 {{-- Script Suhu Sigma --}}
 <script>
-    let suhuSigma;
+    let suhuSigmaChart, suhuWinsorzingChart;
     let dataSuhuSigma = []
+    let dataSuhuWinsorzing = []
 
+    // variable suhu winsorzing
+    let minimumW = 0
+    let maksimumW = 0
+    let totalRecordsW = 0
+    // variable suhu outlier
     let minimum = 0
     let maksimum = 0
+    let totalOutlier = 0
+    let totalRecords = 0
+
+    function setCardsStatusToOffline() {
+        $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
+    }
+
+    function setCardsStatusToOnline() {
+        $('#status').html(`<span class="badge bg-success">Online</span>`)
+    }
+
+    function setSuhuWinsorzingTable(data) {
+        totalRecordsW++
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let suhuWinsorzing = data.suhuWinsorzing
+        let suhu = parseFloat(suhuWinsorzing)
+        let tempMinim, tempMaksim
+        // menentukan nilai minimum
+        minimumW == 0 ? minimumW = suhu : '';
+        tempMinim = minimumW;
+        suhu < tempMinim ? minimumW = suhu : '';
+
+        // menentukan nilai maksimum
+        maksimumW == 0 ? maksimumW = suhu : '';
+        tempMaksim = maksimumW;
+        suhu > tempMaksim ? maksimumW = suhu : '';
+
+        $('#totalRecordsW').html(totalRecordsW)
+        $('#minimumW').html(minimumW)
+        $('#maximumW').html(maksimumW)
+        $('#lowerLimitW').html(lowerLimit)
+        $('#upperLimitW').html(upperLimit)
+    }
 
     function setSuhuOutlierTable(data) {
+        totalRecords++
+        let mean = data.mean
+        let stdDev = data.stdDev
+        let lowerLimit = data.lowerLimit
+        let upperLimit = data.upperLimit
+        let suhuOutlier = data.suhuOutlier
+        let suhuWinsorzing = data.suhuWinsorzing
+        let suhu = parseFloat(suhuWinsorzing)
+        let tempMinim, tempMaksim
 
-        $('#mean').html(data.mean)
-        $('#standartDeviation').html(data.stdDev)
+        // menentukan total outlier
+        if (suhuOutlier != null) {
+            suhu = parseFloat(suhuOutlier).toFixed(3)
+            totalOutlier++
+        }
+
+        // menentukan nilai minimum
+        minimum == 0 ? minimum = suhu : '';
+        tempMinim = minimum;
+        suhu < tempMinim ? minimum = suhu : '';
+
+        // menentukan nilai maksimum
+        maksimum == 0 ? maksimum = suhu : '';
+        tempMaksim = maksimum;
+        suhu > tempMaksim ? maksimum = suhu : '';
+
+
+        $('#totalRecords').html(totalRecords)
+        $('#mean').html(mean)
+        $('#standartDeviation').html(stdDev)
         $('#minimum').html(minimum)
         $('#maksimum').html(maksimum)
-        $('#lowerLimit').html(data.lowerLimit)
-        $('#upperLimit').html(data.upperLimit)
+        $('#lowerLimit').html(lowerLimit)
+        $('#upperLimit').html(upperLimit)
+        $('#totalOutlier').html(totalOutlier)
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -280,84 +348,10 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
         };
 
-        // suhu sigma
-        suhuSigma = new ApexCharts(document.querySelector("#suhuOutlier"), options);
-        suhuSigma.render();
-
-        // Setiap 1 detik panggil fungsi updateData
-        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
-            cluster: 'ap1'
-        });
-
-        let channel = pusher.subscribe('suhu-outlier');
-        channel.bind('pusher:subscription_succeeded', function() {
-            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SuhuOutlierUpdated', function(data) {
-                idKandang = data.idKandang;
-                console.log(data)
-                let selectedKandang = $('#selectKandang').val()
-                if (idKandang == selectedKandang) {
-                    let newDate = new Date().getTime()
-                    dataSuhuSigma.push({
-                        x: newDate,
-                        y: parseFloat(data.suhuOutlier).toFixed(3)
-                    })
-                    updateSuhuSigma(data)
-                }
-
-            });
-        });
-    });
-
-    // Fungsi untuk mengupdate data grafik
-    function updateSuhuSigma(data) {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 10 data terakhir
-        const maxDataPoints = 10;
-        if (dataSuhuSigma.length > maxDataPoints) {
-            dataSuhuSigma.shift();
-        }
-        let lastSuhuIndex = dataSuhuSigma.length - 1
-        let lastSuhu = dataSuhuSigma[lastSuhuIndex].y
-        console.log("suhu = " + lastSuhu)
-
-        setSuhuOutlierTable(data)
-        // minimum = data.suhuOutlier
-        // data.suhuOutlier < minimum ? minimum = data.suhuOutlier : ""
-
-        // maksimum = data.suhuOutlier
-        // data.suhuOutlier > maksimum ? maksimum = data.suhuOutlier : ""
-        // Update data pada grafik
-        suhuSigma.updateSeries([{
-            name: 'Temperature',
-            data: dataSuhuSigma
-        }]);
-    }
-</script>
-{{-- Script Suhu Winsorzing --}}
-<script>
-    let suhuWinsorzing;
-    let dataSuhuWinsorzing = []
-
-
-    document.addEventListener("DOMContentLoaded", function() {
-        let options = {
+        let optionWinsorzing = {
             colors: ['#75a3d9'],
             series: [{
                 name: "Temperature",
@@ -393,24 +387,18 @@
                     colors: ['#f3f3f3', 'transparent'],
                     opacity: 0.5
                 },
-            },
-            xaxis: {
-                type: 'datetime',
-                labels: {
-                    format: 'yyyy/MM/dd HH:mm:ss'
-                },
-                tooltip: {
-                    enabled: true,
-                    formatter: function(val, opts) {
-                        return opts.w.globals.labels[opts.dataPointIndex]
-                    }
-                }
             }
+
         };
 
+
         // suhu sigma
-        suhuWinsorzing = new ApexCharts(document.querySelector("#suhuWinsorzing"), options);
-        suhuWinsorzing.render();
+        suhuSigmaChart = new ApexCharts(document.querySelector("#suhuOutlier"), options);
+        suhuSigmaChart.render();
+
+        // suhu winsorzing
+        suhuWinsorzingChart = new ApexCharts(document.querySelector("#suhuWinsorzing"), optionWinsorzing);
+        suhuWinsorzingChart.render();
 
         // Setiap 1 detik panggil fungsi updateData
         let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
@@ -421,45 +409,182 @@
         channel.bind('pusher:subscription_succeeded', function() {
             // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
             channel.bind('App\\Events\\SuhuOutlierUpdated', function(data) {
-                idKandang = data.idKandang;
                 console.log(data)
+                let idKandang = data.idKandang;
                 let selectedKandang = $('#selectKandang').val()
-                // if (idKandang == selectedKandang) {
-                //     let newDate = new Date().getTime()
-                //     dataSuhuWinsorzing.push({
-                //         x: newDate,
-                //         y: parseFloat(data.suhu).toFixed(3)
-                //     })
-                //     updateSuhuWinsorzing()
-                // }
+                if (idKandang == selectedKandang) {
+                    updateDataAndChart(data)
+                    resetOfflineTimeout()
+                }
 
             });
         });
-    });
 
-    // Fungsi untuk mengupdate data grafik
-    function updateSuhuWinsorzing() {
-        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
-        let idKandang = $('#selectKandang').val()
-        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
-        const maxDataPoints = 10;
+        // Timer status
+        let timeDuration = 5000;
+        let timeOutId
+        startOfflineTimeOut()
 
-        if (dataSuhuWinsorzing.length > maxDataPoints) {
-            dataSuhuWinsorzing.shift();
+        function startOfflineTimeOut() {
+            timeOutId = setTimeout(() => {
+                setCardsStatusToOffline()
+            }, timeDuration);
         }
 
-        let lastSuhuIndex = dataSuhuWinsorzing.length - 1
-        let lastSuhu = dataSuhuWinsorzing[lastSuhuIndex].y
+        function resetOfflineTimeout() {
+            setCardsStatusToOnline()
+            clearTimeout(timeOutId)
+            startOfflineTimeOut()
+        }
+    });
 
+    // Fungsi untuk mengupdate data dan grafik
+    function updateDataAndChart(data) {
+        let newDate = new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Jakarta"
+        });
+        let upperLimit = data.upperLimit
+        let lowerLimit = data.lowerLimit
+        console.log(lowerLimit)
+        let suhuOutlier = data.suhuOutlier
+        let suhuWinsorzing = data.suhuWinsorzing
+        let suhu = suhuOutlier != null ? parseFloat(suhuOutlier) : parseFloat(suhuWinsorzing)
 
-        console.log("suhu = " + lastSuhu)
+        // simpan nilai sebelum dan yang baru pada suhu outlier
+        dataSuhuSigma.push({
+            x: newDate,
+            y: parseFloat(suhu).toFixed(3)
+        })
 
-        $('#suhuData').html(lastSuhu)
+        // Update suhu outlier 
+        setSuhuOutlierTable(data)
+        // Batasi jumlah data suhu outlier yang ditampilkan menjadi 10 data terakhir
+        const maxDataPoints = 10;
+        if (dataSuhuSigma.length > maxDataPoints) {
+            dataSuhuSigma.shift();
+        }
 
-        // Update data pada grafik
-        suhuWinsorzing.updateSeries([{
-            name: 'Temperature',
-            data: dataSuhuWinsorzing
-        }]);
+        // Update grafik suhu outlier, batas atas dan batas bawah
+        let maxDataValue = Math.max(...dataSuhuSigma.map(entry => entry.y));
+
+        suhuSigmaChart.updateOptions({
+            series: [{
+                data: dataSuhuSigma
+            }],
+            yaxis: {
+                max: maxDataValue + 20,
+                min: -(maxDataValue + 20),
+            },
+            annotations: {
+                yaxis: [{
+                    y: parseFloat(upperLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Upper Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }, {
+                    y: parseFloat(lowerLimit),
+                    borderColor: '#FF0000',
+                    label: {
+                        style: {
+                            color: '#FF0000',
+                            fontSize: '7px'
+                        },
+                        text: 'Lower Limit',
+                        offsetY: 0,
+                        offsetX: 0,
+
+                    }
+                }]
+            },
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    formatter: function(val) {
+                        return new Date(val).toLocaleString("en-US", {
+                            timeZone: "Asia/Jakarta"
+                        });
+                    },
+                    style: {
+                        fontSize: '10px'
+                    }
+                }
+            }
+        });
+
+        // Update suhu winsorzing 
+        if (parseFloat(suhuWinsorzing) != suhu) {
+            console.log("suhu transformed")
+            console.log("suhu : " + suhu + typeof suhu)
+            dataSuhuWinsorzing.push({
+                x: newDate,
+                y: parseFloat(suhuWinsorzing).toFixed(3)
+            })
+            setSuhuWinsorzingTable(data)
+            // Batasi jumlah data suhu winsorzing yang ditampilkan menjadi 10 data terakhir
+            if (dataSuhuWinsorzing.length > maxDataPoints) {
+                dataSuhuWinsorzing.shift();
+            }
+            // Update grafik suhu winsorzing
+            suhuWinsorzingChart.updateOptions({
+                series: [{
+                    data: dataSuhuWinsorzing
+                }],
+                yaxis: {
+                    max: maxDataValue + 20,
+                    min: -(maxDataValue + 20),
+                },
+                annotations: {
+                    yaxis: [{
+                        y: parseFloat(upperLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Upper Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }, {
+                        y: parseFloat(lowerLimit),
+                        borderColor: '#FF0000',
+                        label: {
+                            style: {
+                                color: '#FF0000',
+                                fontSize: '7px'
+                            },
+                            text: 'Lower Limit',
+                            offsetY: 0,
+                            offsetX: 0,
+
+                        }
+                    }]
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        formatter: function(val) {
+                            return new Date(val).toLocaleString("en-US", {
+                                timeZone: "Asia/Jakarta"
+                            });
+                        },
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
+                }
+            });
+
+        }
     }
 </script>

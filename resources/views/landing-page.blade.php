@@ -232,7 +232,7 @@
         <div class="menu-icon" onclick="toggleMenu()">☰</div>
         <nav class="menu-links">
             <?php if(Auth::check()): ?>
-            <a href="/daftarMenu">Daftar menu</a>
+            <a href="/menuList">Menu List</a>
             <a href="{{ route('logout') }}"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="icon-mid bi bi-box-arrow-left me-2"></i>

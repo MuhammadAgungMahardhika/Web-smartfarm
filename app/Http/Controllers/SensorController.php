@@ -55,30 +55,26 @@ class SensorController extends Controller
 		if ($isSuhuOutlier) {
 			$suhuOutlier = $suhu;
 			$suhu = $this->winsorize($suhu, $meanSuhu, $stdDevSuhu);
-
-			echo 'masuk sini';
-			$lowerLimit = $meanSuhu - 3 * $stdDevSuhu;
-			$upperLimit = $meanSuhu + 3 * $stdDevSuhu;
-			event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
 		}
+		$lowerLimit = $meanSuhu - 3 * $stdDevSuhu;
+		$upperLimit = $meanSuhu + 3 * $stdDevSuhu;
+		event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
 		// jika kelembapan outlier maka transform datanya
 		if ($isKelembapanOutlier) {
 			$kelembapanOutlier = $kelembapan;
 			$kelembapan = $this->winsorize($kelembapan, $meanKelembapan, $stdDevKelembapan);
-
-			$lowerKelembapan = $meanKelembapan - 3 * $stdDevKelembapan;
-			$upperKelembapan = $meanKelembapan + 3 * $stdDevKelembapan;
-			event(new KelembapanOutlierUpdated($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan));
 		}
+		$lowerKelembapan = $meanKelembapan - 3 * $stdDevKelembapan;
+		$upperKelembapan = $meanKelembapan + 3 * $stdDevKelembapan;
+		event(new KelembapanOutlierUpdated($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan));
 		// jika amonia outlier maka transform datanya
 		if ($isAmoniaOutlier) {
 			$amoniaOutlier = $amonia;
 			$amonia = $this->winsorize($amonia, $meanAmonia, $stdDevAmonia);
-
-			$lowerAmonia = $meanAmonia - 3 * $stdDevAmonia;
-			$upperAmonia = $meanAmonia + 3 * $stdDevAmonia;
-			event(new AmoniaOutlierUpdated($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia));
 		}
+		$lowerAmonia = $meanAmonia - 3 * $stdDevAmonia;
+		$upperAmonia = $meanAmonia + 3 * $stdDevAmonia;
+		event(new AmoniaOutlierUpdated($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia));
 
 		// broadcast 
 		event(new SensorDataUpdated($idKandang, $suhu, $kelembapan, $amonia, $suhuOutlier, $kelembapanOutlier, $amoniaOutlier));

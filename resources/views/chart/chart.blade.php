@@ -408,30 +408,17 @@
                     curve: 'straight',
 
                 },
-                title: {
-                    text: 'Real-time Data',
-                    align: 'left'
-                },
+                // title: {
+                //     text: 'Real-time Data',
+                //     align: 'left'
+                // },
                 grid: {
                     row: {
                         colors: ['#f3f3f3', 'transparent'],
                         opacity: 0.5
                     },
                 },
-                xaxis: {
-                    type: 'datetime',
-                    labels: {
-                        format: 'yyyy/MM/dd HH:mm:ss',
-                        datetimeUTC: false,
-                    },
-                    tooltip: {
-                        enabled: true,
-                        formatter: function(val, opts) {
-                            return opts.w.globals.labels[opts.dataPointIndex]
-                        }
-                    }
-                },
-                timezone: 'Asia/Jakarta'
+
             };
 
             lineChart = new ApexCharts(document.querySelector("#rowChart"), options);
@@ -471,7 +458,6 @@
                             kelembapanOutlier: data.kelembapanOutlier,
                             amoniaOutlier: data.amoniaOutlier
                         }
-
                         updateLineData(dataOutlier)
                     }
 
@@ -504,13 +490,6 @@
             let lastKelembapan = dataKelembapan[lastKelembapanIndex].y
             let lastAmonia = dataAmonia[lastAmoniaIndex].y
 
-            console.log("suhu = " + lastSuhu)
-            console.log("kelembapan = " + lastKelembapan)
-            console.log("amonia = " + lastAmonia)
-            console.log("suhu outlier :" + suhuOutlier)
-            console.log("kelembapan outlier :" + kelembapanOutlier)
-            console.log("amonia outlier :" + amoniaOutlier)
-
             // update data 
             suhuOutlier != null ? setSuhuCardValue(lastSuhu, 4) : setSuhuCardValue(lastSuhu, 3)
             kelembapanOutlier != null ? setKelembapanCardValue(lastKelembapan, 4) : setKelembapanCardValue(
@@ -519,19 +498,48 @@
                 lastAmonia, 3)
 
             // Update data pada grafik
-            lineChart.updateSeries([{
-                    name: 'Temperature',
-                    data: dataSuhu
-                },
-                {
-                    name: 'Humidity',
-                    data: dataKelembapan
-                },
-                {
-                    name: 'Amonia',
-                    data: dataAmonia
+            // lineChart.updateSeries([{
+            //         name: 'Temperature',
+            //         data: dataSuhu
+            //     },
+            //     {
+            //         name: 'Humidity',
+            //         data: dataKelembapan
+            //     },
+            //     {
+            //         name: 'Amonia',
+            //         data: dataAmonia
+            //     }
+            // ]);
+
+            lineChart.updateOptions({
+                series: [{
+                        name: 'Temperature',
+                        data: dataSuhu
+                    },
+                    {
+                        name: 'Humidity',
+                        data: dataKelembapan
+                    },
+                    {
+                        name: 'Amonia',
+                        data: dataAmonia
+                    }
+                ],
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        formatter: function(val) {
+                            return new Date(val).toLocaleString("en-US", {
+                                timeZone: "Asia/Jakarta"
+                            });
+                        },
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
                 }
-            ]);
+            });
         }
 
 

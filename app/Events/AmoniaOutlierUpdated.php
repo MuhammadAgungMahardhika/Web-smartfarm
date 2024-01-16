@@ -11,21 +11,21 @@ use Illuminate\Queue\SerializesModels;
 class AmoniaOutlierUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia;
+    public $idKandang, $mean, $stdDev, $lowerLimit, $upperLimit, $amoniaOutlier, $amoniaWinsorzing;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia)
+    public function __construct($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amoniaWinsorzing)
     {
         $this->idKandang = $idKandang;
-        $this->meanAmonia = $meanAmonia;
-        $this->stdDevAmonia = $stdDevAmonia;
-        $this->lowerAmonia = $lowerAmonia;
-        $this->upperAmonia = $upperAmonia;
+        $this->mean = $meanAmonia;
+        $this->stdDev = $stdDevAmonia;
+        $this->lowerLimit = $lowerAmonia;
+        $this->upperLimit = $upperAmonia;
         $this->amoniaOutlier = $amoniaOutlier;
-        $this->amonia = $amonia;
+        $this->amoniaWinsorzing = $amoniaWinsorzing;
     }
 
     /**

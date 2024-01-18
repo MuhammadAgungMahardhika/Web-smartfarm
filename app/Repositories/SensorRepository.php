@@ -113,35 +113,29 @@ class SensorRepository
 
   function getSuhuStdDev($idKandang)
   {
-    $default = 3;
-    $suhuStdDev =  DB::table('sensors')
-      ->select(DB::raw("STD(suhu) as std_dev"))
+    $suhuStdDev = DB::table('sensors')
+      ->select(DB::raw("IF(COALESCE(STD(suhu), 0) = 0, 3, COALESCE(STD(suhu), 0)) as std_dev"))
       ->where('id_kandang', '=', $idKandang)
-      ->havingRaw('COUNT(suhu) > 15')
       ->first();
 
-    return $suhuStdDev != null ? $suhuStdDev->std_dev : $default;
+    return $suhuStdDev->std_dev;
   }
   function getKelembapanStdDev($idKandang)
   {
-    $default = 7;
     $kelembapanStdDev =  DB::table('sensors')
-      ->select(DB::raw("STD(kelembapan) as std_dev"))
+      ->select(DB::raw("IF(COALESCE(STD(kelembapan), 0) = 0, 3, COALESCE(STD(kelembapan), 0)) as std_dev"))
       ->where('id_kandang', '=', $idKandang)
-      ->havingRaw('COUNT(kelembapan) > 15')
       ->first();
 
-    return $kelembapanStdDev != null ? $kelembapanStdDev->std_dev : $default;
+    return $kelembapanStdDev->std_dev;
   }
   function getAmoniaStdDev($idKandang)
   {
-    $default = 5;
     $amoniaStdDev =  DB::table('sensors')
-      ->select(DB::raw("STD(amonia) as std_dev"))
+      ->select(DB::raw("IF(COALESCE(STD(amonia), 0) = 0, 3, COALESCE(STD(amonia), 0)) as std_dev"))
       ->where('id_kandang', '=', $idKandang)
-      ->havingRaw('COUNT(amonia) > 15')
       ->first();
 
-    return $amoniaStdDev != null ? $amoniaStdDev->std_dev : $default;
+    return $amoniaStdDev->std_dev;
   }
 }

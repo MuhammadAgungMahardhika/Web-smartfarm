@@ -132,6 +132,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             });
             // Halaman monitoring kandang
             Route::get('/cageMonitoring', [PageController::class, "monitoringKandang"])->name('cageMonitoring');
+            // Halaman monitoring kandang visualisasi
+            Route::get('/cageVisualization', [PageController::class, "cageVisualization"])->name('cageVisualization');
             // Halaman Outlier
             Route::get('/outlierData', [PageController::class, "outlier"])->name('outlierData');
             // Halaman data kandang

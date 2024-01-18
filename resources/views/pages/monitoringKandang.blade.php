@@ -814,6 +814,9 @@
                 `
                     $('#tableData').html(table)
                     initDataTable('table')
+                },
+                error: function(err) {
+                    console.log(err.responseText)
                 }
             })
         });

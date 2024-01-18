@@ -11,6 +11,7 @@
     <?php if(Auth::user()->id_role == '2'): ?>
     <x-maz-sidebar-item name="Dashboard" :link="route('dashboard')" icon="bi bi-house"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Cage Monitoring" :link="route('cageMonitoring')" icon="bi bi-display"></x-maz-sidebar-item>
+    <x-maz-sidebar-item name="Cage Visualization" :link="route('cageVisualization')" icon="bi bi-display"></x-maz-sidebar-item>
     <x-maz-sidebar-item name="Outlier" icon="bi bi-stack">
         <x-maz-sidebar-sub-item name="Temperature" :link="route('outlier.temperature')"></x-maz-sidebar-sub-item>
         <x-maz-sidebar-sub-item name="Humidity" :link="route('outlier.humidity')"></x-maz-sidebar-sub-item>

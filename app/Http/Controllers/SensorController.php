@@ -159,7 +159,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.suhu_outlier', 'sensors.kelembapan_outlier', 'sensors.amonia_outlier', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -188,7 +188,12 @@ class SensorController extends Controller
 				$join->on('data_kematian.id_data_kandang', '=', 'data_kandang.id');
 			})
 			->select(
-				'sensors.*',
+				'sensors.id',
+				'sensors.id_kandang',
+				'sensors.suhu',
+				'sensors.kelembapan',
+				'sensors.amonia',
+				'sensors.datetime',
 				'kandang.nama_kandang',
 				'kandang.alamat_kandang',
 				'data_kandang.hari_ke',
@@ -197,7 +202,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.suhu_outlier', 'sensors.kelembapan_outlier', 'sensors.amonia_outlier', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -233,7 +238,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke',  'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.suhu_outlier', 'sensors.kelembapan_outlier', 'sensors.amonia_outlier', 'sensors.datetime', 'data_kandang.hari_ke',  'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 
@@ -275,7 +280,7 @@ class SensorController extends Controller
 				DB::raw('COALESCE(data_kandang.bobot, 0) as bobot'),
 				DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as jumlah_kematian')
 			)
-			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
+			->groupBy('sensors.id', 'sensors.id_kandang',  'sensors.suhu', 'sensors.kelembapan', 'sensors.amonia', 'sensors.suhu_outlier', 'sensors.kelembapan_outlier', 'sensors.amonia_outlier', 'sensors.datetime', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'kandang.nama_kandang', 'kandang.alamat_kandang')
 			->orderBy('sensors.datetime', 'desc')
 			->get();
 

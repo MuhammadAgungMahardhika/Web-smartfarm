@@ -138,12 +138,12 @@
                                     } else if (opt.angle === 90) {
                                         return 'End'; // Label for end value
                                     } else {
-                                        return `${val}°C`; // Display temperature value with °C
+                                        return `${val} °C`; // Display temperature value with °C
                                     }
                                 }
                             }
                         },
-                        startAngle: -135, // Adjust the start angle
+                        startAngle: -135,
                         endAngle: 135,
                         hollow: {
                             size: '60%',
@@ -181,12 +181,12 @@
                                     } else if (opt.angle === 90) {
                                         return '100'; // Label for end value
                                     } else {
-                                        return `${val}%RH`; // Display temperature value with °C
+                                        return `${val} %Rh`; // Display humidity value with rh
                                     }
                                 },
                             }
                         },
-                        startAngle: -135, // Adjust the start angle
+                        startAngle: -135,
                         endAngle: 135,
                         hollow: {
                             size: '60%',
@@ -224,12 +224,12 @@
                                     } else if (opt.angle === 90) {
                                         return '100'; // Label for end value
                                     } else {
-                                        return `${val}PPM`; // Display the value with 
+                                        return `${val} ppm`; // Display the amonia value with ppm
                                     }
                                 },
                             }
                         },
-                        startAngle: -135, // Adjust the start angle
+                        startAngle: -135,
                         endAngle: 135,
                         hollow: {
                             size: '60%',

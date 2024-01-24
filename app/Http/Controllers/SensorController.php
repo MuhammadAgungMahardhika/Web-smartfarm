@@ -8,6 +8,7 @@ use App\Events\SensorDataUpdated;
 use App\Events\SuhuOutlierUpdated;
 use App\Models\Sensors;
 use App\Repositories\SensorRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,47 +35,86 @@ class SensorController extends Controller
 		$suhuOutlier  = null;
 		$kelembapanOutlier = null;
 		$amoniaOutlier = null;
-		// Dapatkan nilai rata-rata 
-		$meanSuhu = $this->sensorRepository->getSuhuMean($idKandang);
-		$meanKelembapan = $this->sensorRepository->getKelembapanMean($idKandang);
-		$meanAmonia = $this->sensorRepository->getAmoniaMean($idKandang);
-		dump(["mean suhu :" . $meanSuhu, "mean kelembapan :" . $meanKelembapan, "mean amonia :" . $meanAmonia]);
 
-		// dapatkan nilai standar deviasi 
-		$stdDevSuhu = $this->sensorRepository->getSuhuStdDev($idKandang);
-		$stdDevKelembapan = $this->sensorRepository->getKelembapanStdDev($idKandang);
-		$stdDevAmonia = $this->sensorRepository->getAmoniaStdDev($idKandang);
-		dump(["stddev suhu :" . $stdDevSuhu, "stddev kelembapan :" . $stdDevKelembapan, "std dev amonia :" . $stdDevAmonia]);
+		// ---------------Suhu---------------------------------------------
+		if ($suhu != null) {
+			$meanSuhu = $this->sensorRepository->getSuhuMean($idKandang, $suhu);
+			$stdDevSuhu = $this->sensorRepository->getSuhuStdDev($idKandang, $suhu);
+			$isSuhuOutlier = $this->detectOutlier($suhu, $meanSuhu, $stdDevSuhu);
+			// deteksi suhu outlier
+			if ($isSuhuOutlier) {
+				$suhuOutlier = $suhu;
+				$suhu = $this->winsorize($suhu, $meanSuhu, $stdDevSuhu);
+			}
+			$lowerLimit = $meanSuhu - (3 * $stdDevSuhu);
+			$upperLimit = $meanSuhu + (3 * $stdDevSuhu);
+			event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
 
-		// Deteksi outlier
-		$isSuhuOutlier = $this->detectOutlier($suhu, $meanSuhu, $stdDevSuhu);
-		$isKelembapanOutlier = $this->detectOutlier($kelembapan, $meanKelembapan, $stdDevKelembapan);
-		$isAmoniaOutlier = $this->detectOutlier($amonia, $meanAmonia, $stdDevAmonia);
+			dump([
+				"mean suhu => " . $meanSuhu,
+				"std dev suhu => " . $stdDevSuhu,
+				"suhu lowerLimit => " . $lowerLimit,
+				"suhu upperLimit => " . $upperLimit
+			]);
+		}
 
-		// jika suhu outlier maka transform datanya
-		if ($isSuhuOutlier) {
-			$suhuOutlier = $suhu;
-			$suhu = $this->winsorize($suhu, $meanSuhu, $stdDevSuhu);
+		// ---------------Kelembapan-------------------------------------------
+		if ($kelembapan != null) {
+			$meanKelembapan = $this->sensorRepository->getKelembapanMean($idKandang, $kelembapan);
+			$stdDevKelembapan = $this->sensorRepository->getKelembapanStdDev($idKandang, $kelembapan);
+			$isKelembapanOutlier = $this->detectOutlier($kelembapan, $meanKelembapan, $stdDevKelembapan);
+			// deteksi kelembapan outlier
+			if ($isKelembapanOutlier) {
+				$kelembapanOutlier = $kelembapan;
+				$kelembapan = $this->winsorize($kelembapan, $meanKelembapan, $stdDevKelembapan);
+			}
+			$lowerKelembapan = $meanKelembapan - 3 * $stdDevKelembapan;
+			$upperKelembapan = $meanKelembapan + 3 * $stdDevKelembapan;
+			event(new KelembapanOutlierUpdated($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan));
+
+			dump([
+				"mean kelembapan => " . $meanKelembapan,
+				"std dev kelembapan => " . $stdDevKelembapan,
+				"kelembapan lowerLimit => " . $lowerKelembapan,
+				"kelembapan upperLimit => " . $upperKelembapan
+			]);
 		}
-		$lowerLimit = $meanSuhu - 3 * $stdDevSuhu;
-		$upperLimit = $meanSuhu + 3 * $stdDevSuhu;
-		event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
-		// jika kelembapan outlier maka transform datanya
-		if ($isKelembapanOutlier) {
-			$kelembapanOutlier = $kelembapan;
-			$kelembapan = $this->winsorize($kelembapan, $meanKelembapan, $stdDevKelembapan);
+
+		// ----------------Amonia-------------------------------------------------
+		if ($amonia != null) {
+			$meanAmonia = $this->sensorRepository->getAmoniaMean($idKandang, $amonia);
+			$stdDevAmonia = $this->sensorRepository->getAmoniaStdDev($idKandang, $amonia);
+			$isAmoniaOutlier = $this->detectOutlier($amonia, $meanAmonia, $stdDevAmonia);
+			// Deteksi amonia outlier
+			if ($isAmoniaOutlier) {
+				$amoniaOutlier = $amonia;
+				$amonia = $this->winsorize($amonia, $meanAmonia, $stdDevAmonia);
+			}
+			$lowerAmonia = $meanAmonia - 3 * $stdDevAmonia;
+			$upperAmonia = $meanAmonia + 3 * $stdDevAmonia;
+			event(new AmoniaOutlierUpdated($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia));
+
+			dump([
+				"mean amonia => " . $meanAmonia,
+				"std dev amonia => " . $stdDevAmonia,
+				"amonia lowerLimit => " . $lowerAmonia,
+				"amonia upperLimit => " . $upperAmonia
+			]);
 		}
-		$lowerKelembapan = $meanKelembapan - 3 * $stdDevKelembapan;
-		$upperKelembapan = $meanKelembapan + 3 * $stdDevKelembapan;
-		event(new KelembapanOutlierUpdated($idKandang, $meanKelembapan, $stdDevKelembapan, $lowerKelembapan, $upperKelembapan, $kelembapanOutlier, $kelembapan));
-		// jika amonia outlier maka transform datanya
-		if ($isAmoniaOutlier) {
-			$amoniaOutlier = $amonia;
-			$amonia = $this->winsorize($amonia, $meanAmonia, $stdDevAmonia);
+
+		// save data
+		if ($suhu != null || $kelembapan != null || $amonia  != null) {
+			$query = $this->sensorRepository->createSensor((object)[
+				"id_kandang" =>  $idKandang,
+				"datetime" => Carbon::now()->timezone('Asia/Jakarta'),
+				"suhu" => $suhu,
+				"kelembapan" => $kelembapan,
+				"amonia" => $amonia,
+				"suhu_outlier" => $suhuOutlier,
+				"kelembapan_outlier" => $kelembapanOutlier,
+				"amonia_outlier" => $amoniaOutlier,
+			]);
 		}
-		$lowerAmonia = $meanAmonia - 3 * $stdDevAmonia;
-		$upperAmonia = $meanAmonia + 3 * $stdDevAmonia;
-		event(new AmoniaOutlierUpdated($idKandang, $meanAmonia, $stdDevAmonia, $lowerAmonia, $upperAmonia, $amoniaOutlier, $amonia));
 
 		// broadcast 
 		event(new SensorDataUpdated($idKandang, $suhu, $kelembapan, $amonia, $suhuOutlier, $kelembapanOutlier, $amoniaOutlier));
@@ -87,7 +127,6 @@ class SensorController extends Controller
 		$lowerLimit = $mean - 3 * $stdDev;
 		$upperLimit = $mean + 3 * $stdDev;
 
-		dump(["lower limit", $lowerLimit, "upper limit", $upperLimit]);
 		// Deteksi outlier dan terapkan winsorizing
 		if ($value < $lowerLimit) {
 			return true;

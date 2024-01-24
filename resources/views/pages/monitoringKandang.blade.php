@@ -15,6 +15,8 @@
         </div>
     </x-slot>
 
+
+
     <section class="section">
         <div class="card ">
             <div class="card-header">
@@ -119,7 +121,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body ">
+                                {{-- chart --}}
+                                <div class="row text-center" id="rowChart">
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body table-responsive p-4 rounded">
@@ -858,4 +871,213 @@
             }
         });
     });
+</script>
+<script>
+    checkKandang()
+
+    function checkKandang() {
+        let idKandang = localStorage.getItem("kandang")
+        let selectKandang = document.getElementById('selectKandang')
+
+        if (idKandang === null) {
+            setKandang({{ $kandang[0]->id }})
+            idKandang = {{ $kandang[0]->id }}
+        }
+
+        let kandang = {!! json_encode($kandang) !!}
+        let option = ""
+        kandang.forEach(item => {
+            if (idKandang == item.id) {
+                option += `<option value="${item.id}" selected>${item.nama_kandang}</option>`
+            } else {
+                option += `<option value="${item.id}">${item.nama_kandang}</option>`
+            }
+
+        });
+        selectKandang.innerHTML = option
+    }
+
+    function setKandang(idKandang) {
+        localStorage.setItem("kandang", idKandang)
+        window.location.reload()
+    }
+</script>
+<script>
+    function setStatus(val) {
+        if (val == 1) {
+            $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
+        } else if (val == 2) {
+            $('#status').html(`<span class="badge bg-success">Online</span>`)
+        }
+    }
+
+    let lineChart;
+    let dataSuhu = [];
+    let dataKelembapan = [];
+    let dataAmonia = [];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let options = {
+            colors: ['#75a3d9', '#d975b7', '#77d975'],
+            series: [{
+                name: "Temperature",
+                data: dataSuhu
+            }, {
+                name: "Humidity",
+                data: dataKelembapan
+            }, {
+                name: "Amonia",
+                data: dataAmonia
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 1000
+                    }
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight',
+
+            },
+            // title: {
+            //     text: 'Real-time Data',
+            //     align: 'left'
+            // },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'],
+                    opacity: 0.5
+                },
+            },
+
+        };
+
+        lineChart = new ApexCharts(document.querySelector("#rowChart"), options);
+        lineChart.render();
+
+        // Setiap 1 detik panggil fungsi updateData
+        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+            cluster: 'ap1'
+        });
+
+        let channel = pusher.subscribe('sensor-data');
+        channel.bind('pusher:subscription_succeeded', function() {
+            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+            channel.bind('App\\Events\\SensorDataUpdated', function(data) {
+                idKandang = data.idKandang;
+                console.log(data)
+                let selectedKandang = $('#selectKandang').val()
+                if (idKandang == selectedKandang) {
+                    let newDate = new Date().toLocaleString("en-US", {
+                        timeZone: "Asia/Jakarta"
+                    });
+                    console.log(newDate)
+                    dataSuhu.push({
+                        x: newDate,
+                        y: parseFloat(data.suhu).toFixed(3)
+                    })
+                    dataKelembapan.push({
+                        x: newDate,
+                        y: parseFloat(data.kelembapan).toFixed(3)
+                    })
+                    dataAmonia.push({
+                        x: newDate,
+                        y: parseFloat(data.amonia).toFixed(3)
+                    })
+                    let dataOutlier = {
+                        suhuOutlier: data.suhuOutlier,
+                        kelembapanOutlier: data.kelembapanOutlier,
+                        amoniaOutlier: data.amoniaOutlier
+                    }
+                    updateLineData(dataOutlier)
+                    resetOfflineTimeout()
+                }
+
+            });
+        });
+        // Timer status
+        let timeDuration = 5000;
+        let timeOutId
+        startOfflineTimeOut()
+
+        function startOfflineTimeOut() {
+            timeOutId = setTimeout(() => {
+                setStatus(1)
+
+            }, timeDuration);
+        }
+
+        function resetOfflineTimeout() {
+            clearTimeout(timeOutId)
+            setStatus(2)
+            startOfflineTimeOut()
+        }
+    });
+
+    // Fungsi untuk mengupdate data grafik
+    function updateLineData(dataOutlier) {
+        let suhuOutlier = dataOutlier.suhuOutlier ? dataOutlier.suhuOutlier : null
+        let kelembapanOutlier = dataOutlier.kelembapanOutlier ? dataOutlier.kelembapanOutlier : null
+        let amoniaOutlier = dataOutlier.amoniaOutlier ? dataOutlier.amoniaOutlier : null
+
+        // Generate data secara dinamis, gantilah dengan logika pengambilan data sesuai kebutuhan
+        let idKandang = $('#selectKandang').val()
+        // Batasi jumlah data yang ditampilkan menjadi 100 data terakhir
+        const maxDataPoints = 10;
+
+        if (dataSuhu.length > maxDataPoints) {
+            dataSuhu.shift();
+            dataKelembapan.shift();
+            dataAmonia.shift();
+        }
+
+        let lastSuhuIndex = dataSuhu.length - 1
+        let lastKelembapanIndex = dataKelembapan.length - 1
+        let lastAmoniaIndex = dataAmonia.length - 1
+
+        let lastSuhu = dataSuhu[lastSuhuIndex].y
+        let lastKelembapan = dataKelembapan[lastKelembapanIndex].y
+        let lastAmonia = dataAmonia[lastAmoniaIndex].y
+
+        // Update data pada grafik
+        lineChart.updateOptions({
+            series: [{
+                    name: 'Temperature',
+                    data: dataSuhu
+                },
+                {
+                    name: 'Humidity',
+                    data: dataKelembapan
+                },
+                {
+                    name: 'Amonia',
+                    data: dataAmonia
+                }
+            ],
+            xaxis: {
+                type: 'datetime',
+                labels: {
+                    formatter: function(val) {
+                        return new Date(val).toLocaleString("en-US", {
+                            timeZone: "Asia/Jakarta"
+                        });
+                    },
+                    style: {
+                        fontSize: '10px'
+                    }
+                }
+            }
+        });
+    }
 </script>

@@ -71,71 +71,182 @@ class SensorRepository
     }
   }
 
-  public function getSuhuMean($idKandang)
+  public function getSuhuMean($idKandang, $suhu)
   {
-    $default = 27;
-    $mean = Sensors::whereNotNull('sensors.suhu')
+    $query = Sensors::whereNotNull('sensors.suhu')
       ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.suhu_outlier', '=', null)
-      ->avg('sensors.suhu');
-    if ($mean) {
-      return $mean;
+      ->where('sensors.suhu_outlier', '=', null);
+
+    $totalSuhu = $query->sum('sensors.suhu');
+    $countSuhu = $query->count();
+
+    if ($countSuhu > 0) {
+      $mean = ($totalSuhu + $suhu) / ($countSuhu + 1);
+
+      // Kembalikan nilai $suhu jika nilai rata-rata adalah 0
+      return ($mean == 0) ? $suhu : $mean;
     } else {
-      return $default;
-    }
-  }
-  public function getKelembapanMean($idKandang)
-  {
-    $default = 50;
-    $mean = Sensors::whereNotNull('sensors.suhu')
-      ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.kelembapan_outlier', '=', null)
-      ->avg('sensors.kelembapan');
-    if ($mean) {
-      return $mean;
-    } else {
-      return $default;
-    }
-  }
-  public function getAmoniaMean($idKandang)
-  {
-    $default = 20;
-    $mean = Sensors::whereNotNull('sensors.suhu')
-      ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.amonia_outlier', '=', null)
-      ->avg('sensors.amonia');
-    if ($mean) {
-      return $mean;
-    } else {
-      return $default;
+      // Kembalikan nilai $suhu jika tidak ada data suhu yang ditemukan
+      return $suhu;
     }
   }
 
-  function getSuhuStdDev($idKandang)
+  public function getKelembapanMean($idKandang, $kelembapan)
   {
-    $suhuStdDev = DB::table('sensors')
-      ->select(DB::raw("IF(COALESCE(STD(suhu), 0) = 0, 3, COALESCE(STD(suhu), 0)) as std_dev"))
-      ->where('id_kandang', '=', $idKandang)
-      ->first();
+    $query = Sensors::whereNotNull('sensors.suhu')
+      ->where('sensors.id_kandang', '=', $idKandang)
+      ->where('sensors.kelembapan_outlier', '=', null);
 
-    return $suhuStdDev->std_dev;
+    $totalKelembapan = $query->sum('sensors.kelembapan');
+    $countKelembapan = $query->count();
+
+    if ($countKelembapan > 0) {
+      $mean = ($totalKelembapan + $kelembapan) / ($countKelembapan + 1);
+
+      // Kembalikan nilai $kelembapan jika nilai rata-rata adalah 0
+      return ($mean == 0) ? $kelembapan : $mean;
+    } else {
+      // Kembalikan nilai $kelembapan jika tidak ada data kelembapan yang ditemukan
+      return $kelembapan;
+    }
   }
-  function getKelembapanStdDev($idKandang)
-  {
-    $kelembapanStdDev =  DB::table('sensors')
-      ->select(DB::raw("IF(COALESCE(STD(kelembapan), 0) = 0, 3, COALESCE(STD(kelembapan), 0)) as std_dev"))
-      ->where('id_kandang', '=', $idKandang)
-      ->first();
 
-    return $kelembapanStdDev->std_dev;
+
+  public function getAmoniaMean($idKandang, $amonia)
+  {
+    $query = Sensors::whereNotNull('sensors.suhu')
+      ->where('sensors.id_kandang', '=', $idKandang)
+      ->where('sensors.amonia_outlier', '=', null);
+
+    $totalAmonia = $query->sum('sensors.amonia');
+    $countAmonia = $query->count();
+
+    if ($countAmonia > 0) {
+      $mean = ($totalAmonia + $amonia) / ($countAmonia + 1);
+
+      // Kembalikan nilai $amonia jika nilai rata-rata adalah 0
+      return ($mean == 0) ? $amonia : $mean;
+    } else {
+      // Kembalikan nilai $amonia jika tidak ada data amonia yang ditemukan
+      return $amonia;
+    }
   }
-  function getAmoniaStdDev($idKandang)
-  {
-    $amoniaStdDev =  DB::table('sensors')
-      ->select(DB::raw("IF(COALESCE(STD(amonia), 0) = 0, 3, COALESCE(STD(amonia), 0)) as std_dev"))
-      ->where('id_kandang', '=', $idKandang)
-      ->first();
 
-    return $amoniaStdDev->std_dev;
+  public function getSuhuStdDev($idKandang, $suhu)
+  {
+    $data = DB::table('sensors')
+      ->where('id_kandang', '=', $idKandang)
+      ->where('suhu_outlier', '=', null)
+      ->pluck('suhu')
+      ->toArray();
+
+    // Tambahkan nilai baru ke dalam data
+    $data[] = $suhu;
+
+    $count = count($data);
+
+    if ($count == 0) {
+      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
+      return 3;
+    }
+
+    $mean = array_sum($data) / $count;
+
+    // Hitung deviasi setiap nilai dari rata-rata
+    $differences = array_map(function ($x) use ($mean) {
+      return $x - $mean;
+    }, $data);
+
+    // Hitung kuadrat dari deviasi setiap nilai
+    $squaredDifferences = array_map(function ($x) {
+      return $x * $x;
+    }, $differences);
+
+    // Hitung rata-rata dari kuadrat deviasi
+    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
+
+    // Hitung deviasi standar (sigma)
+    $standardDeviation = sqrt($meanSquaredDifferences);
+
+    return $standardDeviation;
+  }
+
+
+  public function getKelembapanStdDev($idKandang, $kelembapan)
+  {
+    $data = DB::table('sensors')
+      ->where('id_kandang', '=', $idKandang)
+      ->where('kelembapan_outlier', '=', null)
+      ->pluck('kelembapan')
+      ->toArray();
+
+    // Tambahkan nilai baru ke dalam data
+    $data[] = $kelembapan;
+
+    $count = count($data);
+
+    if ($count == 0) {
+      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
+      return 3;
+    }
+
+    $mean = array_sum($data) / $count;
+
+    // Hitung deviasi setiap nilai dari rata-rata
+    $differences = array_map(function ($x) use ($mean) {
+      return $x - $mean;
+    }, $data);
+
+    // Hitung kuadrat dari deviasi setiap nilai
+    $squaredDifferences = array_map(function ($x) {
+      return $x * $x;
+    }, $differences);
+
+    // Hitung rata-rata dari kuadrat deviasi
+    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
+
+    // Hitung deviasi standar (sigma)
+    $standardDeviation = sqrt($meanSquaredDifferences);
+
+    return $standardDeviation;
+  }
+
+  public function getAmoniaStdDev($idKandang, $amonia)
+  {
+    $data = DB::table('sensors')
+      ->where('id_kandang', '=', $idKandang)
+      ->where('amonia_outlier', '=', null)
+      ->pluck('amonia')
+      ->toArray();
+
+    // Tambahkan nilai baru ke dalam data
+    $data[] = $amonia;
+
+    $count = count($data);
+
+    if ($count == 0) {
+      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
+      return 3;
+    }
+
+    $mean = array_sum($data) / $count;
+
+    // Hitung deviasi setiap nilai dari rata-rata
+    $differences = array_map(function ($x) use ($mean) {
+      return $x - $mean;
+    }, $data);
+
+    // Hitung kuadrat dari deviasi setiap nilai
+    $squaredDifferences = array_map(function ($x) {
+      return $x * $x;
+    }, $differences);
+
+    // Hitung rata-rata dari kuadrat deviasi
+    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
+
+    // Hitung deviasi standar (sigma)
+    $standardDeviation = sqrt($meanSquaredDifferences);
+
+    return $standardDeviation;
   }
 }

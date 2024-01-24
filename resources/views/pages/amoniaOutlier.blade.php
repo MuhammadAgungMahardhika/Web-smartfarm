@@ -329,7 +329,12 @@
                     }
                 },
                 zoom: {
-                    enabled: false
+                    enabled: true,
+                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
+                },
+                pan: {
+                    enabled: true,
+                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
                 }
             },
             dataLabels: {
@@ -368,7 +373,12 @@
                     }
                 },
                 zoom: {
-                    enabled: false
+                    enabled: true,
+                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
+                },
+                pan: {
+                    enabled: true,
+                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
                 }
             },
             dataLabels: {
@@ -466,14 +476,6 @@
 
         // Update grafik amonia outlier, batas atas dan batas bawah
         let maxDataValue = Math.max(...dataAmoniaSigma.map(entry => entry.y));
-        // let max, min
-        // if (maxDataValue >= 0) {
-        //     max = maxDataValue + 20
-        //     min = max * -1
-        // } else {
-        //     max = maxDataValue - 20
-        //     min = max * -1
-        // }
 
         console.log("max value : " + maxDataValue + typeof maxDataValue)
         amoniaSigmaChart.updateOptions({

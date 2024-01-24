@@ -35,17 +35,17 @@ class SensorDataUpdatedListener
         $suhuOutlier  = $event->suhuOutlier;
         $kelembapanOutlier = $event->kelembapanOutlier;
         $amoniaOutlier = $event->amoniaOutlier;
-        if ($suhu != null || $kelembapan != null || $amonia  != null) {
-            $this->sensorRepository->createSensor((object)[
-                "id_kandang" =>  $idKandang,
-                "datetime" => Carbon::now()->timezone('Asia/Jakarta'),
-                "suhu" => $suhu,
-                "kelembapan" => $kelembapan,
-                "amonia" => $amonia,
-                "suhu_outlier" => $suhuOutlier,
-                "kelembapan_outlier" => $kelembapanOutlier,
-                "amonia_outlier" => $amoniaOutlier,
-            ]);
-        }
+        // if ($suhu != null || $kelembapan != null || $amonia  != null) {
+        //     $this->sensorRepository->createSensor((object)[
+        //         "id_kandang" =>  $idKandang,
+        //         "datetime" => Carbon::now()->timezone('Asia/Jakarta'),
+        //         "suhu" => $suhu,
+        //         "kelembapan" => $kelembapan,
+        //         "amonia" => $amonia,
+        //         "suhu_outlier" => $suhuOutlier,
+        //         "kelembapan_outlier" => $kelembapanOutlier,
+        //         "amonia_outlier" => $amoniaOutlier,
+        //     ]);
+        // }
     }
 }

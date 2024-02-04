@@ -43,10 +43,10 @@
             <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
         </form>
         <div class="text-center mt-5 text-lg fs-4">
-            @if (Route::has('register'))
+            {{-- @if (Route::has('register'))
                 <p class="text-gray-600">Don't have an account? <a href="{{ route('register') }}" class="font-bold">Sign
                         up</a>.</p>
-            @endif
+            @endif --}}
 
 
             {{-- @if (Route::has('password.request'))

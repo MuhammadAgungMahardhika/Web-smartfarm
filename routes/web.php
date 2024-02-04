@@ -26,6 +26,9 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return view('landing-page');
 });
+Route::get('/register', function () {
+    return redirect()->route('login');
+});
 
 // menerima sensor dari luar dan menambahkan ke database
 Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'storeSensorFromOutside']);

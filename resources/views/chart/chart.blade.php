@@ -398,7 +398,12 @@
                         }
                     },
                     zoom: {
-                        enabled: false
+                        enabled: true,
+                        type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
+                    },
+                    pan: {
+                        enabled: true,
+                        type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
                     }
                 },
                 dataLabels: {
@@ -408,10 +413,6 @@
                     curve: 'straight',
 
                 },
-                // title: {
-                //     text: 'Real-time Data',
-                //     align: 'left'
-                // },
                 grid: {
                     row: {
                         colors: ['#f3f3f3', 'transparent'],

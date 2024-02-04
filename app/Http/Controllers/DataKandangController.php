@@ -234,10 +234,14 @@ class DataKandangController extends Controller
 
 		DB::beginTransaction();
 		try {
+
 			$idKandang = $request->id_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
 			$dataKematian = $request->data_kematian;
-			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
+			$jumlahKematian = count($dataKematian);
+			$updatedAt = Carbon::now()->timezone('Asia/Jakarta');
+			$updatedBy = Auth::user()->id;
+			$klasifikasi = $jumlahKematian > 0 ? "abnormal" : "normal";
 			$dataKandang = $this->dataKandangRepository->editDataKandang(
 				$id,
 				(object) [
@@ -249,8 +253,8 @@ class DataKandangController extends Controller
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,
 					"date" => $request->date,
-					"updated_at" => Carbon::now()->timezone('Asia/Jakarta'),
-					"updated_by" => Auth::user()->id,
+					"updated_at" => $updatedAt,
+					"updated_by" => $updatedBy,
 				]
 			);
 
@@ -258,16 +262,16 @@ class DataKandangController extends Controller
 			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
 			$countJumlahKematian = 0;
-			if (count($dataKematian) > 0) {
-				for ($i = 0; $i < count($dataKematian); $i++) {
+			if ($jumlahKematian > 0) {
+				for ($i = 0; $i < $jumlahKematian; $i++) {
 					$countJumlahKematian += $dataKematian[$i]['jumlah_kematian'];
 					$this->dataKematianRepository->createDataKematian(
 						(object)[
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
 							"jam" => $dataKematian[$i]['jam'],
-							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
-							"created_by" => Auth::user()->id
+							"created_at" => $updatedAt,
+							"created_by" => $updatedBy
 						]
 					);
 				}
@@ -280,9 +284,12 @@ class DataKandangController extends Controller
 
 			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
 			if ($klasifikasi == "abnormal") {
-				$kandang = Kandang::findOrFail($idKandang)->first();
-				$namaKandang = $kandang->nama_kandang;
-				$userId = $kandang->id_user; //pemilik kandang
+				$kandang = DB::table('kandang')
+					->select('nama_kandang', 'id_user')
+					->where('id', $idKandang)
+					->first();
+				$namaKandang = optional($kandang)->nama_kandang;
+				$userId = optional($kandang)->id_user;
 				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 

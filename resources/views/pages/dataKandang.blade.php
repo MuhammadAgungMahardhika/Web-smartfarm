@@ -239,7 +239,7 @@
             jsPDF: {
                 width: 2,
                 unit: 'mm',
-                format: 'a4',
+                format: 'a3',
                 orientation: 'l',
             }
 

@@ -259,7 +259,7 @@
             </form>
         `)
 
-                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Tambah</a>`)
+                $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -350,7 +350,7 @@
     function deleteModal(id) {
         $('#modalTitle').html("Delete User")
         $('#modalBody').html(`Are you sure to delete this user`)
-        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
+        $('#modalFooter').html(`<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Delete</a>`)
     }
 
     function getRoles() {

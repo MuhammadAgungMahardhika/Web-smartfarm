@@ -8,7 +8,7 @@
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Input Harian</li>
+                        <li class="breadcrumb-item active" aria-current="page">Daily Input</li>
                     </ol>
                 </nav>
             </div>
@@ -535,7 +535,7 @@
                     </form>
                 `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Edit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -595,7 +595,7 @@
                     </div>
                     `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Hapus</a>`)
+                    `<a class="btn btn-danger btn-sm" onclick="deleteItem('${id}')">Delete</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)

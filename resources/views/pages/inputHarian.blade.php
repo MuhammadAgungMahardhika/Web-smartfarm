@@ -301,7 +301,7 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <i>House Name</i>
+                                    <i>Cage Name</i>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <i>${nama_kandang}</i>
@@ -477,7 +477,7 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <i>House Name</i>
+                                    <i>Cage Name</i>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <i>${kandang.nama_kandang}</i>
@@ -573,7 +573,7 @@
                                     <th class="text-center" colspan="2">Daily Input</th>
                                 </tr>
                                 <tr>
-                                    <td>House Name</td> <td>${kandang.nama_kandang}</td>
+                                    <td>Cage Name</td> <td>${kandang.nama_kandang}</td>
                                 </tr> 
                                 <tr>
                                     <td>Day-</td> <td>${hari_ke}</td>

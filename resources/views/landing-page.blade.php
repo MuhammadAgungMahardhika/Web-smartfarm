@@ -242,15 +242,16 @@
                 @csrf
             </form>
             <?php else: ?>
-            <a href="/login">Masuk</a>
-            <a href="/register">Daftar</a>
+            <a href="/login">Login</a>
+            {{-- <a href="/register">Daftar</a> --}}
             <?php endif; ?>
         </nav>
     </header>
 
     <section class="hero" id="home">
         <h1 style="color:#ffff; z-index:999; font-size: 3.5em">Revolutionize Your Broiler Farming</h1>
-        <p style="color:#fff; z-index:999; font-size: 1em">Memberdayakan Peternakan Melalui Teknologi Inovatif</p>
+        <p style="color:#fff; z-index:999; font-size: 1em">Empowering Livestock Farming Through Innovative Technology
+        </p>
 
     </section>
 
@@ -258,22 +259,21 @@
         <div class="feature">
             <img src="/images/bg/precision.jpg" alt="Precision Farming">
             <h3>Precision Farming</h3>
-            <p>Tingkatkan hasil dengan wawasan berbasis data. Optimalkan penggunaan sumber daya untuk efisiensi
-                maksimal.</p>
+            <p>Increase results with data-driven insights. Optimize resource utilization for maximum efficiency.</p>
         </div>
         <div class="feature">
             <img src="/images/bg/monitoring.jpg" alt="Remote Monitoring">
             <h3>Remote Monitoring</h3>
-            <p>Monitor peternakan Anda dari mana saja secara real-time. Dapatkan pemberitahuan tentang informasi
-                peternakan anda secara Realtime.</p>
+            <p>Monitor your farm from anywhere in real-time. Receive notifications about your farm information in
+                real-time.</p>
         </div>
     </section>
 
     <footer>
-        &copy; 2023 SmartFarm. Seluruh hak dilindungi.
+        &copy; 2023 SmartFarm. All rights reserved.
     </footer>
 
-    <div class="scroll-to-top" onclick="scrollToTop()">↑ Kembali ke Atas</div>
+    <div class="scroll-to-top" onclick="scrollToTop()">↑ Back to Top.</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

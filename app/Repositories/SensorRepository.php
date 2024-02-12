@@ -74,8 +74,8 @@ class SensorRepository
   public function getSuhuMean($idKandang, $suhu)
   {
     $query = Sensors::whereNotNull('sensors.suhu')
-      ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.suhu_outlier', '=', null);
+      ->where('sensors.id_kandang', '=', $idKandang);
+    // ->where('sensors.suhu_outlier', '=', null);
 
     $totalSuhu = $query->sum('sensors.suhu');
     $countSuhu = $query->count();
@@ -94,8 +94,8 @@ class SensorRepository
   public function getKelembapanMean($idKandang, $kelembapan)
   {
     $query = Sensors::whereNotNull('sensors.suhu')
-      ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.kelembapan_outlier', '=', null);
+      ->where('sensors.id_kandang', '=', $idKandang);
+    // ->where('sensors.kelembapan_outlier', '=', null);
 
     $totalKelembapan = $query->sum('sensors.kelembapan');
     $countKelembapan = $query->count();
@@ -115,8 +115,8 @@ class SensorRepository
   public function getAmoniaMean($idKandang, $amonia)
   {
     $query = Sensors::whereNotNull('sensors.suhu')
-      ->where('sensors.id_kandang', '=', $idKandang)
-      ->where('sensors.amonia_outlier', '=', null);
+      ->where('sensors.id_kandang', '=', $idKandang);
+    // ->where('sensors.amonia_outlier', '=', null);
 
     $totalAmonia = $query->sum('sensors.amonia');
     $countAmonia = $query->count();

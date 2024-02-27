@@ -560,7 +560,7 @@
                         }
                     });
                 }
-                $('#modalTitle').html("Edit House Data")
+                $('#modalTitle').html("Edit Cage")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
                         <div class="form-body">
@@ -628,7 +628,7 @@
                     </form>
                 `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Change</a>`)
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Edit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -674,13 +674,13 @@
                     email_peternak
                 } = response.data;
 
-                $('#modalTitle').html("Delete House Data")
+                $('#modalTitle').html("Delete Cage")
                 $('#modalBody').html(`
                     <div>
                         <table class="table table-borderless">  
                             <tbody>
                                 <tr>
-                                    <th class="text-center" colspan="2">House Data</th>
+                                    <th class="text-center" colspan="2">Cage</th>
                                 </tr>
                                 <tr>
                                     <td>Cage name</td> <td>${nama_kandang}</td>

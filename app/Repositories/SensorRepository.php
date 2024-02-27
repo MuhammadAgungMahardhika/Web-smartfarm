@@ -150,7 +150,7 @@ class SensorRepository
       return 3;
     }
 
-    $mean = array_sum($data) / $count;
+    $mean = array_sum($data) / $count - 1;
 
     // Hitung deviasi setiap nilai dari rata-rata
     $differences = array_map(function ($x) use ($mean) {
@@ -190,7 +190,7 @@ class SensorRepository
       return 3;
     }
 
-    $mean = array_sum($data) / $count;
+    $mean = array_sum($data) / $count - 1;
 
     // Hitung deviasi setiap nilai dari rata-rata
     $differences = array_map(function ($x) use ($mean) {
@@ -229,7 +229,7 @@ class SensorRepository
       return 3;
     }
 
-    $mean = array_sum($data) / $count;
+    $mean = array_sum($data) / $count - 1;
 
     // Hitung deviasi setiap nilai dari rata-rata
     $differences = array_map(function ($x) use ($mean) {

@@ -338,7 +338,7 @@
             </form>
         `)
                 $('#modalFooter').html(
-                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Ubah</a>`)
+                    `<a class="btn btn-success btn-sm" onclick="update('${id}')">Edit</a>`)
             },
             error: function(err) {
                 console.log(err.responseText)

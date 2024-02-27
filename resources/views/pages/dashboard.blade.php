@@ -43,11 +43,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-4">
+                                    <div class="col-4">
                                         <div id="status">
                                             <span class="badge bg-secondary">Offline</span>
                                         </div>
-                                    </div> --}}
+                                    </div> 
                                 </div>
                             </div>
                             <div class="card-body">

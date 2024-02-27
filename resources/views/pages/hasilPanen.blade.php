@@ -427,31 +427,31 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${kandang.id}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">House name</label>
+                                    <label for="namaKandang">Cage name</label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Start date</label>
+                                    <label for="tanggalMulai">Start date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalMulai" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Harvest date</label>
+                                    <label for="tanggalPanen">Harvest date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalPanen" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Harvest amount (Head)</label>
+                                    <label for="jumlahPanen">Harvest amount (Head) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="jumlahPanen" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotAyam">Weight amount(Kg)</label>
+                                    <label for="bobotAyam">Weight amount(Kg) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobotAyam" class="form-control">
@@ -492,31 +492,31 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id_kandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">House name</label>
+                                    <label for="namaKandang">Cage name </label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${kandang.nama_kandang}" class="form-control" readonly>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalMulai">Start date</label>
+                                    <label for="tanggalMulai">Start date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalMulai" value="${tanggal_mulai}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="tanggalPanen">Harvest date</label>
+                                    <label for="tanggalPanen">Harvest date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" id="tanggalPanen" value="${tanggal_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="jumlahPanen">Harvest amount (Head)</label>
+                                    <label for="jumlahPanen">Harvest amount (Head) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="jumlahPanen" value="${jumlah_panen}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobotTotal">Weight amount(Kg)</label>
+                                    <label for="bobotTotal">Weight amount(Kg) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobotTotal" value="${bobot_total}" class="form-control">
@@ -592,17 +592,37 @@
         let tanggalMulai = $('#tanggalMulai').val()
         let tanggalPanen = $('#tanggalPanen').val()
         let jumlahPanen = $('#jumlahPanen').val()
-        let bobotAyam = $('#bobotAyam').val()
+        let bobotTotal = $('#bobotAyam').val()
 
         // validasi
 
+        if (!tanggalMulai) {
+            return Swal.fire("Start date required");
+        }
+
+        if (!tanggalPanen) {
+            return Swal.fire("Harvest date required");
+        }
+
+        if (!jumlahPanen) {
+            return Swal.fire("Harvest amount required");
+        }
+        if (jumlahPanen < 0) {
+            return Swal.fire("Harvest amount cannot be less than 0");
+        }
+        if (!bobotTotal) {
+            return Swal.fire("Weight amount required");
+        }
+        if (bobotTotal < 0) {
+            return Swal.fire("Weight amount  cannot be less than 0");
+        }
         // asign value if validated
         let data = {
             id_kandang: idKandang,
             tanggal_mulai: tanggalMulai,
             tanggal_panen: tanggalPanen,
             jumlah_panen: jumlahPanen,
-            bobot_total: bobotAyam
+            bobot_total: bobotTotal
         }
 
         $.ajax({
@@ -667,6 +687,28 @@
         let jumlahPanen = $('#jumlahPanen').val()
         let bobotTotal = $('#bobotTotal').val()
 
+        // validasi
+
+        if (!tanggalMulai) {
+            return Swal.fire("Start date required");
+        }
+
+        if (!tanggalPanen) {
+            return Swal.fire("Harvest date required");
+        }
+
+        if (!jumlahPanen) {
+            return Swal.fire("Harvest amount required");
+        }
+        if (jumlahPanen < 0) {
+            return Swal.fire("Harvest amount cannot be less than 0");
+        }
+        if (!bobotTotal) {
+            return Swal.fire("Weight amount required");
+        }
+        if (bobotTotal < 0) {
+            return Swal.fire("Weight amount  cannot be less than 0");
+        }
         let data = {
             id_kandang: idKandang,
             tanggal_mulai: tanggalMulai,

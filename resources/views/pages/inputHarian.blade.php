@@ -301,7 +301,7 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${idKandang}" class="form-control">
                                 <div class="col-md-4">
-                                    <i>Cage Name</i>
+                                    <i>Cage Name </i>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <i>${nama_kandang}</i>
@@ -319,31 +319,31 @@
                                     <i>${populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="hariKe">Day-</label>
+                                    <label for="hariKe">Day- <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" value="" id="hariKe" class="form-control" placeholder="" autofocus>
+                                    <input type="text" value="" id="hariKe" class="form-control" placeholder="" autofocus>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="date">Date</label>
+                                    <label for="date">Date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" value="${dateNow}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="pakan">Feed (G)</label>
+                                    <label for="pakan">Feed (G) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="pakan" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="minum">Watering (L)</label>
+                                    <label for="minum">Watering (L) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="minum" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg)</label>
+                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="bobot" class="form-control">
@@ -364,6 +364,10 @@
                     </form>
                 `)
 
+                // Prevent text di input day
+                $('#hariKe').addEventListener('input', function(event) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
                 $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
@@ -443,7 +447,7 @@
                             `<tr id="${id}">
                     <td>
                         <div class="form-group">
-                        <label for="jumlah">Amount (Head)</label>
+                        <label for="jumlah">Amount (Head) </label>
                         </div>
                     </td> 
                     <td>
@@ -469,7 +473,6 @@
                 </tr>`
                     }
                 }
-
                 $('#modalTitle').html("Edit Daily Data")
                 $('#modalBody').html(`
                 <form class="form form-horizontal">
@@ -489,31 +492,31 @@
                                     <i>${kandang.populasi_saat_ini}</i>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="hariKe">Day-</label>
+                                    <label for="hariKe">Day- <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" value="${hari_ke}" id="hariKe" class="form-control">
+                                    <input type="text" value="${hari_ke}" id="hariKe" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="date">Date</label>
+                                    <label for="date">Date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="date" value="${date}" id="date" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="pakan">Feed (G)</label>
+                                    <label for="pakan">Feed (G) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${pakan}" id="pakan" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="minum">Watering (L)</label>
+                                    <label for="minum">Watering (L) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${minum}" id="minum" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg)</label>
+                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${bobot}" id="bobot" class="form-control">
@@ -534,6 +537,10 @@
                         </div>
                     </form>
                 `)
+                // Prevent text di input day
+                $('#hariKe').addEventListener('input', function(event) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
                 $('#modalFooter').html(
                     `<a class="btn btn-success btn-sm" onclick="update('${id}')">Edit</a>`)
             },
@@ -678,14 +685,28 @@
             return Swal.fire("Deaths exceed the current population!");
         }
 
+        if (!hariKe) {
+            return Swal.fire("Day required!");
+        }
         if (hariKe <= 0) {
             return Swal.fire("Day must not be less than 1!");
+        }
+
+        if (!pakan) {
+            return Swal.fire("Feed required!");
         }
         if (pakan <= 0) {
             return Swal.fire("Feed must not be less than 1!");
         }
+
+        if (!minum) {
+            return Swal.fire("Drink required!");
+        }
         if (minum <= 0) {
             return Swal.fire("Watering must not be less than 1!");
+        }
+        if (!bobot) {
+            return Swal.fire("Weight required!");
         }
         if (bobot <= 0) {
             return Swal.fire("Weight must not be less than 1!");

@@ -447,25 +447,25 @@
                             <div class="row">
                             
                                 <div class="col-md-4">
-                                    <label for="namaKandang">Cage name</label>
+                                    <label for="namaKandang">Cage name <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="alamatKandang">Cage Address</label>
+                                    <label for="alamatKandang">Cage Address <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="alamatKandang" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="luasKandang">Cage Area (M<sup>2</sup>)</label>
+                                    <label for="luasKandang">Cage Area (M<sup>2</sup>) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="luasKandang" class="form-control" >
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="idPemilik">Owner</label>
+                                    <label for="idPemilik">Owner <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <fieldset class="form-group">
@@ -475,7 +475,7 @@
                                     </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="idPeternak">Farmer</label>
+                                    <label for="idPeternak">Farmer <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <fieldset class="form-group">
@@ -485,7 +485,7 @@
                                         </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="populasiAwal">Initial Population</label>
+                                    <label for="populasiAwal">Initial Population <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="populasiAwal" class="form-control" >
@@ -567,25 +567,25 @@
                             <div class="row">
                                 <input type="hidden" id="idKandang" value="${id}" class="form-control">
                                 <div class="col-md-4">
-                                    <label for="namaKandang">Cage Name</label>
+                                    <label for="namaKandang">Cage Name <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="namaKandang" value="${nama_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="alamatKandang">Cage Address</label>
+                                    <label for="alamatKandang">Cage Address <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="text" id="alamatKandang" value="${alamat_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="luasKandang">Cage Area (M<sup>2</sup>)</label>
+                                    <label for="luasKandang">Cage Area (M<sup>2</sup>) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="luasKandang" value="${luas_kandang}" class="form-control">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="idPemilik">Owner</label>
+                                    <label for="idPemilik">Owner <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <fieldset class="form-group">
@@ -595,7 +595,7 @@
                                     </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="idPeternak">Farmer</label>
+                                    <label for="idPeternak">Farmer <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <fieldset class="form-group">
@@ -605,7 +605,7 @@
                                     </fieldset>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="populasiAwal">Initial Population (Head)</label>
+                                    <label for="populasiAwal">Initial Population (Head) <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="populasiAwal" value="${populasi_awal}" class="form-control">

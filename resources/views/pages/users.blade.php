@@ -1,4 +1,19 @@
 <x-app-layout>
+    <style>
+        /* Hide spinner arrows */
+        input[type="tel"]::-webkit-outer-spin-button,
+        input[type="tel"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="tel"] {
+            /* Ensure the input is wide enough to fit phone numbers without clipping */
+            width: auto;
+            -moz-appearance: textfield;
+            /* Firefox */
+        }
+    </style>
     <x-slot name="header">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
@@ -192,22 +207,22 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="name">Username</label>
+                            <label for="name">Username <span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="text" id="name" class="form-control" placeholder="username" autocomplete="off">
                         </div>
                         <div class="col-md-4">
-                            <label for="email">Email</label>
+                            <label for="email">Email<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="text" id="email" class="form-control" placeholder="email">
                         </div>
                         <div class="col-md-4">
-                            <label for="phoneNumber">Phone Number</label>
+                            <label for="phoneNumber">Phone Number<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="number" id="phoneNumber" class="form-control" placeholder="Phone number">
+                            <input type="text"  id="phoneNumber" class="form-control" placeholder="Phone number">
                         </div>
                         <div class="col-md-4">
                             <label for="idTelegram">Telegram ID <br><span class="text-primary text-sm">(Optional)</span></label>
@@ -217,13 +232,13 @@
                         </div>
                        
                         <div class="col-md-4">
-                            <label for="password">Password</label>
+                            <label for="password">Password<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="password" id="password" class="form-control" placeholder="password" autocomplete="off">
                         </div>
                         <div class="col-md-4">
-                            <label for="konfirmasiPassword">Confirmation Password</label>
+                            <label for="konfirmasiPassword">Confirmation Password<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="password" id="konfirmasiPassword" class="form-control" placeholder="Confirmation password" autocomplete="off">
@@ -259,6 +274,11 @@
             </form>
         `)
 
+                document.getElementById('phoneNumber').addEventListener('input', function(event) {
+                    // Remove any non-numeric characters
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+
                 $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
             },
             error: function(err) {
@@ -268,12 +288,14 @@
 
     }
 
+
+
     function editModal(id) {
         $.ajax({
             type: "GET",
             url: `/user/${id}`,
             success: function(response) {
-                console.log(response)
+
                 let {
                     id_role,
                     roles,
@@ -289,8 +311,7 @@
                 let roleData = ""
                 // Roles data
                 allRole.forEach(r => {
-                    console.log(r.id_role)
-                    console.log(id_role)
+
                     roleData +=
                         `<option ${id_role == r.id_role ? 'selected' : ''} value="${r.id_role }">${r.nama_role}</option>`
                 });
@@ -309,22 +330,22 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="name">Username</label>
+                            <label for="name">Username<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="text" id="name" value="${name}" class="form-control">
                         </div>
                         <div class="col-md-4">
-                            <label for="email">Email</label>
+                            <label for="email">Email<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
                             <input type="text" id="email" value="${email}" class="form-control">
                         </div>
                         <div class="col-md-4">
-                            <label for="phoneNumber">Phone Number</label>
+                            <label for="phoneNumber">Phone Number<span class="text-danger"> *</span></label>
                         </div>
                         <div class="col-md-8 form-group">
-                            <input type="number" id="phoneNumber" value="${phone_number}" class="form-control">
+                            <input type="text" id="phoneNumber" value="${phone_number != null ? phone_number : ''}" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label for="idTelegram">Telegram ID <sup class="text-primary">(Optional)</sup></label>
@@ -337,6 +358,12 @@
                 </div>
             </form>
         `)
+
+                // Prevent text di input phone number
+                $('#phoneNumber').addEventListener('input', function(event) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+
                 $('#modalFooter').html(
                     `<a class="btn btn-success btn-sm" onclick="update('${id}')">Edit</a>`)
             },

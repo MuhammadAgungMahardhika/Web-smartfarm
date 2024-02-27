@@ -59,9 +59,18 @@
     }
 
     function setCardsStatusToOffline() {
+        setGlobalStatus(2)
         setSuhuCardValue(0, 2)
         setKelembapanCardValue(0, 2)
         setAmoniaCardValue(0, 2)
+    }
+
+    function setGlobalStatus(status) {
+        if (status == 1) {
+            $('#status').html(`<span class="badge bg-success">Online</span>`)
+        } else if (status == 2) {
+            $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
+        }
     }
 
     function setSuhuCardValue(value, status) {
@@ -286,6 +295,7 @@
             }
 
             function resetOfflineTimeout() {
+
                 clearTimeout(timeOutId)
                 startOfflineTimeOut()
             }
@@ -296,7 +306,7 @@
 
         // Function to update radial chart data in real-time
         function updateData(suhuData = null, kelembapanData = null, amoniaData = null, dataOutlier = null) {
-            console.log(dataOutlier)
+            setGlobalStatus(1)
             if (suhuData != null || kelembapanData != null || amoniaData != null) {
                 console.log("suhu =" + suhuData)
                 console.log("kelembapan =" + kelembapanData)

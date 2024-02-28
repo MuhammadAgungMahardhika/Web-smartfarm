@@ -365,7 +365,7 @@
                 `)
 
                 // Prevent text di input day
-                $('#hariKe').addEventListener('input', function(event) {
+                document.getElementById('hariKe').addEventListener('input', function(event) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
                 $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
@@ -538,7 +538,7 @@
                     </form>
                 `)
                 // Prevent text di input day
-                $('#hariKe').addEventListener('input', function(event) {
+                document.getElementById('hariKe').addEventListener('input', function(event) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
                 $('#modalFooter').html(
@@ -675,41 +675,101 @@
                 totalKematian += parseInt(dataKematian[i].jumlah_kematian)
 
             } else {
-                return Swal.fire("Please check your daily mortality data");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please check your daily mortality data!",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 
         let sisa_populasi = populasiSaatIni - totalKematian
 
         if (sisa_populasi < 0) {
-            return Swal.fire("Deaths exceed the current population!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Deaths exceed the current population!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!hariKe) {
-            return Swal.fire("Day required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (hariKe <= 0) {
-            return Swal.fire("Day must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!pakan) {
-            return Swal.fire("Feed required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (pakan <= 0) {
-            return Swal.fire("Feed must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!minum) {
-            return Swal.fire("Drink required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Drink required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (minum <= 0) {
-            return Swal.fire("Watering must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Watering must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!bobot) {
-            return Swal.fire("Weight required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobot <= 0) {
-            return Swal.fire("Weight must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         // asign value if validated
@@ -805,7 +865,13 @@
             if (dataKematian[i].jumlah_kematian > 0 && dataKematian[i].jam.length > 0) {
                 totalKematian += parseInt(dataKematian[i].jumlah_kematian)
             } else {
-                return Swal.fire("Please check your daily mortality data!");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please check your daily mortality data!",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 
@@ -816,20 +882,50 @@
 
         // validasi
         if (sisa_populasi < 0) {
-            return Swal.fire("Deaths exceed the current population!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Deaths exceed the current population!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (hariKe <= 0) {
-            return Swal.fire("Day must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (pakan <= 0) {
-            return Swal.fire("Feed must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (minum <= 0) {
-            return Swal.fire("Watering must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Watering must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobot <= 0) {
-            return Swal.fire("Weight must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         // asign value if validated
         let data = {

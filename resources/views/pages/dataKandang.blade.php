@@ -737,11 +737,23 @@
 
             // check jika from date kosong
             if (!startDate) {
-                return Swal.fire("Please fill the from date")
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the from date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
             // check jika to date kosong
             if (!endDate) {
-                return Swal.fire("Please fill the end date");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the end date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
 
             let data = {

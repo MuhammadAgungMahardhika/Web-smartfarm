@@ -317,12 +317,25 @@
 
             // check jika from date kosong
             if (!startDate) {
-                return Swal.fire("Please fill the from date")
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the from date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
             // check jika to date kosong
             if (!endDate) {
-                return Swal.fire("Please fill the end date");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the end date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
 
             let data = {
@@ -597,24 +610,60 @@
         // validasi
 
         if (!tanggalMulai) {
-            return Swal.fire("Start date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Start date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!tanggalPanen) {
-            return Swal.fire("Harvest date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!jumlahPanen) {
-            return Swal.fire("Harvest amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (jumlahPanen < 0) {
-            return Swal.fire("Harvest amount cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!bobotTotal) {
-            return Swal.fire("Weight amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobotTotal < 0) {
-            return Swal.fire("Weight amount  cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount  cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         // asign value if validated
         let data = {
@@ -690,24 +739,61 @@
         // validasi
 
         if (!tanggalMulai) {
-            return Swal.fire("Start date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Start date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!tanggalPanen) {
-            return Swal.fire("Harvest date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!jumlahPanen) {
-            return Swal.fire("Harvest amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         }
         if (jumlahPanen < 0) {
-            return Swal.fire("Harvest amount cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!bobotTotal) {
-            return Swal.fire("Weight amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobotTotal < 0) {
-            return Swal.fire("Weight amount  cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount  cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         let data = {
             id_kandang: idKandang,

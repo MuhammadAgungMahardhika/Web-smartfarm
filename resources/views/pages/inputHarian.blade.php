@@ -794,6 +794,7 @@
             },
             data: JSON.stringify(data),
             success: function(response) {
+                console.log(response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -806,7 +807,14 @@
                 })
             },
             error: function(err) {
-                console.log(err.responseText)
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please select another date, already choosen",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
         })

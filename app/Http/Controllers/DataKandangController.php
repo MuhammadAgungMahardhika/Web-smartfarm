@@ -216,7 +216,9 @@ class DataKandangController extends Controller
 			], 422);
 		} catch (QueryException $th) {
 			DB::rollBack();
-			return $th->getMessage();
+			return response()->json([
+				'message' => $th->getMessage(),
+			], 500);
 		}
 	}
 
@@ -306,7 +308,9 @@ class DataKandangController extends Controller
 			], 422);
 		} catch (QueryException $th) {
 			DB::rollBack();
-			return $th->getMessage();
+			return response()->json([
+				'message' => $th->getMessage(),
+			], 500);
 		}
 	}
 
@@ -335,7 +339,9 @@ class DataKandangController extends Controller
 			], Response::HTTP_OK);
 		} catch (QueryException $th) {
 			DB::rollBack();
-			return $th->getMessage();
+			return response()->json([
+				'message' => $th->getMessage(),
+			], 500);
 		}
 	}
 }

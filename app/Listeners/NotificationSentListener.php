@@ -56,9 +56,9 @@ class NotificationSentListener
         // Kirim notifikasi ke pelanggan
         if ($chatId !== null) {
             try {
-                Log::info('Mengirim notifikasi Telegram ke chat IDS: ' . $chatId);
+                // Log::info('Mengirim notifikasi Telegram ke chat IDS: ' . $chatId);
                 $user->notify(new TelegramNotification(strval($chatId), $message));
-                Log::info('Notifikasi Telegram berhasil dikirim.');
+                // Log::info('Notifikasi Telegram berhasil dikirim.');
             } catch (\Throwable $th) {
                 Log::error('Gagal mengirimkan notifikasi telegram: ' . $th);
             }

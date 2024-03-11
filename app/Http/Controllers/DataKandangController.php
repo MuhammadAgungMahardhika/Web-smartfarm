@@ -6,7 +6,6 @@ use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
 use App\Models\Kandang;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -15,45 +14,40 @@ use App\Repositories\DataKematianRepository;
 use App\Repositories\KandangRepository;
 use App\Repositories\NotificationRepository;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 
 class DataKandangController extends Controller
 {
 
-	protected $user;
 	protected $kandangRepository;
 	protected $dataKandangRepository;
 	protected $dataKematianRepository;
-	protected $notificationRepository;
 	protected $model;
 	/**
 	 * Create a new controller instance.
 	 */
 	public function __construct(
-		User $user,
-		DataKandang $dataKandang,
+
 		KandangRepository $kandangRepository,
 		DataKandangRepository $dataKandangRepository,
 		DataKematianRepository $dataKematianRepository,
-		NotificationRepository $notificationRepository
 	) {
-		$this->user = $user;
-		$this->model = $dataKandang;
+
 		$this->kandangRepository = $kandangRepository;
 		$this->dataKandangRepository = $dataKandangRepository;
 		$this->dataKematianRepository = $dataKematianRepository;
-		$this->notificationRepository = $notificationRepository;
 	}
 
 	public function index($id = null)
 	{
+		$dataKandang = new DataKandang();
+
 		if ($id != null) {
-			$items = $this->model::with(['kandang', 'data_kematians'])->find($id);
+			$items = $dataKandang::with(['kandang', 'data_kematians'])->find($id);
 		} else {
 
-			$items = $this->model->get();
+			$items = $dataKandang->get();
 		}
 		return response(['data' => $items, 'status' => 200]);
 	}
@@ -139,6 +133,12 @@ class DataKandangController extends Controller
 		$items = DB::table('data_kematian')->where('data_kematian.id_data_kandang', '=', $id)->select(DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))->first();
 		return response(['data' => $items, 'status' => 200]);
 	}
+
+	// public function sendNotificationAlertToFillDailyInput()
+	// {
+
+	// 	Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
+	// }
 
 	public function store(Request $request)
 	{

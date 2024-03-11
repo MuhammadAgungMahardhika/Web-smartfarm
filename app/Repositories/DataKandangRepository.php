@@ -20,7 +20,6 @@ class DataKandangRepository
       $dataKandang->id_kandang = $data->id_kandang;
       $dataKandang->hari_ke = $data->hari_ke;
       $dataKandang->pakan = $data->pakan;
-      $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
       $dataKandang->classification = $data->classification;
@@ -44,7 +43,6 @@ class DataKandangRepository
       $dataKandang->id_kandang = $data->id_kandang;
       $dataKandang->hari_ke = $data->hari_ke;
       $dataKandang->pakan = $data->pakan;
-      $dataKandang->bobot = $data->bobot;
       $dataKandang->minum = $data->minum;
       $dataKandang->riwayat_populasi = $data->riwayat_populasi;
       $dataKandang->classification = $data->classification;

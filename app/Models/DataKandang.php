@@ -40,7 +40,6 @@ class DataKandang extends Model
 		'id_kandang' => 'int',
 		'hari_ke' => 'int',
 		'pakan' => 'int',
-		'bobot' => 'int',
 		'minum' => 'int',
 		'created_by' => 'int',
 		'updated_by' => 'int'
@@ -50,7 +49,6 @@ class DataKandang extends Model
 		'id_kandang',
 		'hari_ke',
 		'pakan',
-		'bobot',
 		'minum',
 		'date',
 		'classification',

@@ -81,10 +81,7 @@
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight (Kg)
-                                </th>
+
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
@@ -110,7 +107,6 @@
                                     <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
-                                    <td>{{ $dataKandang->bobot }}</td>
                                     <td>{{ $dataKandang->total_kematian }} </td>
                                     <td>{!! $dataKandang->jam_kematian != null
                                         ? str_replace(',', '<br>', $dataKandang->jam_kematian)
@@ -166,7 +162,6 @@
             url: `/data-kandang/kandang/${kandangId}`,
             contentType: "application/json",
             success: function(response) {
-                console.log(response)
                 // asign value
                 let itemData = response.data
                 let data = ''
@@ -179,12 +174,11 @@
                         date,
                         pakan,
                         minum,
-                        bobot,
                         total_kematian,
                         jam_kematian,
                     } = itemData[i]
 
-                    console.log(jam_kematian)
+
                     data += `
                     <tr>
                     <td>${i+1}</td>
@@ -192,7 +186,6 @@
                     <td>${hari_ke}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${total_kematian }</td>
                     <td>${jam_kematian != null? jam_kematian.replace(/,/g, '<br>') : ''}</td>
                     <td>
@@ -225,10 +218,7 @@
                                     aria-label="Status: activate to sort column ascending" >
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight (Kg)
-                                </th>
+                               
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
@@ -342,12 +332,7 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="minum" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="bobot" class="form-control">
-                                </div>
+                               
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
                                         <p class="text-center">Daily Mortalities</p>
@@ -427,7 +412,6 @@
                     date,
                     pakan,
                     minum,
-                    bobot,
                     riwayat_populasi,
                     classification
                 } = response.data
@@ -515,12 +499,7 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${minum}" id="minum" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${bobot}" id="bobot" class="form-control">
-                                </div>
+                               
                                 <input type="hidden" value="${riwayat_populasi}" id="riwayatPopulasi">
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
@@ -565,7 +544,6 @@
                     date,
                     pakan,
                     minum,
-                    bobot,
                     riwayat_populasi,
                     classification
                 } = response.data
@@ -594,9 +572,7 @@
                                 <tr>
                                     <td>Watering (L)</td><td>${minum}</td>
                                 </tr> 
-                                <tr>
-                                    <td>Weight (Kg)</td><td>${bobot}</td>
-                                </tr> 
+                              
                             </tbody>
                         </table>
                     </div>
@@ -653,7 +629,6 @@
         let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
-        let bobot = $('#bobot').val()
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
         let klasifikasi = $('#klasifikasi').val()
 
@@ -753,24 +728,7 @@
                 timer: 1500
             })
         }
-        if (!bobot) {
-            return Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Weight required!",
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
-        if (bobot <= 0) {
-            return Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Weight must not be less than 1!",
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
+
 
         // asign value if validated
         let data = {
@@ -779,7 +737,6 @@
             date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot,
             riwayat_populasi: sisa_populasi,
             classification: klasifikasi,
             data_kematian: dataKematian
@@ -837,7 +794,6 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    console.log(response.dataKandang.id_kandang)
                     showTableData(response.dataKandang.id_kandang)
                 })
             },
@@ -854,7 +810,6 @@
         let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
-        let bobot = $('#bobot').val()
         let klasifikasi = $('#klasifikasi').val()
 
         let dataKematian = []
@@ -926,15 +881,7 @@
                 timer: 1500
             })
         }
-        if (bobot <= 0) {
-            return Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Weight must not be less than 1!",
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
+
         // asign value if validated
         let data = {
             id_kandang: idKandang,
@@ -942,7 +889,6 @@
             date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot,
             riwayat_populasi: sisa_populasi,
             classification: klasifikasi,
             data_kematian: dataKematian

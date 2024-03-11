@@ -32,6 +32,8 @@ Route::get('/register', function () {
 
 // menerima sensor dari luar dan menambahkan ke database
 Route::get('kandang/{idKandang}/suhu/{suhu}/kelembapan/{kelembapan}/amonia/{amonia}', [SensorController::class, 'storeSensorFromOutside']);
+// data kandang kirim notifikasi ke peternak
+Route::post('/data-kandang/send-peternak-notification', [DataKandangController::class, 'sendNotificationAlertToFarmer']);
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     //---------------------API------------------------------
@@ -83,6 +85,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/data-kandang/kandang/{idKandang}', [DataKandangController::class, 'getDataKandangByIdKandang']);
     Route::get('/data-kandang/detail/kandang/{idKandang}', [DataKandangController::class, 'getDetailKandangByIdKandang']);
     Route::post('/data-kandang', [DataKandangController::class, 'store']);
+
     Route::put('/data-kandang/{id}', [DataKandangController::class, 'update']);
     Route::delete('/data-kandang/{id}', [DataKandangController::class, 'delete']);
     // filter data kandang
@@ -141,14 +144,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/outlierData', [PageController::class, "outlier"])->name('outlierData');
             // Halaman data kandang
             Route::get('/cageData', [PageController::class, "dataKandang"])->name('cageData');
-            // Halaman forecast
-            Route::get('/forecast', [PageController::class, "forecast"])->name('forecast');
-            // Halaman Hasil Panen
-            Route::get('/harvestData', [PageController::class, "hasilPanen"])->name('harvestData');
         });
         //---------------------Peternak--------------------------------------//
         // Check role = 3, apakah peternak yang login
         Route::middleware(['role:3'])->group(function () {
+            // Halaman input harian
             Route::get('/dailyInput', [PageController::class, "inputHarian"])->name('dailyInput');
         });
 
@@ -160,6 +160,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
             Route::get('/notification', [PageController::class, "notifikasi"])->name('notification');
             // Halaman klasifikasi
             Route::get('/klasifikasiMonitoring', [PageController::class, "klasifikasi"])->name('klasifikasiMonitoring');
+            // Halaman Hasil Panen
+            Route::get('/harvestData', [PageController::class, "hasilPanen"])->name('harvestData');
         });
     });
 

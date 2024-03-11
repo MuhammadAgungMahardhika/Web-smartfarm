@@ -6,6 +6,7 @@ use App\Events\NotificationSent;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DataKandang;
 use App\Models\Kandang;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +60,7 @@ class DataKandangController extends Controller
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'), DB::raw('GROUP_CONCAT(data_kematian.jam SEPARATOR ",") AS jam_kematian'))
-			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $id)
 			->orderBy('data_kandang.created_at', 'ASC')
 			->get();
@@ -76,7 +77,7 @@ class DataKandangController extends Controller
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
-			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $idKandang)
 			->where(function ($query) use ($from, $to) {
 				$query->whereRaw('data_kandang.date >= ? AND data_kandang.date <= ?', [$from, $to]);
@@ -96,7 +97,7 @@ class DataKandangController extends Controller
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
-			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $idKandang)
 			->where('data_kandang.classification', '=', $classification)
 			->orderBy('data_kandang.created_at', 'ASC')
@@ -114,7 +115,7 @@ class DataKandangController extends Controller
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'))
-			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.bobot', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
+			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $idKandang)
 			->where('data_kandang.hari_ke', '=', $day)
 			->orderBy('data_kandang.created_at', 'ASC')
@@ -134,11 +135,29 @@ class DataKandangController extends Controller
 		return response(['data' => $items, 'status' => 200]);
 	}
 
-	// public function sendNotificationAlertToFillDailyInput()
-	// {
-
-	// 	Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
-	// }
+	public function sendNotificationAlertToFarmer(Request $request)
+	{
+		$message = $request->message;
+		// cari id  peternak  dari kandang
+		$items = Kandang::get();
+		$currentDate = date("Y-m-d");
+		foreach ($items as $index => $value) {
+			$idKandang = $value["id"];
+			$namaKandang = $value["nama_kandang"];
+			$idPeternak = 	$value["id_peternak"];
+			// check apakah data kandang hari ini sudah diisi
+			$isFilled = DataKandang::where('id_kandang', $idKandang)->where("date", $currentDate)->exists();
+			if ($isFilled) {
+				// Jikah sudah, kirim notifikasi ke telegram , bahwa terimakasih sudah menginputkan data hari ini
+				$message = "Thanks for submiting the daily input at ($currentDate)";
+				Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));
+			} else {
+				// Jika belum, kirim notifikasi ke telegram, bahwa hari ini belum mengimputkan data harian 
+				Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));
+			}
+		}
+		return response(['data' => $isFilled, 'status' => 200]);
+	}
 
 	public function store(Request $request)
 	{
@@ -146,7 +165,6 @@ class DataKandangController extends Controller
 			'id_kandang' => 'required',
 			'hari_ke' => 'required',
 			'pakan' => 'required',
-			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
 			'date' => 'required'
@@ -163,7 +181,6 @@ class DataKandangController extends Controller
 					"id_kandang" => $idKandang,
 					"hari_ke" => $request->hari_ke,
 					"pakan" => $request->pakan,
-					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,
@@ -228,7 +245,6 @@ class DataKandangController extends Controller
 			'id_kandang' => 'required',
 			'hari_ke' => 'required',
 			'pakan' => 'required',
-			'bobot' => 'required',
 			'minum' => 'required',
 			'riwayat_populasi' => 'required',
 			'date' => 'required'
@@ -250,7 +266,6 @@ class DataKandangController extends Controller
 					"id_kandang" => $idKandang,
 					"hari_ke" => $request->hari_ke,
 					"pakan" => $request->pakan,
-					"bobot" => $request->bobot,
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('id_kandang')->index('fk_data_kandang_kandang');
             $table->integer('hari_ke');
             $table->integer('pakan');
-            $table->integer('bobot');
             $table->integer('minum');
             $table->integer('riwayat_populasi')->nullable();;
             $table->date('date');

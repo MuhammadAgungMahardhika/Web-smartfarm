@@ -178,12 +178,6 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 223.344px;">
-                                    Weight (Kg)
-                                </th>
-
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
                                     style="width: 117.891px;">Classification
                                 </th>
 
@@ -205,7 +199,6 @@
                                     <td>{{ $dataKandang->riwayat_populasi }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
-                                    <td>{{ $dataKandang->bobot }}</td>
                                     <td>{{ $dataKandang->classification }}</td>
                                 </tr>
                             @endforeach
@@ -382,7 +375,6 @@
                         alamat_kandang,
                         pakan,
                         minum,
-                        bobot,
                         populasi_awal,
                         riwayat_populasi,
                         luas_kandang,
@@ -401,7 +393,6 @@
                     <td>${riwayat_populasi}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${classification}</td>
                     </tr>
                     `
@@ -450,12 +441,7 @@
                                     style="width: 223.344px;">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 223.344px;">
-                                    Weight (Kg)
-                                </th>
-
+                    
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
                                     style="width: 117.891px;">Classification
@@ -503,7 +489,6 @@
                         alamat_kandang,
                         pakan,
                         minum,
-                        bobot,
                         populasi_awal,
                         riwayat_populasi,
                         luas_kandang,
@@ -522,7 +507,6 @@
                     <td>${riwayat_populasi}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${classification}</td>
                     </tr>
                     `
@@ -571,12 +555,7 @@
                                     style="width: 223.344px;">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 223.344px;">
-                                    Weight (Kg)
-                                </th>
-
+                        
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
                                     style="width: 117.891px;">Classification
@@ -621,7 +600,6 @@
                         alamat_kandang,
                         pakan,
                         minum,
-                        bobot,
                         populasi_awal,
                         riwayat_populasi,
                         luas_kandang,
@@ -640,7 +618,6 @@
                     <td>${riwayat_populasi}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${classification}</td>
                     </tr>
                     `
@@ -689,12 +666,6 @@
                                     style="width: 223.344px;">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 223.344px;">
-                                    Weight (Kg)
-                                </th>
-
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
                                     style="width: 117.891px;">Classification
@@ -783,7 +754,6 @@
                             alamat_kandang,
                             pakan,
                             minum,
-                            bobot,
                             populasi_awal,
                             riwayat_populasi,
                             luas_kandang,
@@ -802,7 +772,6 @@
                     <td>${riwayat_populasi}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${classification}</td>
                     </tr>
                     `
@@ -851,12 +820,7 @@
                                     style="width: 223.344px;">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending"
-                                    style="width: 223.344px;">
-                                    Weight (Kg)
-                                </th>
-
+                        
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending"
                                     style="width: 117.891px;">Classification

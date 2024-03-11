@@ -96,6 +96,15 @@
             "November", "December"
         ];
 
+        // ingatkan ketika jam  12 untuk input data harian
+        if (Hours === 13 && Min === 11 && Sec === 0) {
+            const message = "Dont forget to submit daily input before 5 PM today."
+            sendNotificationAlertToFarmer(message);
+        } else if (Hours === 16 && Min === 0 && Sec === 0) {
+            const message = "Your daily cage data input is pending. Kindly ensure it's completed before 5 PM today."
+            sendNotificationAlertToFarmer(message);
+        }
+
         if (Min < 10) {
             Min === "0" + Min;
         }
@@ -121,18 +130,26 @@
             dt.getFullYear() + "," + Hours + ":" + Min + ":" + Sec + ":" + suffix;
 
     }
-</script>
-{{-- Language --}}
-<script>
-    let lang = localStorage.getItem("locale")
-    let togglerLang = document.getElementById('toggle-lang')
-    lang == "id" ? togglerLang.checked = true : false
 
-    function toggleLang() {
-        togglerLang.checked ? setLanguage("id") : setLanguage("en")
-    }
+    function sendNotificationAlertToFarmer(message) {
+        let data = {
+            message: message
+        }
+        $.ajax({
+            type: "POST",
+            url: `/data-kandang/send-peternak-notification`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
 
-    function setLanguage(locale) {
-        localStorage.setItem("locale", locale)
     }
 </script>

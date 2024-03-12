@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -37,7 +38,10 @@ class NotificationController extends Controller
 
     public function getNotificationByKandangId($id)
     {
-        $items = DB::table('notification')->where('id_kandang', '=', $id)->orderBy('waktu', 'desc')->get();
+        $items = DB::table('notification')
+            ->where('id_kandang', '=', $id)
+            ->where('id_user', Auth::user()->id)
+            ->orderBy('waktu', 'desc')->get();
         return response(['data' => $items, 'status' => 200]);
     }
 
@@ -46,12 +50,14 @@ class NotificationController extends Controller
         try {
             $request->validate([
                 'id_kandang' => 'required',
+                'id_user' => 'required',
                 'pesan' => 'required',
             ]);
 
             $notification = $this->notificationRepository->createNotification(
                 (object) [
                     "id_kandang" => $request->id_kandang,
+                    "id_user" => $request->id_user,
                     "pesan" => $request->pesan,
                     "status" => $request->status,
                     "waktu" =>  Carbon::now()->timezone('Asia/Jakarta')

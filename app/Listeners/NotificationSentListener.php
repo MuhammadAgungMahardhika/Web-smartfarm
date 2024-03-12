@@ -43,6 +43,7 @@ class NotificationSentListener
 
         $this->notificationRepository->createNotification((object)[
             "id_kandang" => $idKandang,
+            "id_user" => $userId,
             "pesan" => $message,
             "status" => 1,
             "waktu" =>  Carbon::now()->timezone('Asia/Jakarta')

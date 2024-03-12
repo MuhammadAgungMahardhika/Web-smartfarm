@@ -184,8 +184,11 @@ class PageController extends Controller
         }
 
         $data = Kandang::with(['notification' => function ($query) {
-            $query->orderBy('waktu', 'desc');
+            $query->where("id_user", Auth::user()->id)
+                ->orderBy('waktu', 'desc');
         }])->where($checkUser, Auth::user()->id)->get();
+
+
         $send = [
             'data' => $data
         ];
@@ -201,6 +204,7 @@ class PageController extends Controller
         }
 
         $data = Kandang::with('data_kandangs')->where($checkUser, Auth::user()->id)->get();
+
         $send = [
             'data' => $data
         ];

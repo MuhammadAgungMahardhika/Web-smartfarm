@@ -18,6 +18,7 @@ class Notification extends Seeder
     {
         DB::table('notification')->insert([
             'id_kandang' => 1,
+            'id_user' => 1,
             'pesan' => "Halo Smartfarm ini pesan pertama",
             'status' => 1,
             'waktu' => Carbon::now(),

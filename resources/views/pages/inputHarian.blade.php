@@ -133,13 +133,15 @@
     </section>
 </x-app-layout>
 <script>
+    const baseUrl = "{{ url('') }}"
+    console.log(baseUrl)
     initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: baseUrl + `/kandang/${id}`,
             success: function(response) {
                 let kandang = response.data
                 $('#alamatKandang').html(kandang.alamat_kandang)
@@ -159,7 +161,7 @@
     function showTableData(kandangId) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/kandang/${kandangId}`,
+            url: baseUrl + `/data-kandang/kandang/${kandangId}`,
             contentType: "application/json",
             success: function(response) {
                 // asign value
@@ -267,7 +269,7 @@
     function addModal(idKandang) {
         $.ajax({
             type: "GET",
-            url: `/kandang/${idKandang}`,
+            url: baseUrl + `/kandang/${idKandang}`,
             success: function(response) {
 
                 let {
@@ -283,6 +285,8 @@
                 if (dd < 10) dd = '0' + dd;
                 if (mm < 10) mm = '0' + mm;
                 let dateNow = yyyy + "-" + mm + "-" + dd
+
+                const hariKe = getNextDay(idKandang)
 
                 $('#modalTitle').html("Add Daily Data")
                 $('#modalBody').html(`
@@ -312,7 +316,7 @@
                                     <label for="hariKe">Day- <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" value="" id="hariKe" class="form-control" placeholder="" autofocus>
+                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control" placeholder="" autofocus>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="date">Date <span class="text-danger"> *</span></label>
@@ -362,6 +366,23 @@
 
     }
 
+    // mendapatkan hari selanjutnya 
+    function getNextDay(idKandang) {
+        let result
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: baseUrl + `/data-kandang/next-day/${idKandang}`,
+            success: function(response) {
+                result = response.data.nextDay
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return result
+    }
+
     function addRowKematian() {
         // set row id 
         let id = Math.floor(Math.random() * 1000000000);
@@ -402,7 +423,7 @@
     function editModal(id) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             success: function(response) {
                 let {
                     data_kematians,
@@ -534,7 +555,7 @@
     function deleteModal(id) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             success: function(response) {
                 let {
                     kandang,
@@ -593,7 +614,7 @@
         let item
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: baseUrl + `/kandang/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -609,7 +630,7 @@
         let item
         $.ajax({
             type: "GET",
-            url: `/jumlah-kematian/data-kandang/${id}`,
+            url: baseUrl + `/jumlah-kematian/data-kandang/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -631,7 +652,6 @@
         let minum = $('#minum').val()
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
         let klasifikasi = $('#klasifikasi').val()
-
 
         let dataKematian = []
         let tableKematian = $('#tableKematian tr').each(function(tr) {
@@ -744,7 +764,7 @@
 
         $.ajax({
             type: "POST",
-            url: `/data-kandang`,
+            url: baseUrl + `/data-kandang`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -780,7 +800,7 @@
     function deleteItem(id) {
         $.ajax({
             type: "DELETE",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -895,7 +915,7 @@
         }
         $.ajax({
             type: "PUT",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             data: JSON.stringify(data),
             contentType: "application/json",
             headers: {

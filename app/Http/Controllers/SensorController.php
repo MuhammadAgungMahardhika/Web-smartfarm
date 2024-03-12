@@ -17,7 +17,7 @@ class SensorController extends Controller
 {
 
 	protected $sensorRepository;
-	protected $modelSensor, $modelAmoniak;
+	protected $modelSensor;
 	/**
 	 * Create a new controller instance.
 	 */

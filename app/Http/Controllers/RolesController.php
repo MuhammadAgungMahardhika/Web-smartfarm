@@ -17,23 +17,22 @@ use Laravel\Jetstream\Jetstream;
 class RolesController extends Controller
 {
 
-    protected $model;
+
     protected $roleRepository;
     /**
      * Create a new controller instance.
      */
-    public function __construct(Role $role, RolesRepository $roleRepository)
+    public function __construct(RolesRepository $roleRepository)
     {
-        $this->model = $role;
         $this->roleRepository = $roleRepository;
     }
 
     public function index($id = null)
     {
         if ($id != null) {
-            $items = $this->model::findOrFail($id);
+            $items = Role::findOrFail($id);
         } else {
-            $items = $this->model->get();
+            $items = Role::get();
         }
         return response(['data' => $items, 'status' => 200]);
     }

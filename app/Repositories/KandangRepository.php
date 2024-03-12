@@ -59,11 +59,12 @@ class KandangRepository
     }
   }
 
-  public function changeKandangPopulation($id, object $data): Kandang
+  public function changeKandangPopulationAndSetActiveStatus($id, object $data): Kandang
   {
     try {
       $kandang = Kandang::findOrFail($id);
       $kandang->populasi_saat_ini = $data->populasi_saat_ini;
+      $kandang->status = 'aktif';
       $kandang->save();
       return $kandang;
     } catch (Exception $th) {

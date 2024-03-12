@@ -14,23 +14,22 @@ use Illuminate\Validation\ValidationException;
 
 class NotificationController extends Controller
 {
-    protected $model;
+
     protected $notificationRepository;
     /**
      * Create a new controller instance.
      */
-    public function __construct(Notification $notification, NotificationRepository $notificationRepository)
+    public function __construct(NotificationRepository $notificationRepository)
     {
-        $this->model = $notification;
         $this->notificationRepository = $notificationRepository;
     }
 
     public function index($id = null)
     {
         if ($id != null) {
-            $items = $this->model::findOrFail($id)->with('kandang');
+            $items = Notification::findOrFail($id)->with('kandang');
         } else {
-            $items = $this->model->get();
+            $items = Notification::get();
         }
         return response(['data' => $items, 'status' => 200]);
     }

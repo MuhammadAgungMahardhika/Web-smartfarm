@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\DataKandangRepository;
 use App\Repositories\DataKematianRepository;
 use App\Repositories\KandangRepository;
-use App\Repositories\NotificationRepository;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
@@ -24,12 +23,10 @@ class DataKandangController extends Controller
 	protected $kandangRepository;
 	protected $dataKandangRepository;
 	protected $dataKematianRepository;
-	protected $model;
 	/**
 	 * Create a new controller instance.
 	 */
 	public function __construct(
-
 		KandangRepository $kandangRepository,
 		DataKandangRepository $dataKandangRepository,
 		DataKematianRepository $dataKematianRepository,
@@ -51,6 +48,35 @@ class DataKandangController extends Controller
 			$items = $dataKandang->get();
 		}
 		return response(['data' => $items, 'status' => 200]);
+	}
+
+	public function getNextDay($idKandang)
+	{
+		$items = DB::table('data_kandang')
+			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
+			->where('data_kandang.id_kandang', $idKandang)
+			->latest('hari_ke')
+			->latest('kandang.status')
+			->first();
+
+		// check apakah nilai sudah pernah ada
+		if ($items) {
+			$day = $items->hari_ke;
+			$nextDay = $day + 1;
+			$status = $items->status;
+
+			// jika statusnya nonaktif maka atur ulang penomoran dari 1 dan update jadi aktif kembali
+			if ($status == "nonaktif") {
+				$nextDay = 1;
+			}
+		} else {
+			$nextDay = 1;
+		}
+
+		$response = [
+			'nextDay' => $nextDay,
+		];
+		return response(['data' => $response, 'status' => 200]);
 	}
 
 	public function getDataKandangByIdKandang($id)
@@ -208,7 +234,7 @@ class DataKandangController extends Controller
 				}
 			}
 
-			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
+			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
@@ -295,7 +321,7 @@ class DataKandangController extends Controller
 			}
 
 			// Ubah nilai populasi saat ini
-			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
+			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
 				"populasi_saat_ini" => intval($riwayatPopulasi)
 			]);
 
@@ -344,7 +370,7 @@ class DataKandangController extends Controller
 			$populasiSaatIni = DB::table('kandang')->where('kandang.id', '=', $idKandang)->select('kandang.populasi_saat_ini')->first()->populasi_saat_ini;
 			$populasiAkhir = intval($populasiSaatIni)  + intval($jumlahKematian);
 
-			$this->kandangRepository->changeKandangPopulation($idKandang, (object)[
+			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
 				"populasi_saat_ini" => $populasiAkhir
 			]);
 			DB::commit();

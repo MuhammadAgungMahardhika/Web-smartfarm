@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\DB;
 class PageController extends Controller
 {
 
+    protected $modelKandang;
+    public function __construct(Kandang $kandang)
+    {
+        $this->modelKandang = $kandang;
+    }
     public function user()
     {
         $data =  User::with('roles')->get();
@@ -21,8 +26,9 @@ class PageController extends Controller
     }
     public function Dashboard()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
-        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
+        $data =  DB::table('kandang')->where('id_user', $userId)->get()->toArray();
         $send = [
             'kandang' => $kandang,
             'data' => $data
@@ -32,9 +38,10 @@ class PageController extends Controller
 
     public function monitoringKandang()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
         $data = DB::table('sensors')
-            ->where('kandang.id_user', '=', Auth::user()->id)
+            ->where('kandang.id_user', '=', $userId)
             ->where('kandang.id', '=', $kandang[0]->id)
 
             ->leftJoin('kandang', function ($join) {
@@ -74,8 +81,9 @@ class PageController extends Controller
     }
     public function cageVisualization()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
-        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
+        $data =  DB::table('kandang')->where('id_user', $userId)->get()->toArray();
         $send = [
             'kandang' => $kandang,
             'data' => $data
@@ -85,8 +93,9 @@ class PageController extends Controller
 
     public function temperatureOutlier()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
-        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
+        $data =  DB::table('kandang')->where('id_user', $userId)->get()->toArray();
         $send = [
             'kandang' => $kandang,
             'data' => $data
@@ -95,8 +104,9 @@ class PageController extends Controller
     }
     public function humidityOutlier()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
-        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
+        $data =  DB::table('kandang')->where('id_user', $userId)->get()->toArray();
         $send = [
             'kandang' => $kandang,
             'data' => $data
@@ -105,8 +115,9 @@ class PageController extends Controller
     }
     public function amoniaOutlier()
     {
-        $kandang = Kandang::where('kandang.id_user', Auth::user()->id)->get();
-        $data =  DB::table('kandang')->where('id_user', Auth::user()->id)->get()->toArray();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_user', $userId)->get();
+        $data =  DB::table('kandang')->where('id_user', $userId)->get()->toArray();
         $send = [
             'kandang' => $kandang,
             'data' => $data
@@ -132,7 +143,8 @@ class PageController extends Controller
 
     public function dataKandang()
     {
-        $data =  Kandang::with('data_kandangs')->where('id_user', Auth::user()->id)->get();
+        $userId = Auth::user()->id;
+        $data =  $this->modelKandang::with('data_kandangs')->where('id_user', $userId)->get();
         $send = [
             'data' => $data
         ];
@@ -141,13 +153,14 @@ class PageController extends Controller
 
     public function hasilPanen()
     {
+        $userId = Auth::user()->id;
         // check role, peternak or pemilik
         if (Auth::user()->id_role == 3) {
             $checkUser = 'kandang.id_peternak';
         } else if (Auth::user()->id_role == 2) {
             $checkUser = "kandang.id_user";
         }
-        $data = Kandang::with('panens')->where($checkUser, Auth::user()->id)->get();
+        $data = $this->modelKandang::with('panens')->where($checkUser, $userId)->get();
         $send = [
             'data' => $data
         ];
@@ -155,7 +168,8 @@ class PageController extends Controller
     }
     public function inputHarian()
     {
-        $kandang = Kandang::where('kandang.id_peternak', Auth::user()->id)->get();
+        $userId = Auth::user()->id;
+        $kandang = $this->modelKandang::where('kandang.id_peternak', $userId)->get();
 
         $data = DB::table('data_kandang')
             ->leftJoin('data_kematian', 'data_kematian.id_data_kandang', '=', 'data_kandang.id')
@@ -175,7 +189,7 @@ class PageController extends Controller
     }
     public function notifikasi()
     {
-
+        $userId = Auth::user()->id;
         // check role, peternak or pemilik
         if (Auth::user()->id_role == 3) {
             $checkUser = 'id_peternak';
@@ -183,10 +197,10 @@ class PageController extends Controller
             $checkUser = "id_user";
         }
 
-        $data = Kandang::with(['notification' => function ($query) {
+        $data = $this->modelKandang::with(['notification' => function ($query) {
             $query->where("id_user", Auth::user()->id)
                 ->orderBy('waktu', 'desc');
-        }])->where($checkUser, Auth::user()->id)->get();
+        }])->where($checkUser, $userId)->get();
 
 
         $send = [
@@ -196,6 +210,7 @@ class PageController extends Controller
     }
     public function klasifikasi()
     {
+        $userId = Auth::user()->id;
         // check role, peternak or pemilik
         if (Auth::user()->id_role == 3) {
             $checkUser = 'id_peternak';
@@ -203,7 +218,7 @@ class PageController extends Controller
             $checkUser = "id_user";
         }
 
-        $data = Kandang::with('data_kandangs')->where($checkUser, Auth::user()->id)->get();
+        $data = $this->modelKandang::with('data_kandangs')->where($checkUser, $userId)->get();
 
         $send = [
             'data' => $data

@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // kandang
     Route::get('/kandang', [KandangController::class, 'index']);
     Route::get('/kandang/{id}', [KandangController::class, 'index']);
+    Route::get('/kandang/reset/{id}', [KandangController::class, 'setKandangStatusToInactive']);
     Route::get('/detailKandang/{id}', [KandangController::class, 'getDetailKandangById']);
     Route::get('/kandang/user/{id}', [KandangController::class, 'getKandangByUserId']);
     Route::get('/kandang/peternak/{id}', [KandangController::class, 'getKandangByPeternakId']);

@@ -56,8 +56,17 @@ class KandangController extends Controller
 		return response(['data' => $items, 'status' => 200]);
 	}
 
-	public function setKandangStatusToActive($id)
+	public function setKandangStatusToInactive($id)
 	{
+		try {
+			$kandang = Kandang::findOrFail($id);
+			$kandang->status = "nonaktif";
+			$kandang->save();
+
+			return response(['data' => true, 'status' => 200]);
+		} catch (QueryException $th) {
+			return $this->handleQueryException($th);
+		}
 	}
 	public function getKandangByPeternakId($id)
 	{

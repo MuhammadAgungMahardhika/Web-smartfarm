@@ -55,10 +55,8 @@ class DataKandangController extends Controller
 		$items = DB::table('data_kandang')
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->where('data_kandang.id_kandang', $idKandang)
-			->latest('hari_ke')
-			->latest('kandang.status')
+			->orderBy('data_kandang.id', 'DESC')
 			->first();
-
 		// check apakah nilai sudah pernah ada
 		if ($items) {
 			$day = $items->hari_ke;

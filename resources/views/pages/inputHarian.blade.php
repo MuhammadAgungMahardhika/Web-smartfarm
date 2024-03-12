@@ -45,8 +45,16 @@
                             </thead>
                         </table>
                     </div>
-                </div>
+                    <div class="col-12 col-md-4 col-lg-4 p-2">
+                        <div id="resetDaily">
+                            <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#default"
+                                onclick="addModalResetDaily('{{ $kandang[0]->id }}')"><i class="fa fa-refresh"></i>
+                                Reset
+                                Daily Input</a>
+                        </div>
 
+                    </div>
+                </div>
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
@@ -148,6 +156,10 @@
                 $('#addButton').html(
                     ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
                 )
+                $('#resetDaily').html(`
+                     <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#default"
+                                onclick="addModalResetDaily('${id}')"><i class="fa fa-refresh"></i>Reset Daily Input</a>
+                `)
                 showTableData(id)
             },
             error: function(err) {
@@ -156,6 +168,41 @@
         })
 
 
+    }
+
+    function addModalResetDaily(idKandang) {
+        $('#modalTitle').html("Reset Daily Input Day")
+        $('#modalBody').html("Warning! Are you sure to reset the day ? it will start from 1 again")
+        $('#modalFooter').html(
+            `<a class="btn btn-danger btn-sm" onclick="resetDailyInput('${idKandang}')">Reset now!</a>`)
+
+    }
+
+    function resetDailyInput(idKandang) {
+        $.ajax({
+            type: "GET",
+            url: baseUrl + `/kandang/reset/${idKandang}`,
+            contentType: "application/json",
+            success: function(response) {
+                // asign value
+                let itemData = response.data
+                console.log(itemData)
+                if (itemData) {
+                    $('#default').modal('hide')
+                    return Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Daily Input Has been reset",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                }
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
     }
 
     function showTableData(kandangId) {

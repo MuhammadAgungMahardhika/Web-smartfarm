@@ -363,7 +363,7 @@
                                     <label for="hariKe">Day- <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control" placeholder="" autofocus>
+                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control" placeholder="" autofocus readonly>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="date">Date <span class="text-danger"> *</span></label>

@@ -173,8 +173,8 @@ class DataKandangController extends Controller
 			$isFilled = DataKandang::where('id_kandang', $idKandang)->where("date", $currentDate)->exists();
 			if ($isFilled) {
 				// Jikah sudah, kirim notifikasi ke telegram , bahwa terimakasih sudah menginputkan data hari ini
-				$message = "Thanks for submiting the daily input at ($currentDate)";
-				Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));
+				$thanksMessage = "Thanks for submiting the daily input at ($currentDate)";
+				Event(new NotificationSent($idKandang, $idPeternak, $thanksMessage . ". for kandang : ($namaKandang)"));
 			} else {
 				// Jika belum, kirim notifikasi ke telegram, bahwa hari ini belum mengimputkan data harian 
 				Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));

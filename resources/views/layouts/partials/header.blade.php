@@ -97,7 +97,7 @@
         ];
 
         // ingatkan ketika jam  12 untuk input data harian
-        if (Hours === 13 && Min === 11 && Sec === 0) {
+        if (Hours === 12 && Min === 0 && Sec === 0) {
             const message = "Dont forget to submit daily input before 5 PM today."
             sendNotificationAlertToFarmer(message);
         } else if (Hours === 16 && Min === 0 && Sec === 0) {

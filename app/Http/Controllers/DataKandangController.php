@@ -162,22 +162,25 @@ class DataKandangController extends Controller
 	public function sendNotificationAlertToFarmer(Request $request)
 	{
 		$message = $request->message;
+		// check role
+		if (Auth::user()->id_role == 2) {
+			$user = "id_user";
+		} else if (Auth::user()->id_role == 3) {
+			$user = "id_peternak";
+		}
 		// cari id  peternak  dari kandang
-		$items = Kandang::get();
-		$currentDate = date("Y-m-d");
-		foreach ($items as $index => $value) {
-			$idKandang = $value["id"];
-			$namaKandang = $value["nama_kandang"];
-			$idPeternak = 	$value["id_peternak"];
-			// check apakah data kandang hari ini sudah diisi
-			$isFilled = DataKandang::where('id_kandang', $idKandang)->where("date", $currentDate)->exists();
-			if ($isFilled) {
-				// Jikah sudah, kirim notifikasi ke telegram , bahwa terimakasih sudah menginputkan data hari ini
-				$thanksMessage = "Thanks for submiting the daily input at ($currentDate)";
-				Event(new NotificationSent($idKandang, $idPeternak, $thanksMessage . ". for kandang : ($namaKandang)"));
-			} else {
-				// Jika belum, kirim notifikasi ke telegram, bahwa hari ini belum mengimputkan data harian 
-				Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));
+		$items = Kandang::where($user, Auth::user()->id)->get();
+		$currentDate = Carbon::now()->format('Y-m-d');
+		if ($items) {
+			foreach ($items as $index => $value) {
+				$idKandang = $value["id"];
+				$namaKandang = $value["nama_kandang"];
+				$idPeternak = 	$value["id_peternak"];
+				// check apakah data kandang hari ini sudah diisi
+				$isFilled = DataKandang::where('id_kandang', $idKandang)->where("date", $currentDate)->exists();
+				if (!$isFilled) {
+					Event(new NotificationSent($idKandang, $idPeternak, $message . ". for kandang : ($namaKandang)"));
+				}
 			}
 		}
 		return response(['data' => $isFilled, 'status' => 200]);
@@ -232,24 +235,23 @@ class DataKandangController extends Controller
 				}
 			}
 
+			// Ubah status kandang jadi aktif
 			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
-				"populasi_saat_ini" => intval($riwayatPopulasi)
+				"populasi_saat_ini" => intval($riwayatPopulasi),
 			]);
 
 			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
+			$kandang = Kandang::where('id', $idKandang)->first();
+			$namaKandang = $kandang->nama_kandang;
 			if ($klasifikasi == "abnormal") {
-				$kandang = Kandang::findOrFail($idKandang)->first();
-				$namaKandang = $kandang->nama_kandang;
 				$userId = $kandang->id_user; //pemilik kandang
 				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
 			// Kirim notifikasi jika sudah berhasil input
-
-			// $date = $request->date;
-			// $thanksMessage = "Thanks for submiting the daily input at ( $date )";
-			// $idPeternak =  Auth::user()->id;
-			// Event(new NotificationSent($idKandang, 1, $thanksMessage . ". for kandang : ($namaKandang)"));
+			$thanksMessage = "Thanks for submiting the daily input at ( $request->date )";
+			$idPeternak =  Auth::user()->id;
+			Event(new NotificationSent($idKandang, $idPeternak, $thanksMessage . ". for kandang : ($namaKandang)"));
 
 			DB::commit();
 			return response()->json([
@@ -327,7 +329,7 @@ class DataKandangController extends Controller
 
 			// Ubah nilai populasi saat ini
 			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
-				"populasi_saat_ini" => intval($riwayatPopulasi)
+				"populasi_saat_ini" => intval($riwayatPopulasi),
 			]);
 
 			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang

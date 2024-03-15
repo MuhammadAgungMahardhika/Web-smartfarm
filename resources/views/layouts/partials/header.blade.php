@@ -97,10 +97,10 @@
         ];
 
         // ingatkan ketika jam  12 untuk input data harian
-        if (Hours === 22 && Min === 35 && Sec === 0) {
+        if (Hours === 12 && Min === 0 && Sec === 0) {
             const message = "Dont forget to submit daily input before 5 PM today."
             sendNotificationAlertToFarmer(message);
-        } else if (Hours === 16 && Min === 0 && Sec === 0) {
+        } else if (Hours === 17 && Min === 52 && Sec === 20) {
             const message = "Your daily cage data input is pending. Kindly ensure it's completed before 5 PM today."
             sendNotificationAlertToFarmer(message);
         }

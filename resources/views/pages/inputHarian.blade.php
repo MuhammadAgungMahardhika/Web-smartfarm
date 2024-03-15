@@ -45,8 +45,16 @@
                             </thead>
                         </table>
                     </div>
-                </div>
+                    <div class="col-12 col-md-4 col-lg-4 p-2">
+                        <div id="resetDaily">
+                            <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#default"
+                                onclick="addModalResetDaily('{{ $kandang[0]->id }}')"><i class="fa fa-refresh"></i>
+                                Reset
+                                Daily Input</a>
+                        </div>
 
+                    </div>
+                </div>
             </div>
 
             <div class="card-body table-responsive  p-4 rounded">
@@ -81,10 +89,7 @@
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight (Kg)
-                                </th>
+
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
@@ -110,7 +115,6 @@
                                     <td>{{ $dataKandang->hari_ke }}</td>
                                     <td>{{ $dataKandang->pakan }}</td>
                                     <td>{{ $dataKandang->minum }}</td>
-                                    <td>{{ $dataKandang->bobot }}</td>
                                     <td>{{ $dataKandang->total_kematian }} </td>
                                     <td>{!! $dataKandang->jam_kematian != null
                                         ? str_replace(',', '<br>', $dataKandang->jam_kematian)
@@ -137,19 +141,25 @@
     </section>
 </x-app-layout>
 <script>
+    const baseUrl = "{{ url('') }}"
+    console.log(baseUrl)
     initDataTable('table')
 
     function initKandang() {
         let id = $("#selectKandang").val()
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: baseUrl + `/kandang/${id}`,
             success: function(response) {
                 let kandang = response.data
                 $('#alamatKandang').html(kandang.alamat_kandang)
                 $('#addButton').html(
                     ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${id}')"><i class="fa fa-plus"></i> </a>`
                 )
+                $('#resetDaily').html(`
+                     <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#default"
+                                onclick="addModalResetDaily('${id}')"><i class="fa fa-refresh"></i>Reset Daily Input</a>
+                `)
                 showTableData(id)
             },
             error: function(err) {
@@ -160,13 +170,47 @@
 
     }
 
+    function addModalResetDaily(idKandang) {
+        $('#modalTitle').html("Reset Daily Input Day")
+        $('#modalBody').html("Warning! Are you sure to reset the day ? it will start from 1 again")
+        $('#modalFooter').html(
+            `<a class="btn btn-danger btn-sm" onclick="resetDailyInput('${idKandang}')">Reset now!</a>`)
+
+    }
+
+    function resetDailyInput(idKandang) {
+        $.ajax({
+            type: "GET",
+            url: baseUrl + `/kandang/reset/${idKandang}`,
+            contentType: "application/json",
+            success: function(response) {
+                // asign value
+                let itemData = response.data
+                console.log(itemData)
+                if (itemData) {
+                    $('#default').modal('hide')
+                    return Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Daily Input Has been reset",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                }
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+    }
+
     function showTableData(kandangId) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/kandang/${kandangId}`,
+            url: baseUrl + `/data-kandang/kandang/${kandangId}`,
             contentType: "application/json",
             success: function(response) {
-                console.log(response)
                 // asign value
                 let itemData = response.data
                 let data = ''
@@ -179,12 +223,11 @@
                         date,
                         pakan,
                         minum,
-                        bobot,
                         total_kematian,
                         jam_kematian,
                     } = itemData[i]
 
-                    console.log(jam_kematian)
+
                     data += `
                     <tr>
                     <td>${i+1}</td>
@@ -192,7 +235,6 @@
                     <td>${hari_ke}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${total_kematian }</td>
                     <td>${jam_kematian != null? jam_kematian.replace(/,/g, '<br>') : ''}</td>
                     <td>
@@ -225,10 +267,7 @@
                                     aria-label="Status: activate to sort column ascending" >
                                     Watering (L)
                                 </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight (Kg)
-                                </th>
+                               
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
@@ -277,7 +316,7 @@
     function addModal(idKandang) {
         $.ajax({
             type: "GET",
-            url: `/kandang/${idKandang}`,
+            url: baseUrl + `/kandang/${idKandang}`,
             success: function(response) {
 
                 let {
@@ -293,6 +332,8 @@
                 if (dd < 10) dd = '0' + dd;
                 if (mm < 10) mm = '0' + mm;
                 let dateNow = yyyy + "-" + mm + "-" + dd
+
+                const hariKe = getNextDay(idKandang)
 
                 $('#modalTitle').html("Add Daily Data")
                 $('#modalBody').html(`
@@ -322,7 +363,7 @@
                                     <label for="hariKe">Day- <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="text" value="" id="hariKe" class="form-control" placeholder="" autofocus>
+                                    <input type="number" value="${hariKe}" id="hariKe" class="form-control" placeholder="" autofocus readonly>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="date">Date <span class="text-danger"> *</span></label>
@@ -342,12 +383,7 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" id="minum" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" id="bobot" class="form-control">
-                                </div>
+                               
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
                                         <p class="text-center">Daily Mortalities</p>
@@ -365,7 +401,7 @@
                 `)
 
                 // Prevent text di input day
-                $('#hariKe').addEventListener('input', function(event) {
+                document.getElementById('hariKe').addEventListener('input', function(event) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
                 $('#modalFooter').html(`<a class="btn btn-success btn-sm" onclick="save()">Submit</a>`)
@@ -375,6 +411,23 @@
             }
         })
 
+    }
+
+    // mendapatkan hari selanjutnya 
+    function getNextDay(idKandang) {
+        let result
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: baseUrl + `/data-kandang/next-day/${idKandang}`,
+            success: function(response) {
+                result = response.data.nextDay
+            },
+            error: function(err) {
+                console.log(err.responseText)
+            }
+        })
+        return result
     }
 
     function addRowKematian() {
@@ -417,7 +470,7 @@
     function editModal(id) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             success: function(response) {
                 let {
                     data_kematians,
@@ -427,7 +480,6 @@
                     date,
                     pakan,
                     minum,
-                    bobot,
                     riwayat_populasi,
                     classification
                 } = response.data
@@ -515,12 +567,7 @@
                                 <div class="col-md-8 form-group">
                                     <input type="number" value="${minum}" id="minum" class="form-control">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="bobot">Weight (Kg) <span class="text-danger"> *</span></label>
-                                </div>
-                                <div class="col-md-8 form-group">
-                                    <input type="number" value="${bobot}" id="bobot" class="form-control">
-                                </div>
+                               
                                 <input type="hidden" value="${riwayat_populasi}" id="riwayatPopulasi">
                                 <div>
                                     <div class="table-responsive bg-light border border-secondary p-2">
@@ -538,7 +585,7 @@
                     </form>
                 `)
                 // Prevent text di input day
-                $('#hariKe').addEventListener('input', function(event) {
+                document.getElementById('hariKe').addEventListener('input', function(event) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
                 $('#modalFooter').html(
@@ -555,7 +602,7 @@
     function deleteModal(id) {
         $.ajax({
             type: "GET",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             success: function(response) {
                 let {
                     kandang,
@@ -565,7 +612,6 @@
                     date,
                     pakan,
                     minum,
-                    bobot,
                     riwayat_populasi,
                     classification
                 } = response.data
@@ -594,9 +640,7 @@
                                 <tr>
                                     <td>Watering (L)</td><td>${minum}</td>
                                 </tr> 
-                                <tr>
-                                    <td>Weight (Kg)</td><td>${bobot}</td>
-                                </tr> 
+                              
                             </tbody>
                         </table>
                     </div>
@@ -617,7 +661,7 @@
         let item
         $.ajax({
             type: "GET",
-            url: `/kandang/${id}`,
+            url: baseUrl + `/kandang/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -633,7 +677,7 @@
         let item
         $.ajax({
             type: "GET",
-            url: `/jumlah-kematian/data-kandang/${id}`,
+            url: baseUrl + `/jumlah-kematian/data-kandang/${id}`,
             async: false,
             success: function(response) {
                 item = response.data
@@ -653,10 +697,8 @@
         let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
-        let bobot = $('#bobot').val()
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
         let klasifikasi = $('#klasifikasi').val()
-
 
         let dataKematian = []
         let tableKematian = $('#tableKematian tr').each(function(tr) {
@@ -675,42 +717,85 @@
                 totalKematian += parseInt(dataKematian[i].jumlah_kematian)
 
             } else {
-                return Swal.fire("Please check your daily mortality data");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please check your daily mortality data!",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 
         let sisa_populasi = populasiSaatIni - totalKematian
 
         if (sisa_populasi < 0) {
-            return Swal.fire("Deaths exceed the current population!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Deaths exceed the current population!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!hariKe) {
-            return Swal.fire("Day required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (hariKe <= 0) {
-            return Swal.fire("Day must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!pakan) {
-            return Swal.fire("Feed required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (pakan <= 0) {
-            return Swal.fire("Feed must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!minum) {
-            return Swal.fire("Drink required!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Drink required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (minum <= 0) {
-            return Swal.fire("Watering must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Watering must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
-        if (!bobot) {
-            return Swal.fire("Weight required!");
-        }
-        if (bobot <= 0) {
-            return Swal.fire("Weight must not be less than 1!");
-        }
+
 
         // asign value if validated
         let data = {
@@ -719,7 +804,6 @@
             date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot,
             riwayat_populasi: sisa_populasi,
             classification: klasifikasi,
             data_kematian: dataKematian
@@ -727,13 +811,14 @@
 
         $.ajax({
             type: "POST",
-            url: `/data-kandang`,
+            url: baseUrl + `/data-kandang`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             data: JSON.stringify(data),
             success: function(response) {
+                console.log(response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",
@@ -746,7 +831,14 @@
                 })
             },
             error: function(err) {
-                console.log(err.responseText)
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please select another date, already choosen",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
         })
@@ -755,7 +847,7 @@
     function deleteItem(id) {
         $.ajax({
             type: "DELETE",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             contentType: "application/json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -769,7 +861,6 @@
                     timer: 1500
                 }).then(() => {
                     $('#default').modal('hide')
-                    console.log(response.dataKandang.id_kandang)
                     showTableData(response.dataKandang.id_kandang)
                 })
             },
@@ -786,7 +877,6 @@
         let date = $('#date').val()
         let pakan = $('#pakan').val()
         let minum = $('#minum').val()
-        let bobot = $('#bobot').val()
         let klasifikasi = $('#klasifikasi').val()
 
         let dataKematian = []
@@ -805,7 +895,13 @@
             if (dataKematian[i].jumlah_kematian > 0 && dataKematian[i].jam.length > 0) {
                 totalKematian += parseInt(dataKematian[i].jumlah_kematian)
             } else {
-                return Swal.fire("Please check your daily mortality data!");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please check your daily mortality data!",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
         }
 
@@ -816,21 +912,43 @@
 
         // validasi
         if (sisa_populasi < 0) {
-            return Swal.fire("Deaths exceed the current population!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Deaths exceed the current population!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (hariKe <= 0) {
-            return Swal.fire("Day must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Day must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (pakan <= 0) {
-            return Swal.fire("Feed must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Feed must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (minum <= 0) {
-            return Swal.fire("Watering must not be less than 1!");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Watering must not be less than 1!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
-        if (bobot <= 0) {
-            return Swal.fire("Weight must not be less than 1!");
-        }
+
         // asign value if validated
         let data = {
             id_kandang: idKandang,
@@ -838,14 +956,13 @@
             date: date,
             pakan: pakan,
             minum: minum,
-            bobot: bobot,
             riwayat_populasi: sisa_populasi,
             classification: klasifikasi,
             data_kematian: dataKematian
         }
         $.ajax({
             type: "PUT",
-            url: `/data-kandang/${id}`,
+            url: baseUrl + `/data-kandang/${id}`,
             data: JSON.stringify(data),
             contentType: "application/json",
             headers: {

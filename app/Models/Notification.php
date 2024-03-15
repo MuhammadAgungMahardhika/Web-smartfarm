@@ -27,4 +27,9 @@ class Notification extends Model
     {
         return $this->belongsTo(Kandang::class, 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, "id");
+    }
 }

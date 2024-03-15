@@ -56,7 +56,6 @@ class RekapDataController extends Controller
 				'kelembapan' => 'required',
 				'pakan' => 'required',
 				'minum' => 'required',
-				'bobot' => 'required',
 				'jumlah_kematian_harian' => 'required',
 			]);
 
@@ -70,7 +69,6 @@ class RekapDataController extends Controller
 					"kelembapan" => $request->kelembapan,
 					"pakan" => $request->pakan,
 					"minum" => $request->minum,
-					"bobot" => $request->bobot,
 					// "jumlah_kematian" => $request->jumlah_kematian,
 					"jumlah_kematian_harian" => $request->jumlah_kematian_harian,
 					"created_by" => Auth::user()->id,
@@ -102,7 +100,6 @@ class RekapDataController extends Controller
 				'kelembapan' => 'required',
 				'pakan' => 'required',
 				'minum' => 'required',
-				'bobot' => 'required',
 				'jumlah_kematian_harian' => 'required',
 			]);
 
@@ -115,7 +112,6 @@ class RekapDataController extends Controller
 				"kelembapan" => $request->kelembapan,
 				"pakan" => $request->pakan,
 				"minum" => $request->minum,
-				"bobot" => $request->bobot,
 				// "jumlah_kematian" => $request->jumlah_kematian,
 				"jumlah_kematian_harian" => $request->jumlah_kematian_harian,
 				"updated_by" => Auth::user()->id,

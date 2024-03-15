@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('notification', function (Blueprint $table) {
             $table->foreign(['id_kandang'], 'fk_notification_kandang')->references(['id'])->on('kandang');
+            $table->foreign(['id_user'], 'fk_notification_user')->references(['id'])->on('users');
         });
     }
 
@@ -27,6 +28,7 @@ return new class extends Migration
     {
         Schema::table('notification', function (Blueprint $table) {
             $table->dropForeign('fk_notification_kandang');
+            $table->dropForeign('fk_notification_user');
         });
     }
 };

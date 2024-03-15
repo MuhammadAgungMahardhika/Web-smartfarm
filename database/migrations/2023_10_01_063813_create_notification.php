@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('notification', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('id_kandang')->index('fk_notification_kandang');
+            $table->bigInteger('id_user', false, true)->index('fk_notification_user');
             $table->string('pesan');
             $table->boolean('status');
             $table->timestamp('waktu')->useCurrent();

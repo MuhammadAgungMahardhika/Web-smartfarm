@@ -21,7 +21,6 @@ class DataKandang extends Seeder
             'hari_ke' => "1",
             'pakan' => 50,
             'minum' => 30,
-            'bobot' => 20,
             'riwayat_populasi' => 20,
             'date' => Carbon::now()
         ]);
@@ -30,7 +29,6 @@ class DataKandang extends Seeder
             'hari_ke' => "1",
             'pakan' => 55,
             'minum' => 35,
-            'bobot' => 25,
             'riwayat_populasi' => 20,
             'date' => Carbon::now()
         ]);

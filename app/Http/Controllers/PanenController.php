@@ -16,13 +16,12 @@ class PanenController extends Controller
 {
 
 	protected $panenRepository;
-	protected $model;
+
 	/**
 	 * Create a new controller instance.
 	 */
-	public function __construct(Panen $panen, PanenRepository $panenRepository)
+	public function __construct(PanenRepository $panenRepository)
 	{
-		$this->model = $panen;
 		$this->panenRepository = $panenRepository;
 	}
 
@@ -31,7 +30,7 @@ class PanenController extends Controller
 		if ($id != null) {
 			$items = Panen::with('kandang')->find($id);
 		} else {
-			$items = $this->model->get();
+			$items = Panen::get();
 		}
 		return response(['data' => $items, 'status' => 200]);
 	}

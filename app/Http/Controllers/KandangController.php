@@ -17,13 +17,11 @@ class KandangController extends Controller
 {
 
 	protected $kandangRepository;
-	protected $model;
 	/**
 	 * Create a new controller instance.
 	 */
-	public function __construct(Kandang $kandang, KandangRepository $kandangRepository)
+	public function __construct(KandangRepository $kandangRepository)
 	{
-		$this->model = $kandang;
 		$this->kandangRepository = $kandangRepository;
 	}
 
@@ -56,6 +54,19 @@ class KandangController extends Controller
 	{
 		$items = DB::table('kandang')->where('id_user', '=', $id)->get();
 		return response(['data' => $items, 'status' => 200]);
+	}
+
+	public function setKandangStatusToInactive($id)
+	{
+		try {
+			$kandang = Kandang::findOrFail($id);
+			$kandang->status = "nonaktif";
+			$kandang->save();
+
+			return response(['data' => true, 'status' => 200]);
+		} catch (QueryException $th) {
+			return $this->handleQueryException($th);
+		}
 	}
 	public function getKandangByPeternakId($id)
 	{

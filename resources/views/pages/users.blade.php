@@ -360,7 +360,7 @@
         `)
 
                 // Prevent text di input phone number
-                $('#phoneNumber').addEventListener('input', function(event) {
+                document.getElementById('phoneNumber').addEventListener('input', function(event) {
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
 

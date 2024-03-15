@@ -18,6 +18,7 @@ class NotificationRepository
         try {
             $notification = new Notification();
             $notification->id_kandang = $data->id_kandang;
+            $notification->id_user = $data->id_user;
             $notification->pesan = $data->pesan;
             $notification->status = $data->status;
             $notification->waktu = $data->waktu;

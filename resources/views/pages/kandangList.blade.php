@@ -316,12 +316,26 @@
 
             // check jika from date kosong
             if (!startDate) {
-                return Swal.fire("Please fill the from date")
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the from date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
             // check jika to date kosong
             if (!endDate) {
-                return Swal.fire("Please fill the end date");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the end date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
             let data = {
@@ -733,28 +747,78 @@
         console.log(idPemilik)
         // validasi
         if (!namaKandang) {
-            return Swal.fire("Please fill the Cage name")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage name",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         }
         if (!alamatKandang) {
-            return Swal.fire("Please fill the Cage address")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage address",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         }
         if (!luasKandang) {
-            return Swal.fire("Please fill the Cage area")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage area",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (luasKandang < 0) {
-            return Swal.fire("House Area cannot be less than 0")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "House Area cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!populasiAwal) {
-            return Swal.fire("Please fill the Initial population")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Initial population",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (populasiAwal < 0) {
-            return Swal.fire("Initial Population cannot be less than 0")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Initial Population cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!idPemilik || idPemilik == "null") {
-            return Swal.fire("Owner required!")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Owner required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!idPeternak || idPeternak == "null") {
-            return Swal.fire("Farmer required!")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Farmer required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         // asign value if validated
         let data = {
@@ -834,31 +898,85 @@
 
         // validasi
         if (!namaKandang) {
-            return Swal.fire("Please fill the Cage name")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage name",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!alamatKandang) {
-            return Swal.fire("Please fill the Cage address")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage address",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!luasKandang) {
-            return Swal.fire("Please fill the Cage area")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Cage area",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (luasKandang < 0) {
-            return Swal.fire("House Area cannot be less than 0")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "House Area cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!populasiAwal) {
-            return Swal.fire("Please fill the Initial population")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the Initial population",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (populasiAwal < 0) {
-            return Swal.fire("Initial Population cannot be less than 0")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Initial Population cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (populasiSaatIni < 0) {
-            return Swal.fire("The initial population must not be less than  amount of deaths.")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "The initial population must not be less than  amount of deaths.",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!idPemilik || idPemilik == "null") {
-            return Swal.fire("Owner required!")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Owner required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!idPeternak || idPeternak == "null") {
-            return Swal.fire("Farmer required!")
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Farmer required!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         let data = {

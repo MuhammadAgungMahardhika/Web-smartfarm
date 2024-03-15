@@ -176,10 +176,6 @@
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
                                     colspan="1" aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending">
                                     Daily mortality (Head)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1"
@@ -201,7 +197,6 @@
                                     <td>{{ number_format($item->amonia, 3) }}</td>
                                     <td>{{ $item->pakan }}</td>
                                     <td>{{ $item->minum }}</td>
-                                    <td>{{ $item->bobot }}</td>
                                     <td>{{ $item->jumlah_kematian }}</td>
                                     <td>{{ $item->jumlah_kematian == 0 ? 'normal' : 'abnormal' }}</td>
                                 </tr>
@@ -383,7 +378,6 @@
                         amonia,
                         pakan,
                         minum,
-                        bobot,
                         jumlah_kematian
                     } = sensors[i]
                     console.log(sensors[i])
@@ -398,7 +392,6 @@
                     <td>${amonia.toFixed(3)}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${jumlah_kematian}</td>
                     <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
                     </tr>
@@ -440,10 +433,6 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -496,7 +485,6 @@
                         amonia,
                         pakan,
                         minum,
-                        bobot,
                         jumlah_kematian
                     } = sensors[i]
                     console.log(sensors[i])
@@ -511,7 +499,6 @@
                     <td>${amonia.toFixed(3)}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${jumlah_kematian}</td>
                     <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
                     </tr>
@@ -553,10 +540,6 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -607,7 +590,6 @@
                         amonia,
                         pakan,
                         minum,
-                        bobot,
                         jumlah_kematian
                     } = sensors[i]
                     console.log(sensors[i])
@@ -622,7 +604,6 @@
                     <td>${amonia.toFixed(3)}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${jumlah_kematian}</td>
                     <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
                     </tr>
@@ -664,10 +645,6 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
@@ -714,11 +691,25 @@
 
             // check jika from date kosong
             if (!startDate) {
-                return Swal.fire("Please fill the from date")
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the from date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
             // check jika to date kosong
             if (!endDate) {
-                return Swal.fire("Please fill the end date");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the end date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
             let data = {
@@ -748,7 +739,6 @@
                             amonia,
                             pakan,
                             minum,
-                            bobot,
                             jumlah_kematian
                         } = sensors[i]
                         console.log(sensors[i])
@@ -763,7 +753,6 @@
                     <td>${amonia.toFixed(3)}</td>
                     <td>${pakan}</td>
                     <td>${minum}</td>
-                    <td>${bobot}</td>
                     <td>${jumlah_kematian}</td>
                     <td>${jumlah_kematian == 0 ? "normal" : "abnormal"}</td>
                     </tr>
@@ -805,10 +794,6 @@
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">
                                     Watering (L)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount (Kg)
                                 </th>
                                 <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
                                     aria-label="Status: activate to sort column ascending">

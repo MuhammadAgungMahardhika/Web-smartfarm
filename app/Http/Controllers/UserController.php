@@ -16,14 +16,13 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
 
-    protected $model;
+
     protected $userRepository;
     /**
      * Create a new controller instance.
      */
-    public function __construct(User $user, UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->model = $user;
         $this->userRepository = $userRepository;
     }
 

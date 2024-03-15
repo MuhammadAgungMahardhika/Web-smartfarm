@@ -78,10 +78,12 @@
             <div class="card-body table-responsive  p-4 rounded">
                 {{-- add button --}}
                 <div class="text-start mb-4" id="addButton">
-                    <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
-                        data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
-                        <i class="fa fa-plus"></i>
-                    </a>
+                    @if (Auth()->user()->id_role == 3)
+                        <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal"
+                            data-bs-target="#default" onclick="addModal('{{ $data[0]->id }}')">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    @endif
                 </div>
                 {{-- table data --}}
                 <div id="tableData">
@@ -107,9 +109,11 @@
                                     aria-label="Status: activate to sort column ascending">
                                     Weight amount (Kg)
                                 </th>
-                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
-                                </th>
+                                @if (Auth()->user()->id_role == 3)
+                                    <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                        colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                    </th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -123,16 +127,18 @@
                                     <td>{{ $panen->tanggal_panen }}</td>
                                     <td>{{ $panen->jumlah_panen }}</td>
                                     <td>{{ $panen->bobot_total }}</td>
-                                    <td style="min-width: 180px">
-                                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
-                                            data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i>
-                                        </a>
-                                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
-                                            data-bs-toggle="modal" data-bs-target="#default"
-                                            onclick="deleteModal('{{ $panen->id }}')"><i
-                                                class="fa fa-trash"></i></a>
-                                    </td>
+                                    @if (Auth()->user()->id_role == 3)
+                                        <td style="min-width: 180px">
+                                            <a title="mengubah" class="btn btn-outline-primary btn-sm me-1"
+                                                data-bs-toggle="modal" data-bs-target="#default"
+                                                onclick="editModal('{{ $panen->id }}')"><i class="fa fa-edit"></i>
+                                            </a>
+                                            <a title="hapus" class="btn btn-outline-danger btn-sm me-1"
+                                                data-bs-toggle="modal" data-bs-target="#default"
+                                                onclick="deleteModal('{{ $panen->id }}')"><i
+                                                    class="fa fa-trash"></i></a>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -180,9 +186,13 @@
                     </button>
                     `
                 )
-                $('#addButton').html(
-                    ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${idKandang}')"><i class="fa fa-plus"></i> </a>`
-                )
+                // check add button hanya untuk peternak ketika input hasil panen
+                @if (Auth::user()->id_role == 3)
+                    $('#addButton').html(
+                        ` <a title="tambah" class="btn btn-success btn-sm block" data-bs-toggle="modal" data-bs-target="#default" onclick="addModal('${idKandang}')"><i class="fa fa-plus"></i> </a>`
+                    )
+                @endif
+
                 showTableData(idKandang)
             },
             error: function(err) {
@@ -197,6 +207,7 @@
             type: "GET",
             url: `/panen/kandang/${kandangId}`,
             success: function(response) {
+
                 let panenData = response.data
                 let data = ''
                 // adding panen data
@@ -208,6 +219,15 @@
                         jumlah_panen,
                         bobot_total
                     } = panenData[i]
+
+                    // check kolom action hanya untuk peternak
+                    let action = "";
+                    @if (Auth::user()->id_role == 3)
+                        action = `<td style="min-width: 180px">
+                                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
+                                    </td>`
+                    @endif
                     data += `
                     <tr>
                     <td>${i+1}</td>
@@ -215,13 +235,18 @@
                     <td>${tanggal_panen}</td>
                     <td>${jumlah_panen}</td>
                     <td>${bobot_total}</td>
-                    <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
-                    </td>
+                          ${action}
                     </tr>
                     `
                 }
+
+                // check kolom action hanya untuk peternak ketika input hasil panen
+                let actionColumn = "";
+                @if (Auth::user()->id_role == 3)
+                    actionColumn = ` <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                            colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                        </th>`
+                @endif
 
                 // construct table
                 let table = `
@@ -247,9 +272,7 @@
                                     aria-label="Status: activate to sort column ascending">
                                     Weight amount(Kg)
                                 </th>
-                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
-                                </th>
+                                ${actionColumn}
                             </tr>
                     </thead>
                     <tbody>
@@ -317,12 +340,25 @@
 
             // check jika from date kosong
             if (!startDate) {
-                return Swal.fire("Please fill the from date")
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the from date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+
             }
 
             // check jika to date kosong
             if (!endDate) {
-                return Swal.fire("Please fill the end date");
+                return Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Please fill the end date",
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             }
 
             let data = {
@@ -339,9 +375,7 @@
                 },
                 data: JSON.stringify(data),
                 success: function(response) {
-
                     let panenData = response.data
-
                     let data = ''
                     // adding panen data
                     for (let i = 0; i < panenData.length; i++) {
@@ -352,55 +386,72 @@
                             jumlah_panen,
                             bobot_total
                         } = panenData[i]
+
+                        // check untuk action hanya untuk peternak ketika input hasil panen
+                        let action = "";
+                        let actionColumn = "";
+
+                        @if (Auth::user()->id_role == 3)
+                            action = ` <td style="min-width: 180px">
+                                            <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
+                                            <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
+                                        </td>`;
+                            actionColumn = ` <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                            colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                        </th>`;
+                        @endif
                         data += `
-                    <tr>
-                    <td>${i+1}</td>
-                    <td>${tanggal_mulai}</td>
-                    <td>${tanggal_panen}</td>
-                    <td>${jumlah_panen}</td>
-                    <td>${bobot_total}</td>
-                    <td style="min-width: 180px">
-                        <a title="mengubah" class="btn btn-outline-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="editModal('${id}')"><i class="fa fa-edit"></i> </a>
-                        <a title="hapus" class="btn btn-outline-danger btn-sm me-1" data-bs-toggle="modal" data-bs-target="#default" onclick="deleteModal('${id}')"><i class="fa fa-trash"></i></a>
-                    </td>
-                    </tr>
-                    `
+                                <tr>
+                                <td>${i+1}</td>
+                                <td>${tanggal_mulai}</td>
+                                <td>${tanggal_panen}</td>
+                                <td>${jumlah_panen}</td>
+                                <td>${bobot_total}</td>
+                                ${action}
+                                </tr>
+                                `
                     }
+
+                    // check kolom action hanya untuk peternak ketika input hasil panen
+                    let actionColumn = "";
+                    @if (Auth::user()->id_role == 3)
+                        actionColumn = ` <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
+                                            colspan="1" aria-label="Status: activate to sort column ascending">Action
+                                        </th>`
+                    @endif
 
                     // construct table
                     let table = `
-                <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
-                    <thead>
-                            <tr>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Name: activate to sort column ascending">No
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Phone: activate to sort column ascending">
-                                    Start date
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="City: activate to sort column ascending">
-                                    Harvest date
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Harvest amount (Head)
-                                </th>
-                                <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
-                                    aria-label="Status: activate to sort column ascending">
-                                    Weight amount(Kg)
-                                </th>
-                                <th class="sorting text-center" tabindex="0" aria-controls="table1" rowspan="1"
-                                    colspan="1" aria-label="Status: activate to sort column ascending">Action
-                                </th>
-                            </tr>
-                    </thead>
-                    <tbody>
-                        ${data}
-                    </tbody>
-                </table>
-                `
+                        <table class="table dataTable no-footer" id="table" aria-describedby="table1_info">
+                            <thead>
+                                    <tr>
+                                        <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                            aria-label="Name: activate to sort column ascending">No
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                            aria-label="Phone: activate to sort column ascending">
+                                            Start date
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                            aria-label="City: activate to sort column ascending">
+                                            Harvest date
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                            aria-label="Status: activate to sort column ascending">
+                                            Harvest amount (Head)
+                                        </th>
+                                        <th class="sorting" tabindex="0" aria-controls="table1" rowspan="1" colspan="1"
+                                            aria-label="Status: activate to sort column ascending">
+                                            Weight amount(Kg)
+                                        </th>
+                                        ${actionColumn}
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                ${data}
+                            </tbody>
+                        </table>
+                        `
                     $('#tableData').html(table)
                     initDataTable('table')
                 }
@@ -597,24 +648,60 @@
         // validasi
 
         if (!tanggalMulai) {
-            return Swal.fire("Start date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Start date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!tanggalPanen) {
-            return Swal.fire("Harvest date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!jumlahPanen) {
-            return Swal.fire("Harvest amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (jumlahPanen < 0) {
-            return Swal.fire("Harvest amount cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!bobotTotal) {
-            return Swal.fire("Weight amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobotTotal < 0) {
-            return Swal.fire("Weight amount  cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount  cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         // asign value if validated
         let data = {
@@ -690,24 +777,61 @@
         // validasi
 
         if (!tanggalMulai) {
-            return Swal.fire("Start date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Start date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!tanggalPanen) {
-            return Swal.fire("Harvest date required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest date required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
 
         if (!jumlahPanen) {
-            return Swal.fire("Harvest amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         }
         if (jumlahPanen < 0) {
-            return Swal.fire("Harvest amount cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Harvest amount cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (!bobotTotal) {
-            return Swal.fire("Weight amount required");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount required",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         if (bobotTotal < 0) {
-            return Swal.fire("Weight amount  cannot be less than 0");
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Weight amount  cannot be less than 0",
+                showConfirmButton: false,
+                timer: 1500
+            })
         }
         let data = {
             id_kandang: idKandang,

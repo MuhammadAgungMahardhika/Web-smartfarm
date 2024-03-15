@@ -92,8 +92,8 @@
         var Min = dt.getMinutes();
         var Sec = dt.getSeconds();
         var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        var months = ["January", "February", "March", "April", "Mei", "June", "July", "August", "September", "October",
-            "November", "December"
+        var months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober",
+            "November", "Desember"
         ];
 
         if (Min < 10) {

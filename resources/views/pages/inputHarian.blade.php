@@ -831,6 +831,7 @@
                 })
             },
             error: function(err) {
+                console.log(err)
                 return Swal.fire({
                     position: "top-end",
                     icon: "error",

@@ -37,8 +37,6 @@ class NotificationSentListener
         $userId = $event->userId;
         $message = $event->message;
 
-        // give notification
-
         // Simpan kedalam database notification 
 
         $this->notificationRepository->createNotification((object)[
@@ -50,11 +48,11 @@ class NotificationSentListener
         ]);
 
 
-        // Ambil instance model Customer
+        // Ambil instance model 
         $user = User::find($userId);
         $chatId = optional($user)->id_telegram;
 
-        // Kirim notifikasi ke pelanggan
+        // Kirim notifikasi ke 
         if ($chatId !== null) {
             try {
                 // Log::info('Mengirim notifikasi Telegram ke chat IDS: ' . $chatId);

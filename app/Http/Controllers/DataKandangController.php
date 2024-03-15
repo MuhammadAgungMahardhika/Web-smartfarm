@@ -244,6 +244,13 @@ class DataKandangController extends Controller
 				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
+			// Kirim notifikasi jika sudah berhasil input
+
+			// $date = $request->date;
+			// $thanksMessage = "Thanks for submiting the daily input at ( $date )";
+			// $idPeternak =  Auth::user()->id;
+			// Event(new NotificationSent($idKandang, 1, $thanksMessage . ". for kandang : ($namaKandang)"));
+
 			DB::commit();
 			return response()->json([
 				'message' => 'success created data kandang',

@@ -132,45 +132,49 @@ class SensorRepository
     }
   }
 
+  private function getMean($data = [])
+  {
+    return array_sum($data) / count($data);
+  }
+
+  private function squaredDifferences($data, $mean)
+  {
+    $squaredDifferences = array_map(function ($x) use ($mean) {
+      return ($x - $mean) * ($x - $mean);
+    }, $data);
+
+    return $squaredDifferences;
+  }
+
+  private function meanSquaredDifferences($squaredDifferences)
+  {
+    return  array_sum($squaredDifferences) / (count($squaredDifferences) - 1);
+  }
   public function getSuhuStdDev($idKandang, $suhu)
   {
     $data = DB::table('sensors')
       ->where('id_kandang', '=', $idKandang)
-      ->where('suhu_outlier', '=', null)
+      // ->where('suhu_outlier', '=', null)
       ->pluck('suhu')
       ->toArray();
 
+    // Jika tidak ada data sebelumnya, kembalikan nilai 0
+    if (count($data) == 0) {
+      return 0;
+    }
     // Tambahkan nilai baru ke dalam data
     $data[] = $suhu;
 
-    $count = count($data);
-
-    if ($count == 0) {
-      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
-      return 3;
-    }
-
-    $mean = array_sum($data) / $count - 1;
-
-    // Hitung deviasi setiap nilai dari rata-rata
-    $differences = array_map(function ($x) use ($mean) {
-      return $x - $mean;
-    }, $data);
-
-    // Hitung kuadrat dari deviasi setiap nilai
-    $squaredDifferences = array_map(function ($x) {
-      return $x * $x;
-    }, $differences);
-
-    // Hitung rata-rata dari kuadrat deviasi
-    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
-
-    // Hitung deviasi standar (sigma)
+    // #1 rata-rata
+    $mean  = $this->getMean($data);
+    // #2 hitung kuadrat tiap nilai yang telah dikurangi dengan rata2
+    $squaredDifferences = $this->squaredDifferences($data, $mean);
+    // #3 Hitung rata-rata dari kuadrat deviasi dan jumlah kuadrat deviasi kurangi 1
+    $meanSquaredDifferences = $this->meanSquaredDifferences($squaredDifferences);
+    // #5 Hitung akar deviasi standar (sigma) 
     $standardDeviation = sqrt($meanSquaredDifferences);
-
     return $standardDeviation;
   }
-
 
   public function getKelembapanStdDev($idKandang, $kelembapan)
   {
@@ -180,34 +184,23 @@ class SensorRepository
       ->pluck('kelembapan')
       ->toArray();
 
+
+    // Jika tidak ada data sebelumnya, kembalikan nilai 0
+    if (count($data) == 0) {
+      return 0;
+    }
+
     // Tambahkan nilai baru ke dalam data
     $data[] = $kelembapan;
 
-    $count = count($data);
-
-    if ($count == 0) {
-      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
-      return 3;
-    }
-
-    $mean = array_sum($data) / $count - 1;
-
-    // Hitung deviasi setiap nilai dari rata-rata
-    $differences = array_map(function ($x) use ($mean) {
-      return $x - $mean;
-    }, $data);
-
-    // Hitung kuadrat dari deviasi setiap nilai
-    $squaredDifferences = array_map(function ($x) {
-      return $x * $x;
-    }, $differences);
-
-    // Hitung rata-rata dari kuadrat deviasi
-    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
-
-    // Hitung deviasi standar (sigma)
+    // #1 rata-rata
+    $mean  = $this->getMean($data);
+    // #2 hitung kuadrat tiap nilai yang telah dikurangi dengan rata2
+    $squaredDifferences = $this->squaredDifferences($data, $mean);
+    // #3 Hitung rata-rata dari kuadrat deviasi dan jumlah kuadrat deviasi kurangi 1
+    $meanSquaredDifferences = $this->meanSquaredDifferences($squaredDifferences);
+    // #5 Hitung akar deviasi standar (sigma) 
     $standardDeviation = sqrt($meanSquaredDifferences);
-
     return $standardDeviation;
   }
 
@@ -219,34 +212,22 @@ class SensorRepository
       ->pluck('amonia')
       ->toArray();
 
+
+    // Jika tidak ada data, kembalikan nilai 0
+    if (count($data) == 0) {
+      return 0;
+    }
     // Tambahkan nilai baru ke dalam data
     $data[] = $amonia;
 
-    $count = count($data);
-
-    if ($count == 0) {
-      // Jika tidak ada data, kembalikan 3 sesuai dengan default outlier multiplier
-      return 3;
-    }
-
-    $mean = array_sum($data) / $count - 1;
-
-    // Hitung deviasi setiap nilai dari rata-rata
-    $differences = array_map(function ($x) use ($mean) {
-      return $x - $mean;
-    }, $data);
-
-    // Hitung kuadrat dari deviasi setiap nilai
-    $squaredDifferences = array_map(function ($x) {
-      return $x * $x;
-    }, $differences);
-
-    // Hitung rata-rata dari kuadrat deviasi
-    $meanSquaredDifferences = array_sum($squaredDifferences) / count($squaredDifferences);
-
-    // Hitung deviasi standar (sigma)
+    // #1 rata-rata
+    $mean  = $this->getMean($data);
+    // #2 hitung kuadrat tiap nilai yang telah dikurangi dengan rata2
+    $squaredDifferences = $this->squaredDifferences($data, $mean);
+    // #3 Hitung rata-rata dari kuadrat deviasi dan jumlah kuadrat deviasi kurangi 1
+    $meanSquaredDifferences = $this->meanSquaredDifferences($squaredDifferences);
+    // #5 Hitung akar deviasi standar (sigma) 
     $standardDeviation = sqrt($meanSquaredDifferences);
-
     return $standardDeviation;
   }
 }

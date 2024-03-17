@@ -142,7 +142,6 @@
 </x-app-layout>
 <script>
     const baseUrl = "{{ url('') }}"
-    console.log(baseUrl)
     initDataTable('table')
 
     function initKandang() {
@@ -818,7 +817,6 @@
             },
             data: JSON.stringify(data),
             success: function(response) {
-                console.log(response)
                 Swal.fire({
                     position: "top-end",
                     icon: "success",

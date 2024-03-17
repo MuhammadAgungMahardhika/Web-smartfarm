@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\DB;
 class DataKematianRepository
 {
 
-  public function __construct()
-  {
-  }
 
   public function createDataKematian(object $data): DataKematian
   {

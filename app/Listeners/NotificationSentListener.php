@@ -3,12 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\NotificationSent;
-use App\Models\Kandang;
 use App\Models\User;
 use App\Notifications\TelegramNotification;
 use App\Repositories\NotificationRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 
@@ -62,7 +60,7 @@ class NotificationSentListener
                 Log::error('Gagal mengirimkan notifikasi telegram: ' . $th);
             }
         } else {
-            Log::warning('Chat ID Telegram tidak tersedia. Tidak dapat mengirim notifikasi.');
+            // Log::warning('Chat ID Telegram tidak tersedia. Tidak dapat mengirim notifikasi.');
         }
     }
 }

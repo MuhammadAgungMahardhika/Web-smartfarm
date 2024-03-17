@@ -20,21 +20,12 @@ use Illuminate\Validation\ValidationException;
 class DataKandangController extends Controller
 {
 
-	protected $kandangRepository;
-	protected $dataKandangRepository;
-	protected $dataKematianRepository;
+
 	/**
 	 * Create a new controller instance.
 	 */
-	public function __construct(
-		KandangRepository $kandangRepository,
-		DataKandangRepository $dataKandangRepository,
-		DataKematianRepository $dataKematianRepository,
-	) {
-
-		$this->kandangRepository = $kandangRepository;
-		$this->dataKandangRepository = $dataKandangRepository;
-		$this->dataKematianRepository = $dataKematianRepository;
+	public function __construct()
+	{
 	}
 
 	public function index($id = null)
@@ -162,14 +153,16 @@ class DataKandangController extends Controller
 	public function sendNotificationAlertToFarmer(Request $request)
 	{
 		$message = $request->message;
+		$roleId = Auth::user()->id_role;
+		$userId = Auth::user()->id;
 		// check role
-		if (Auth::user()->id_role == 2) {
+		if ($roleId == 2) {
 			$user = "id_user";
-		} else if (Auth::user()->id_role == 3) {
+		} else if ($roleId  == 3) {
 			$user = "id_peternak";
 		}
 		// cari id  peternak  dari kandang
-		$items = Kandang::where($user, Auth::user()->id)->get();
+		$items = Kandang::where($user, $userId)->get();
 		$currentDate = Carbon::now()->format('Y-m-d');
 		if ($items) {
 			foreach ($items as $index => $value) {
@@ -200,10 +193,18 @@ class DataKandangController extends Controller
 		DB::beginTransaction();
 		try {
 			$idKandang = $request->id_kandang;
+			$kandang = Kandang::findOrFail($idKandang);
+			$namaKandang = $kandang->nama_kandang;
+			$idPeternak = Auth::user()->id;
+			$dateNow = Carbon::now()->timezone('Asia/Jakarta');
 			$riwayatPopulasi = $request->riwayat_populasi;
 			$dataKematian = $request->data_kematian;
+			$date = $request->date;
 			$klasifikasi = count($dataKematian) > 0 ? "abnormal" : "normal";
-			$dataKandang = $this->dataKandangRepository->createDataKandang(
+
+			// buat data kandang
+			$dataKandangRepository = new DataKandangRepository();
+			$dataKandang = $dataKandangRepository->createDataKandang(
 				(object) [
 					"id_kandang" => $idKandang,
 					"hari_ke" => $request->hari_ke,
@@ -211,46 +212,44 @@ class DataKandangController extends Controller
 					"minum" => $request->minum,
 					"riwayat_populasi" => $riwayatPopulasi,
 					"classification" => $klasifikasi,
-					"date" => $request->date,
-					"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
-					"created_by" => Auth::user()->id,
+					"date" => $date,
+					"created_at" => $dateNow,
+					"created_by" => $idPeternak,
 				]
 			);
 			$countJumlahKematian = 0;
 			if (count($dataKematian) > 0) {
+				$dataKematianRepository = new DataKematianRepository();
 				for ($i = 0; $i < count($dataKematian); $i++) {
 					$countJumlahKematian +=  $dataKematian[$i]['jumlah_kematian'];
 					$jamKematian = $dataKematian[$i]['jam'];
 					$jumlahKematian = $dataKematian[$i]['jumlah_kematian'];
 
-					$this->dataKematianRepository->createDataKematian(
+					$dataKematianRepository->createDataKematian(
 						(object)[
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $jumlahKematian,
 							"jam" => $jamKematian,
-							"created_at" => Carbon::now()->timezone('Asia/Jakarta'),
-							"created_by" => Auth::user()->id
+							"created_at" => $dateNow,
+							"created_by" => $idPeternak
 						]
 					);
 				}
 			}
 
 			// Ubah status kandang jadi aktif
-			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
-				"populasi_saat_ini" => intval($riwayatPopulasi),
-			]);
+			$kandang->populasi_saat_ini = intval($riwayatPopulasi);
+			$kandang->status = "aktif";
+			$kandang->save();
 
 			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
-			$kandang = Kandang::where('id', $idKandang)->first();
-			$namaKandang = $kandang->nama_kandang;
 			if ($klasifikasi == "abnormal") {
 				$userId = $kandang->id_user; //pemilik kandang
 				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
 			// Kirim notifikasi jika sudah berhasil input
-			$thanksMessage = "Thanks for submiting the daily input at ( $request->date )";
-			$idPeternak =  Auth::user()->id;
+			$thanksMessage = "Thanks for submiting the daily input at ( $date )";
 			Event(new NotificationSent($idKandang, $idPeternak, $thanksMessage . ". for kandang : ($namaKandang)"));
 
 			DB::commit();
@@ -287,13 +286,18 @@ class DataKandangController extends Controller
 		try {
 
 			$idKandang = $request->id_kandang;
+			$kandang = Kandang::findOrFail($idKandang);
+			$namaKandang = $kandang->nama_kandang;
 			$riwayatPopulasi = $request->riwayat_populasi;
 			$dataKematian = $request->data_kematian;
 			$jumlahKematian = count($dataKematian);
 			$updatedAt = Carbon::now()->timezone('Asia/Jakarta');
 			$updatedBy = Auth::user()->id;
 			$klasifikasi = $jumlahKematian > 0 ? "abnormal" : "normal";
-			$dataKandang = $this->dataKandangRepository->editDataKandang(
+
+			// edit data kandang
+			$dataKandangRepository = new DataKandangRepository();
+			$dataKandang = $dataKandangRepository->editDataKandang(
 				$id,
 				(object) [
 					"id_kandang" => $idKandang,
@@ -309,13 +313,14 @@ class DataKandangController extends Controller
 			);
 
 			// delete data kematian
-			$this->dataKematianRepository->deleteDataKematianByDataKandangId($id);
+			$dataKematianRepository  = new DataKematianRepository();
+			$dataKematianRepository->deleteDataKematianByDataKandangId($id);
 			// insert data kematian baru
 			$countJumlahKematian = 0;
 			if ($jumlahKematian > 0) {
 				for ($i = 0; $i < $jumlahKematian; $i++) {
 					$countJumlahKematian += $dataKematian[$i]['jumlah_kematian'];
-					$this->dataKematianRepository->createDataKematian(
+					$dataKematianRepository->createDataKematian(
 						(object)[
 							"id_data_kandang" => $dataKandang->id,
 							"jumlah_kematian" => $dataKematian[$i]['jumlah_kematian'],
@@ -327,19 +332,14 @@ class DataKandangController extends Controller
 				}
 			}
 
-			// Ubah nilai populasi saat ini
-			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
-				"populasi_saat_ini" => intval($riwayatPopulasi),
-			]);
+			// Ubah nilai populasi saat ini dan set status to aktif
+			$kandang->populasi_saat_ini = intval($riwayatPopulasi);
+			$kandang->status = "aktif";
+			$kandang->save();
 
 			// Kirim notifikasi jika klasifikasi abnormal atau ada data kematian kepada pemilik kandang
 			if ($klasifikasi == "abnormal") {
-				$kandang = DB::table('kandang')
-					->select('nama_kandang', 'id_user')
-					->where('id', $idKandang)
-					->first();
-				$namaKandang = optional($kandang)->nama_kandang;
-				$userId = optional($kandang)->id_user;
+				$userId = $userId = $kandang->id_user;
 				Event(new NotificationSent($idKandang, $userId, "New death data found in the ($namaKandang) farm house. Total: $countJumlahKematian death found."));
 			}
 
@@ -372,14 +372,19 @@ class DataKandangController extends Controller
 
 			$jumlahKematian =  $dataKematian->total_kematian;
 
-			$dataKandang = $this->dataKandangRepository->deleteDataKandang($id);
+			$dataKandangRepository = new DataKandangRepository();
+			$dataKandang = $dataKandangRepository->deleteDataKandang($id);
 			$idKandang = $dataKandang->id_kandang;
-			$populasiSaatIni = DB::table('kandang')->where('kandang.id', '=', $idKandang)->select('kandang.populasi_saat_ini')->first()->populasi_saat_ini;
+			$kandang = Kandang::findOrFail($idKandang);
+
+			$populasiSaatIni = $kandang->populasi_saat_ini;
 			$populasiAkhir = intval($populasiSaatIni)  + intval($jumlahKematian);
 
-			$this->kandangRepository->changeKandangPopulationAndSetActiveStatus($idKandang, (object)[
-				"populasi_saat_ini" => $populasiAkhir
-			]);
+			// ubah populasi dan set status to aktif
+			$kandang->populasi_saat_ini = $populasiAkhir;
+			$kandang->status = "aktif";
+			$kandang->save();
+
 			DB::commit();
 			return response()->json([
 				'message' => 'success delete data kandang',

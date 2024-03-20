@@ -185,7 +185,6 @@
             success: function(response) {
                 // asign value
                 let itemData = response.data
-                console.log(itemData)
                 if (itemData) {
                     $('#default').modal('hide')
                     return Swal.fire({
@@ -331,12 +330,40 @@
                 if (dd < 10) dd = '0' + dd;
                 if (mm < 10) mm = '0' + mm;
                 let dateNow = yyyy + "-" + mm + "-" + dd
+                let dateKe = dateNow
 
-                let nextDayData = getNextDay(idKandang)
-                let hariKe = nextDayData.hari_ke + 1
-                let dateKe = nextDayData.date
-                console.log(typeof dateKe)
-                console.log(dateKe)
+                let currentDataKandang = getCurrentDataKandang(idKandang)
+                console.log(currentDataKandang);
+
+                let hariKe = 1
+                if (currentDataKandang) {
+                    const kandangStatus = currentDataKandang.status
+
+                    console.log(kandangStatus)
+                    hariKe = currentDataKandang.hari_ke + 1
+                    dateKe = currentDataKandang.date
+
+                    // Mengonversi string menjadi objek Date
+                    let tanggalObjek = new Date(dateKe);
+
+                    // Menambahkan 1 hari
+                    tanggalObjek.setDate(tanggalObjek.getDate() + 1);
+
+                    // Mendapatkan tanggal, bulan, dan tahun yang diperlukan
+                    let tahun = tanggalObjek.getFullYear();
+                    let bulan = ('0' + (tanggalObjek.getMonth() + 1)).slice(-2);
+                    let tanggal = ('0' + tanggalObjek.getDate()).slice(-2);
+
+                    // Mengonversi kembali ke format string "YYYY-MM-DD"
+                    dateKe = tahun + "-" + bulan + "-" + tanggal;
+
+                    if (kandangStatus == "nonaktif") {
+                        hariKe = 1
+                        dateKe = dateNow
+                    }
+                }
+
+                let isReadOnly = hariKe != 1 ? "readonly" : ""
 
 
                 $('#modalTitle').html("Add Daily Data")
@@ -373,7 +400,7 @@
                                     <label for="date">Date <span class="text-danger"> *</span></label>
                                 </div>
                                 <div class="col-md-8 form-group">
-                                    <input type="date" value="${dateNow}" id="date" class="form-control">
+                                    <input type="date" value="${dateKe}" id="date" class="form-control" ${isReadOnly}>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="pakan">Feed (G) <span class="text-danger"> *</span></label>
@@ -418,12 +445,12 @@
     }
 
     // mendapatkan hari selanjutnya 
-    function getNextDay(idKandang) {
+    function getCurrentDataKandang(idKandang) {
         let result
         $.ajax({
             type: "GET",
             async: false,
-            url: baseUrl + `/data-kandang/next-day/${idKandang}`,
+            url: baseUrl + `/data-kandang/current/kandang/${idKandang}`,
             success: function(response) {
                 result = response.data.data
             },
@@ -704,17 +731,6 @@
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
         let klasifikasi = $('#klasifikasi').val()
 
-        let isValidDate = checkValidatedDate()
-
-        if (!isValidDate) {
-            return Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Please fill the date in chronological order",
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
 
         let dataKematian = []
         let tableKematian = $('#tableKematian tr').each(function(tr) {
@@ -860,32 +876,6 @@
         })
     }
 
-    function checkValidatedDate() {
-        $.ajax({
-            type: "DELETE",
-            url: baseUrl + `/data-kandang/${id}`,
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Data deleted",
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#default').modal('hide')
-                    showTableData(response.dataKandang.id_kandang)
-                })
-            },
-            error: function(err) {
-                console.log(err.responseText)
-            }
-
-        })
-    }
 
     function deleteItem(id) {
         $.ajax({

@@ -41,30 +41,16 @@ class DataKandangController extends Controller
 		return response(['data' => $items, 'status' => 200]);
 	}
 
-	public function getNextDay($idKandang)
+	public function getCurrentDataKandangByIdKandang($idKandang)
 	{
 		$items = DB::table('data_kandang')
 			->join('kandang', 'kandang.id', '=', 'data_kandang.id_kandang')
 			->where('data_kandang.id_kandang', $idKandang)
 			->orderBy('data_kandang.id', 'DESC')
 			->first();
-		// check apakah nilai sudah pernah ada
-		if ($items) {
-			$day = $items->hari_ke;
-			$nextDay = $day + 1;
-			$status = $items->status;
-
-			// jika statusnya nonaktif maka atur ulang penomoran dari 1 dan update jadi aktif kembali
-			if ($status == "nonaktif") {
-				$nextDay = 1;
-			}
-		} else {
-			$nextDay = 1;
-		}
 
 		$response = [
 			'data' => $items,
-			'nextDay' => $nextDay,
 		];
 		return response(['data' => $response, 'status' => 200]);
 	}
@@ -78,7 +64,7 @@ class DataKandangController extends Controller
 			->select('data_kandang.*', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang', DB::raw('COALESCE(SUM(data_kematian.jumlah_kematian), 0) as total_kematian'), DB::raw('GROUP_CONCAT(data_kematian.jam SEPARATOR ",") AS jam_kematian'))
 			->groupBy('data_kandang.id', 'data_kandang.id_kandang', 'data_kandang.hari_ke', 'data_kandang.pakan', 'data_kandang.minum', 'data_kandang.riwayat_populasi', 'data_kandang.date', 'data_kandang.classification', 'data_kandang.created_at', 'data_kandang.created_by', 'data_kandang.updated_at', 'data_kandang.updated_by', 'kandang.nama_kandang', 'kandang.alamat_kandang', 'kandang.populasi_awal', 'kandang.luas_kandang')
 			->where('data_kandang.id_kandang', '=', $id)
-			->orderBy('data_kandang.created_at', 'ASC')
+			->orderBy('data_kandang.created_at', 'DESC')
 			->get();
 		return response(['data' => $items, 'status' => 200]);
 	}

@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // data kandang
     Route::get('/data-kandang', [DataKandangController::class, 'index']);
     Route::get('/data-kandang/{id}', [DataKandangController::class, 'index']);
+    Route::get('/data-kandang/check/{date}', [DataKandangController::class, 'checkDataKandangDate']);
     Route::get('/data-kandang/next-day/{idKandang}', [DataKandangController::class, 'getNextDay']);
     Route::get('/jumlah-kematian/data-kandang/{id}', [DataKandangController::class, 'getJumlahKematianByDataKandangId']);
     Route::get('/data-kandang/kandang/{idKandang}', [DataKandangController::class, 'getDataKandangByIdKandang']);

@@ -63,6 +63,7 @@ class DataKandangController extends Controller
 		}
 
 		$response = [
+			'data' => $items,
 			'nextDay' => $nextDay,
 		];
 		return response(['data' => $response, 'status' => 200]);

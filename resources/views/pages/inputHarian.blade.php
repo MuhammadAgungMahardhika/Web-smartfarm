@@ -332,7 +332,12 @@
                 if (mm < 10) mm = '0' + mm;
                 let dateNow = yyyy + "-" + mm + "-" + dd
 
-                const hariKe = getNextDay(idKandang)
+                let nextDayData = getNextDay(idKandang)
+                let hariKe = nextDayData.hari_ke + 1
+                let dateKe = nextDayData.date
+                console.log(typeof dateKe)
+                console.log(dateKe)
+
 
                 $('#modalTitle').html("Add Daily Data")
                 $('#modalBody').html(`
@@ -420,7 +425,7 @@
             async: false,
             url: baseUrl + `/data-kandang/next-day/${idKandang}`,
             success: function(response) {
-                result = response.data.nextDay
+                result = response.data.data
             },
             error: function(err) {
                 console.log(err.responseText)
@@ -699,6 +704,18 @@
         let populasiSaatIni = getKandang(idKandang).populasi_saat_ini
         let klasifikasi = $('#klasifikasi').val()
 
+        let isValidDate = checkValidatedDate()
+
+        if (!isValidDate) {
+            return Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Please fill the date in chronological order",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+
         let dataKematian = []
         let tableKematian = $('#tableKematian tr').each(function(tr) {
             let allValues = {}
@@ -838,6 +855,33 @@
                     timer: 1500
                 })
 
+            }
+
+        })
+    }
+
+    function checkValidatedDate() {
+        $.ajax({
+            type: "DELETE",
+            url: baseUrl + `/data-kandang/${id}`,
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Data deleted",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#default').modal('hide')
+                    showTableData(response.dataKandang.id_kandang)
+                })
+            },
+            error: function(err) {
+                console.log(err.responseText)
             }
 
         })

@@ -282,8 +282,8 @@
                 });
             });
 
-            // Timer status
-            let timeDuration = 5000;
+            // Timer status 5 menit 5 detik
+            let timeDuration = 305000;
             let timeOutId
             startOfflineTimeOut()
 

@@ -145,6 +145,7 @@ class PageController extends Controller
     {
         $userId = Auth::user()->id;
         $data =  $this->modelKandang::with('data_kandangs')->where('id_user', $userId)->get();
+
         $send = [
             'data' => $data
         ];

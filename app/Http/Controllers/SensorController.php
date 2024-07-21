@@ -30,6 +30,73 @@ class SensorController extends Controller
 		$this->sensorRepository = $sensorRepository;
 	}
 
+	public function getSensorHistoryByDate($option, $idKandang, $date,)
+	{
+
+
+		$data = DB::table('sensors')
+			->select(['suhu', 'kelembapan', 'amonia', 'suhu_outlier', 'kelembapan_outlier', 'amonia_outlier'])
+			->where('id_kandang', $idKandang)
+			->whereDate('sensors.datetime', $date)
+			->orderBy('sensors.datetime', 'ASC')
+			->get();
+
+		// ---------------Suhu---------------------------------------------
+		if ($option == "suhu") {
+			$meanSuhu = $data->isEmpty() ? null : $data->avg('suhu');
+			$stdDevSuhu = $this->sensorRepository->getSuhuStdDev($idKandang);
+			$lowerLimit = $meanSuhu - (3 * $stdDevSuhu);
+			$upperLimit = $meanSuhu + (3 * $stdDevSuhu);
+
+
+
+			return response()->json([
+				'data' => $data,
+				'mean' => $meanSuhu,
+				'stddev' => $stdDevSuhu,
+				'lower_limit' => $lowerLimit,
+				'upper_limit' => $upperLimit
+			], 200);
+		}
+
+		// ---------------Kelembapan-------------------------------------------
+		if ($option == "kelembapan") {
+			$meanKelembapan = $data->isEmpty() ? null : $data->avg('kelembapan');
+			$stdDevKelembapan = $this->sensorRepository->getKelembapanStdDev($idKandang);
+			$lowerLimit = $meanKelembapan - (3 * $stdDevKelembapan);
+			$upperLimit = $meanKelembapan + (3 * $stdDevKelembapan);
+
+
+
+			return response()->json([
+				'data' => $data,
+				'mean' => $meanKelembapan,
+				'stddev' => $stdDevKelembapan,
+				'lower_limit' => $lowerLimit,
+				'upper_limit' => $upperLimit
+			], 200);
+		}
+
+		// ----------------Amonia-------------------------------------------------
+		if ($option == "amonia") {
+			$meanAmonia = $data->isEmpty() ? null : $data->avg('amonia');
+			$stdDevAmonia = $this->sensorRepository->getAmoniaStdDev($idKandang);
+			$lowerLimit = $meanAmonia - (3 * $stdDevAmonia);
+			$upperLimit = $meanAmonia + (3 * $stdDevAmonia);
+
+
+
+			return response()->json([
+				'data' => $data,
+				'mean' => $meanAmonia,
+				'stddev' => $stdDevAmonia,
+				'lower_limit' => $lowerLimit,
+				'upper_limit' => $upperLimit
+			], 200);
+		}
+	}
+
+
 	public function storeSensorFromOutside($idKandang, $suhu = null, $kelembapan = null, $amonia = null)
 	{
 		$suhuOutlier  = null;
@@ -48,6 +115,7 @@ class SensorController extends Controller
 			}
 			$lowerLimit = $meanSuhu - (3 * $stdDevSuhu);
 			$upperLimit = $meanSuhu + (3 * $stdDevSuhu);
+
 			event(new SuhuOutlierUpdated($idKandang, $meanSuhu, $stdDevSuhu, $lowerLimit, $upperLimit, $suhuOutlier, $suhu));
 
 			dump([

@@ -6,7 +6,6 @@ use App\Http\Controllers\PanenController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\DataKandangController;
 use App\Http\Controllers\RekapDataController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RolesController;
@@ -73,6 +72,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
     Route::get('/sensors-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensors']);
     Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
+    Route::get('/sensors/{option}/{idKandang}/{date}', [SensorController::class, 'getSensorHistoryByDate']);
     // filter sensor
     Route::post('/sensors/date', [SensorController::class, 'getSensorByDate']);
     Route::post('/sensors/day', [SensorController::class, 'getSensorByDay']);

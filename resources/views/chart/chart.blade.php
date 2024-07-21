@@ -258,7 +258,7 @@
 
             let channel = pusher.subscribe('sensor-data');
             channel.bind('pusher:subscription_succeeded', function() {
-                // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+
                 channel.bind('App\\Events\\SensorDataUpdated', function(data) {
                     idKandang = data.idKandang;
                     let selectedKandang = $('#selectKandang').val()

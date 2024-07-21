@@ -150,7 +150,7 @@ class SensorRepository
   {
     return  array_sum($squaredDifferences) / (count($squaredDifferences) - 1);
   }
-  public function getSuhuStdDev($idKandang, $suhu)
+  public function getSuhuStdDev($idKandang, $suhu = null)
   {
     $data = DB::table('sensors')
       ->where('id_kandang', '=', $idKandang)
@@ -159,11 +159,13 @@ class SensorRepository
       ->toArray();
 
     // Jika tidak ada data sebelumnya, kembalikan nilai 0
-    if (count($data) == 0) {
+    if (count($data) <= 1) {
       return 0;
     }
     // Tambahkan nilai baru ke dalam data
-    $data[] = $suhu;
+    if ($suhu != null) {
+      $data[] = $suhu;
+    }
 
     // #1 rata-rata
     $mean  = $this->getMean($data);
@@ -176,7 +178,7 @@ class SensorRepository
     return $standardDeviation;
   }
 
-  public function getKelembapanStdDev($idKandang, $kelembapan)
+  public function getKelembapanStdDev($idKandang, $kelembapan = null)
   {
     $data = DB::table('sensors')
       ->where('id_kandang', '=', $idKandang)
@@ -186,12 +188,14 @@ class SensorRepository
 
 
     // Jika tidak ada data sebelumnya, kembalikan nilai 0
-    if (count($data) == 0) {
+    if (count($data) <= 1) {
       return 0;
     }
 
     // Tambahkan nilai baru ke dalam data
-    $data[] = $kelembapan;
+    if ($kelembapan != null) {
+      $data[] = $kelembapan;
+    }
 
     // #1 rata-rata
     $mean  = $this->getMean($data);
@@ -204,7 +208,7 @@ class SensorRepository
     return $standardDeviation;
   }
 
-  public function getAmoniaStdDev($idKandang, $amonia)
+  public function getAmoniaStdDev($idKandang, $amonia = null)
   {
     $data = DB::table('sensors')
       ->where('id_kandang', '=', $idKandang)
@@ -214,11 +218,13 @@ class SensorRepository
 
 
     // Jika tidak ada data, kembalikan nilai 0
-    if (count($data) == 0) {
+    if (count($data) <= 1) {
       return 0;
     }
     // Tambahkan nilai baru ke dalam data
-    $data[] = $amonia;
+    if ($amonia != null) {
+      $data[] = $amonia;
+    }
 
     // #1 rata-rata
     $mean  = $this->getMean($data);

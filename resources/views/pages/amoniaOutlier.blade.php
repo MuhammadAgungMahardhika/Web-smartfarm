@@ -311,142 +311,142 @@
         $('#totalOutlier').html(totalOutlier)
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        let options = {
-            colors: ['#75a3d9'],
-            series: [{
-                name: "Amonia",
-                data: dataAmoniaSigma
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                zoom: {
-                    enabled: true,
-                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
-                },
-                pan: {
-                    enabled: true,
-                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
+
+    let options = {
+        colors: ['#75a3d9'],
+        series: [{
+            name: "Amonia",
+            data: dataAmoniaSigma
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
                 }
             },
-            dataLabels: {
-                enabled: false
+            zoom: {
+                enabled: true,
+                type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
             },
-            stroke: {
-                curve: 'straight',
-
-            },
-            title: {
-                text: 'Outlier Detection With 3 Sigma',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
+            pan: {
+                enabled: true,
+                type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
             }
-        };
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
 
-        let optionWinsorzing = {
-            colors: ['#75a3d9'],
-            series: [{
-                name: "Amonia",
-                data: dataAmoniaWinsorzing
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                zoom: {
-                    enabled: true,
-                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
-                },
-                pan: {
-                    enabled: true,
-                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
+        },
+        title: {
+            text: 'Outlier Detection With 3 Sigma',
+            align: 'left'
+        },
+        grid: {
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.5
+            },
+        }
+    };
+
+    let optionWinsorzing = {
+        colors: ['#75a3d9'],
+        series: [{
+            name: "Amonia",
+            data: dataAmoniaWinsorzing
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
                 }
             },
-            dataLabels: {
-                enabled: false
+            zoom: {
+                enabled: true,
+                type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
             },
-            stroke: {
-                curve: 'straight',
-
-            },
-            title: {
-                text: 'Outlier Handling With Winsorzing',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
+            pan: {
+                enabled: true,
+                type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
             }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
 
-        };
-
-
-        // amonia sigma
-        amoniaSigmaChart = new ApexCharts(document.querySelector("#amoniaOutlier"), options);
-        amoniaSigmaChart.render();
-
-        // amonia winsorzing
-        amoniaWinsorzingChart = new ApexCharts(document.querySelector("#amoniaWinsorzing"), optionWinsorzing);
-        amoniaWinsorzingChart.render();
-
-        // Setiap 1 detik panggil fungsi updateData
-        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
-            cluster: 'ap1'
-        });
-
-        let channel = pusher.subscribe('amonia-outlier');
-        channel.bind('pusher:subscription_succeeded', function() {
-            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\AmoniaOutlierUpdated', function(data) {
-                console.log(data)
-                let idKandang = data.idKandang;
-                let selectedKandang = $('#selectKandang').val()
-                if (idKandang == selectedKandang) {
-                    updateDataAndChart(data)
-                    resetOfflineTimeout()
-                }
-
-            });
-        });
-
-        // Timer status, 5 menit 5 detik
-        let timeDuration = 305000;
-        let timeOutId
-        startOfflineTimeOut()
-
-        function startOfflineTimeOut() {
-            timeOutId = setTimeout(() => {
-                setCardsStatusToOffline()
-            }, timeDuration);
+        },
+        title: {
+            text: 'Outlier Handling With Winsorzing',
+            align: 'left'
+        },
+        grid: {
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.5
+            },
         }
 
-        function resetOfflineTimeout() {
-            setCardsStatusToOnline()
-            clearTimeout(timeOutId)
-            startOfflineTimeOut()
-        }
+    };
+
+
+    // amonia sigma
+    amoniaSigmaChart = new ApexCharts(document.querySelector("#amoniaOutlier"), options);
+    amoniaSigmaChart.render();
+
+    // amonia winsorzing
+    amoniaWinsorzingChart = new ApexCharts(document.querySelector("#amoniaWinsorzing"), optionWinsorzing);
+    amoniaWinsorzingChart.render();
+
+    // Setiap 1 detik panggil fungsi updateData
+    let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+        cluster: 'ap1'
     });
+
+    let channel = pusher.subscribe('amonia-outlier');
+    channel.bind('pusher:subscription_succeeded', function() {
+        // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+        channel.bind('App\\Events\\AmoniaOutlierUpdated', function(data) {
+            console.log(data)
+            let idKandang = data.idKandang;
+            let selectedKandang = $('#selectKandang').val()
+            if (idKandang == selectedKandang) {
+                updateDataAndChart(data)
+                resetOfflineTimeout()
+            }
+
+        });
+    });
+
+    // Timer status, 5 menit 5 detik
+    let timeDuration = 305000;
+    let timeOutId
+    startOfflineTimeOut()
+
+    function startOfflineTimeOut() {
+        timeOutId = setTimeout(() => {
+            setCardsStatusToOffline()
+        }, timeDuration);
+    }
+
+    function resetOfflineTimeout() {
+        setCardsStatusToOnline()
+        clearTimeout(timeOutId)
+        startOfflineTimeOut()
+    }
+
 
     // Fungsi untuk mengupdate data dan grafik
     function updateDataAndChart(data) {
@@ -597,5 +597,54 @@
             });
 
         }
+    }
+
+    // history
+    function getDateToday() {
+        return new Date().toISOString().split('T')[0];
+    }
+    setInitialValue(getDateToday())
+
+
+    function setInitialValue(date) {
+
+        let idKandang = localStorage.getItem("kandang")
+        $.ajax({
+            url: `/sensors/amonia/${idKandang}/${date}`,
+            method: 'GET',
+            dataType: 'json',
+
+            success: function(response) {
+                let datas = response.data
+                let mean = response.mean
+                let stdDev = response.stddev
+                let lowerLimit = response.lower_limit
+                let upperLimit = response.upper_limit
+
+                datas.forEach((d, index) => {
+                    setTimeout(() => {
+                        let amoniaOutlier = d.amonia_outlier;
+                        let amoniaWinsorzing = d.amonia;
+
+                        let data = {
+                            mean: mean,
+                            stdDev: stdDev,
+                            lowerLimit: lowerLimit,
+                            upperLimit: upperLimit,
+                            amoniaOutlier: amoniaOutlier,
+                            amoniaWinsorzing: amoniaWinsorzing
+                        };
+                        updateDataAndChart(data);
+
+                    }, index * 1000);
+                    resetOfflineTimeout()
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+
+            }
+        });
     }
 </script>

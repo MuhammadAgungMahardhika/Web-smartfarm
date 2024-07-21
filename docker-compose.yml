@@ -13,11 +13,19 @@ services:
     working_dir: /var/www/
     volumes:
       - ./:/var/www
+    environment:
+          APP_ENV: local
+          APP_URL: http://localhost
+          DB_HOST: db 
+          DB_PORT: 3306
+          DB_DATABASE: mazer
+          DB_USERNAME: root
+          DB_PASSWORD: root
     networks:
       - mazer
 
   db:
-    image: mysql:8.0
+    image: mysql:8.3
     container_name: mazer-db
     restart: unless-stopped
     environment:

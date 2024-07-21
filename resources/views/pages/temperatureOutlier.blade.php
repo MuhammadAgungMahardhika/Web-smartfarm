@@ -30,7 +30,9 @@
                                                 onchange="setKandang(this.value)">
 
                                             </select>
+
                                         </div>
+
                                     </div>
                                     <div class="col-4">
                                         <div id="status">
@@ -241,6 +243,7 @@
     let totalOutlier = 0
     let totalRecords = 0
 
+
     function setCardsStatusToOffline() {
         $('#status').html(`<span class="badge bg-secondary">Offline</span>`)
     }
@@ -274,6 +277,7 @@
     }
 
     function setSuhuOutlierTable(data) {
+
         totalRecords++
         let mean = data.mean
         let stdDev = data.stdDev
@@ -282,6 +286,8 @@
         let suhuOutlier = data.suhuOutlier
         let suhuWinsorzing = data.suhuWinsorzing
         let suhu = parseFloat(suhuWinsorzing)
+        console.log(data)
+        console.log(suhu)
         let tempMinim, tempMaksim
 
         // menentukan total outlier
@@ -311,151 +317,151 @@
         $('#totalOutlier').html(totalOutlier)
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        let options = {
-            colors: ['#75a3d9'],
-            series: [{
-                name: "Temperature",
-                data: dataSuhuSigma
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                zoom: {
-                    enabled: true,
-                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
-                },
-                pan: {
-                    enabled: true,
-                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
+
+    let options = {
+        colors: ['#75a3d9'],
+        series: [{
+            name: "Temperature",
+            data: dataSuhuSigma
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
                 }
             },
-            dataLabels: {
-                enabled: false
+            zoom: {
+                enabled: true,
+                type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
             },
-            stroke: {
-                curve: 'straight',
-
-            },
-            title: {
-                text: 'Outlier Detection With 3 Sigma',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
+            pan: {
+                enabled: true,
+                type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
             }
-        };
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
 
-        let optionWinsorzing = {
-            colors: ['#75a3d9'],
-            series: [{
-                name: "Temperature",
-                data: dataSuhuWinsorzing
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                animations: {
-                    enabled: true,
-                    easing: 'linear',
-                    dynamicAnimation: {
-                        speed: 1000
-                    }
-                },
-                zoom: {
-                    enabled: true,
-                    type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
-                },
-                pan: {
-                    enabled: true,
-                    type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
+        },
+        title: {
+            text: 'Outlier Detection With 3 Sigma',
+            align: 'left'
+        },
+        grid: {
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.5
+            },
+        }
+    };
+
+    let optionWinsorzing = {
+        colors: ['#75a3d9'],
+        series: [{
+            name: "Temperature",
+            data: dataSuhuWinsorzing
+        }],
+        chart: {
+            height: 350,
+            type: 'line',
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
                 }
             },
-            dataLabels: {
-                enabled: false
+            zoom: {
+                enabled: true,
+                type: 'xy' // Tipe zoom, 'xy' untuk zoom in/out pada sumbu X dan Y
             },
-            stroke: {
-                curve: 'straight',
-
-            },
-            title: {
-                text: 'Outlier Handling With Winsorzing',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'],
-                    opacity: 0.5
-                },
+            pan: {
+                enabled: true,
+                type: 'xy' // Tipe pan, 'xy' untuk pan pada sumbu X dan Y
             }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'straight',
 
-        };
-
-
-        // suhu sigma
-        suhuSigmaChart = new ApexCharts(document.querySelector("#suhuOutlier"), options);
-        suhuSigmaChart.render();
-
-        // suhu winsorzing
-        suhuWinsorzingChart = new ApexCharts(document.querySelector("#suhuWinsorzing"), optionWinsorzing);
-        suhuWinsorzingChart.render();
-
-        // Setiap 1 detik panggil fungsi updateData
-        let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
-            cluster: 'ap1'
-        });
-
-        let channel = pusher.subscribe('suhu-outlier');
-        channel.bind('pusher:subscription_succeeded', function() {
-            // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
-            channel.bind('App\\Events\\SuhuOutlierUpdated', function(data) {
-                console.log(data)
-                let idKandang = data.idKandang;
-                let selectedKandang = $('#selectKandang').val()
-                if (idKandang == selectedKandang) {
-                    updateDataAndChart(data)
-                    resetOfflineTimeout()
-                }
-
-            });
-        });
-
-        // Timer status , 5 menit 5 detik
-        let timeDuration = 305000;
-        let timeOutId
-        startOfflineTimeOut()
-
-        function startOfflineTimeOut() {
-            timeOutId = setTimeout(() => {
-                setCardsStatusToOffline()
-            }, timeDuration);
+        },
+        title: {
+            text: 'Outlier Handling With Winsorzing',
+            align: 'left'
+        },
+        grid: {
+            row: {
+                colors: ['#f3f3f3', 'transparent'],
+                opacity: 0.5
+            },
         }
 
-        function resetOfflineTimeout() {
-            setCardsStatusToOnline()
-            clearTimeout(timeOutId)
-            startOfflineTimeOut()
-        }
+    };
+
+    // suhu sigma
+    suhuSigmaChart = new ApexCharts(document.querySelector("#suhuOutlier"), options);
+    suhuSigmaChart.render();
+
+    // suhu winsorzing
+    suhuWinsorzingChart = new ApexCharts(document.querySelector("#suhuWinsorzing"), optionWinsorzing);
+    suhuWinsorzingChart.render();
+
+    // Timer status , 5 menit 5 detik
+    let timeDuration = 305000;
+    let timeOutId
+    startOfflineTimeOut()
+
+    // Setiap 1 detik panggil fungsi updateData
+    let pusher = new Pusher('4f34ab31e54a4ed8a72d', {
+        cluster: 'ap1'
     });
 
+    let channel = pusher.subscribe('suhu-outlier');
+    channel.bind('pusher:subscription_succeeded', function() {
+        // Setel callback untuk event SensorDataUpdated setelah berlangganan berhasil
+        channel.bind('App\\Events\\SuhuOutlierUpdated', function(data) {
+
+            let idKandang = data.idKandang;
+            let selectedKandang = $('#selectKandang').val()
+            if (idKandang == selectedKandang) {
+
+                updateDataAndChart(data)
+                resetOfflineTimeout()
+            }
+
+        });
+    });
+
+
+
+    function startOfflineTimeOut() {
+        timeOutId = setTimeout(() => {
+            setCardsStatusToOffline()
+        }, timeDuration);
+    }
+
+    function resetOfflineTimeout() {
+        setCardsStatusToOnline()
+        clearTimeout(timeOutId)
+        startOfflineTimeOut()
+    }
     // Fungsi untuk mengupdate data dan grafik
     function updateDataAndChart(data) {
+
         let newDate = new Date().toLocaleString("en-US", {
             timeZone: "Asia/Jakarta"
         });
         let upperLimit = data.upperLimit
         let lowerLimit = data.lowerLimit
-        console.log(lowerLimit)
         let suhuOutlier = data.suhuOutlier
         let suhuWinsorzing = data.suhuWinsorzing
         let suhu = suhuOutlier != null ? parseFloat(suhuOutlier) : parseFloat(suhuWinsorzing)
@@ -530,7 +536,7 @@
         });
 
         // Update suhu winsorzing 
-        if (parseFloat(suhuWinsorzing) != suhu) {
+        if (suhuWinsorzing != suhu) {
             console.log("suhu transformed")
             console.log("suhu : " + suhu + typeof suhu)
             dataSuhuWinsorzing.push({
@@ -596,5 +602,53 @@
             });
 
         }
+    }
+    // history
+    function getDateToday() {
+        return new Date().toISOString().split('T')[0];
+    }
+    setInitialValue(getDateToday())
+
+
+    function setInitialValue(date) {
+
+        let idKandang = localStorage.getItem("kandang")
+        $.ajax({
+            url: `/sensors/suhu/${idKandang}/${date}`,
+            method: 'GET',
+            dataType: 'json',
+
+            success: function(response) {
+                let datas = response.data
+                let mean = response.mean
+                let stdDev = response.stddev
+                let lowerLimit = response.lower_limit
+                let upperLimit = response.upper_limit
+
+                datas.forEach((d, index) => {
+                    setTimeout(() => {
+                        let suhuOutlier = d.suhu_outlier;
+                        let suhuWinsorzing = d.suhu;
+
+                        let data = {
+                            mean: mean,
+                            stdDev: stdDev,
+                            lowerLimit: lowerLimit,
+                            upperLimit: upperLimit,
+                            suhuOutlier: suhuOutlier,
+                            suhuWinsorzing: suhuWinsorzing
+                        };
+                        updateDataAndChart(data);
+
+                    }, index * 1000);
+                    resetOfflineTimeout()
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching data:', error);
+
+            }
+        });
     }
 </script>

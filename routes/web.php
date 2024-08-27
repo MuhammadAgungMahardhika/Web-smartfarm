@@ -5,7 +5,6 @@ use App\Http\Controllers\KandangController;
 use App\Http\Controllers\PanenController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\DataKandangController;
-use App\Http\Controllers\RekapDataController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RolesController;
@@ -95,16 +94,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/data-kandang/date', [DataKandangController::class, 'getDataKandangByDate']);
     Route::post('/data-kandang/classification', [DataKandangController::class, 'getDataKandangByClassification']);
     Route::post('/data-kandang/day', [DataKandangController::class, 'getDataKandangByDay']);
-
-
-
-    // rekap data
-    Route::get('/rekap-data', [RekapDataController::class, 'index']);
-    Route::get('/rekap-data/{id}', [RekapDataController::class, 'index']);
-    Route::get('/rekap-data/kandang/{kandangId}', [RekapDataController::class, 'getRekapDataByKandangId']);
-    Route::post('/rekap-data', [RekapDataController::class, 'store']);
-    Route::put('/rekap-data/{id}', [RekapDataController::class, 'update']);
-    Route::delete('/rekap-data/{id}', [RekapDataController::class, 'delete']);
 
     // notifikasi
     Route::get('/notification', [NotificationController::class, 'index']);

@@ -452,7 +452,7 @@
             async: false,
             url: baseUrl + `/data-kandang/current/kandang/${idKandang}`,
             success: function(response) {
-                result = response.data.data
+                result = response.data
             },
             error: function(err) {
                 console.log(err.responseText)

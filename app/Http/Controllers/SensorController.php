@@ -33,7 +33,6 @@ class SensorController extends Controller
 	public function getSensorHistoryByDate($option, $idKandang, $date,)
 	{
 
-
 		$data = DB::table('sensors')
 			->select(['suhu', 'kelembapan', 'amonia', 'suhu_outlier', 'kelembapan_outlier', 'amonia_outlier'])
 			->where('id_kandang', $idKandang)
@@ -217,29 +216,7 @@ class SensorController extends Controller
 		}
 	}
 
-	public function getSensor($idKandang)
-	{
-		$sensor = $this->modelSensor
-			->where('id_kandang', '=', $idKandang)
-			->orderBy('datetime', 'DESC')
-			->first();
-		$items = [
-			'sensor' => $sensor
-		];
-		return response(['data' => $items, 'status' => 200]);
-	}
-	public function getSensors($idKandang)
-	{
-		$sensor = $this->modelSensor
-			->where('id_kandang', '=', $idKandang)
-			->orderBy('datetime', 'DESC')
-			->take(10)
-			->get();
-		$items = [
-			'sensor' => $sensor
-		];
-		return response(['data' => $items, 'status' => 200]);
-	}
+
 	public function getSensorByKandangId($idKandang)
 	{
 

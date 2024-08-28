@@ -24,15 +24,6 @@ class NotificationController extends Controller
         $this->notificationRepository = $notificationRepository;
     }
 
-    public function index($id = null)
-    {
-        if ($id != null) {
-            $items = Notification::findOrFail($id)->with('kandang');
-        } else {
-            $items = Notification::get();
-        }
-        return response(['data' => $items, 'status' => 200]);
-    }
 
 
     public function getNotificationByKandangId($id)

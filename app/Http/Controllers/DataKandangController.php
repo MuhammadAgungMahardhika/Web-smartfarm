@@ -24,9 +24,7 @@ class DataKandangController extends Controller
 	/**
 	 * Create a new controller instance.
 	 */
-	public function __construct()
-	{
-	}
+	public function __construct() {}
 
 	public function index($id = null)
 	{
@@ -49,10 +47,7 @@ class DataKandangController extends Controller
 			->orderBy('data_kandang.id', 'DESC')
 			->first();
 
-		$response = [
-			'data' => $items,
-		];
-		return response(['data' => $response, 'status' => 200]);
+		return response(['data' => $items, 'status' => 200]);
 	}
 
 	public function getDataKandangByIdKandang($id)
@@ -125,12 +120,7 @@ class DataKandangController extends Controller
 		return response(['data' => $items, 'status' => 200]);
 	}
 
-	public function getDetailKandangByIdKandang($id)
-	{
-		$items = Kandang::with('data_kandangs')->where('id', $id)->get();
 
-		return response(['data' => $items, 'status' => 200]);
-	}
 	public function getJumlahKematianByDataKandangId($id)
 	{
 		$items = DB::table('data_kematian')->where('data_kematian.id_data_kandang', '=', $id)->select(DB::raw('COALESCE(sum(data_kematian.jumlah_kematian),0) as total_kematian'))->first();

@@ -67,7 +67,6 @@ class PanenController extends Controller
 
 			$panen = $this->panenRepository->createPanen(
 				(object) [
-					"id" => 1,
 					"id_kandang" => $request->id_kandang,
 					"tanggal_mulai" => $request->tanggal_mulai,
 					"tanggal_panen" => $request->tanggal_panen,

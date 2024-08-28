@@ -50,7 +50,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::get('/kandang', [KandangController::class, 'index']);
     Route::get('/kandang/{id}', [KandangController::class, 'index']);
     Route::get('/kandang/reset/{id}', [KandangController::class, 'setKandangStatusToInactive']);
-    Route::get('/detailKandang/{id}', [KandangController::class, 'getDetailKandangById']);
     Route::get('/kandang/user/{id}', [KandangController::class, 'getKandangByUserId']);
     Route::get('/kandang/peternak/{id}', [KandangController::class, 'getKandangByPeternakId']);
     Route::post('/kandang', [KandangController::class, 'store']);
@@ -66,42 +65,34 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::put('/panen/{id}', [PanenController::class, 'update']);
     Route::delete('/panen/{id}', [PanenController::class, 'delete']);
 
-
     // mendapatkan sensor dari database
-    Route::get('/sensor-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensor']);
-    Route::get('/sensors-suhu-kelembapan-amoniak/kandang/{idKandang}', [SensorController::class, 'getSensors']);
     Route::get('/sensors/kandang/{idKandang}', [SensorController::class, 'getSensorByKandangId']);
     Route::get('/sensors/{option}/{idKandang}/{date}', [SensorController::class, 'getSensorHistoryByDate']);
+
     // filter sensor
     Route::post('/sensors/date', [SensorController::class, 'getSensorByDate']);
     Route::post('/sensors/day', [SensorController::class, 'getSensorByDay']);
     Route::post('/sensors/classification', [SensorController::class, 'getSensorByClassification']);
 
-
     // data kandang
-    Route::get('/data-kandang', [DataKandangController::class, 'index']);
+    Route::get('/data-kandang', [DataKandangController::class, 'index']); //31
     Route::get('/data-kandang/{id}', [DataKandangController::class, 'index']);
-    Route::get('/data-kandang/check/{date}', [DataKandangController::class, 'checkDataKandangDate']);
     Route::get('/data-kandang/current/kandang/{idKandang}', [DataKandangController::class, 'getCurrentDataKandangByIdKandang']);
     Route::get('/jumlah-kematian/data-kandang/{id}', [DataKandangController::class, 'getJumlahKematianByDataKandangId']);
     Route::get('/data-kandang/kandang/{idKandang}', [DataKandangController::class, 'getDataKandangByIdKandang']);
-    Route::get('/data-kandang/detail/kandang/{idKandang}', [DataKandangController::class, 'getDetailKandangByIdKandang']);
     Route::post('/data-kandang', [DataKandangController::class, 'store']);
-
     Route::put('/data-kandang/{id}', [DataKandangController::class, 'update']);
     Route::delete('/data-kandang/{id}', [DataKandangController::class, 'delete']);
+
     // filter data kandang
     Route::post('/data-kandang/date', [DataKandangController::class, 'getDataKandangByDate']);
     Route::post('/data-kandang/classification', [DataKandangController::class, 'getDataKandangByClassification']);
     Route::post('/data-kandang/day', [DataKandangController::class, 'getDataKandangByDay']);
 
     // notifikasi
-    Route::get('/notification', [NotificationController::class, 'index']);
-    Route::get('/notification/{id}', [NotificationController::class, 'index']);
     Route::get('/notification/kandang/{kandangId}', [NotificationController::class, 'getNotificationByKandangId']);
-    Route::post('/notification', [NotificationController::class, 'store']);
     Route::patch('/notification/{id}', [NotificationController::class, 'update']);
-    Route::delete('/notification/{id}', [NotificationController::class, 'delete']);
+
 
     //----------------------All Role -----------------------------------//
     Route::get('/menuList', function () {
